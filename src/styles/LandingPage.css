@@ -1,0 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+
+.jumbotron-fluid {
+  background-color: #fff;
+padding: 30px;
+margin-top:60px;
+
+}
+
+.image-bg {
+  background-image: url("../assets/illustration.svg");
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: 100%;
+}
+
+.sign-in-btn,
+.sign-up-btn {
+  border: none;
+  background-color: #eec413;
+  border-radius: 30px;
+  color: #000;
+  padding: 5px 20px;
+}

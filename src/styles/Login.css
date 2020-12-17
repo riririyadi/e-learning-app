@@ -1,0 +1,43 @@
+.App {
+  margin: 0;
+  font-family: Inter;
+}
+
+.navbar {
+  font-weight: 500;
+}
+
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.form {
+  padding-top: 40px;
+  width: 300px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.login-btn {
+  border: none;
+  border-radius: 5px;
+  padding: 5px 20px;
+  background-color: #772ce8;
+  color: #fff;
+  width: 100%;
+}
+
+.login-btn:hover{
+  background-color: #6424c7;
+  transition: 0.2s;
+}
+.sosmed-btn {
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  width: 50px;
+}

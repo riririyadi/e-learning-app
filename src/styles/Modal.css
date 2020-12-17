@@ -1,0 +1,53 @@
+.modal-base {
+  z-index: 9999;
+  min-width: 300px;
+  max-width: 578px;
+  position: absolute;
+  background-color: #fefefe;
+  opacity: 0;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  transform: scale(0.8);
+  box-shadow: 4px 5px 5px 2px rgba(0, 0, 0, 0.33);
+  -webkit-box-shadow: 4px 5px 5px 2px rgba(0, 0, 0, 0.33);
+  -moz-box-shadow: 4px 5px 5px 2px rgba(0, 0, 0, 0.33);
+}
+
+.modal-base_after-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.modal-base_before-close {
+  transform: scale(0.2);
+  opacity: 0;
+}
+
+.overlay-base {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(66, 66, 66, 0.5);
+  opacity: 0;
+  transition: all 0.3s ease-out;
+}
+
+.overlay-base_after-open {
+  opacity: 1;
+}
+
+.overlay-base_before-close {
+  opacity: 0;
+}
+
+.close-button{
+  padding:0px 8px;
+}
+
+.close-button:hover {
+  background-color: red;
+  transition: 0.3s;
+  color: #ffffff;
+}
