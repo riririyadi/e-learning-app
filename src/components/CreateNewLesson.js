@@ -1,16 +1,17 @@
-import React, {useState} from "react";
+import React, { useState, useContext } from "react";
 import FileUpload from "./FileUpload";
 import { Link } from "react-router-dom";
-import Question from "./Question";
 import CustomModal from "./Modal";
-import { FcProcess } from "react-icons/fc";
+import { FiCheckCircle } from "react-icons/fi";
+import { LayoutContext } from "./NewLayout";
 
 export default function CreateNewLesson() {
-    const [isOpen, setIsOpen] = useState(false);
+  const { isDarkMode } = useContext(LayoutContext);
+  const [isOpen, setIsOpen] = useState(false);
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
-    const Confirmation = () => {
+  const Confirmation = () => {
     return (
       <div className="p-4">
         <div style={{ fontSize: "14px" }}>
@@ -20,7 +21,7 @@ export default function CreateNewLesson() {
             <div>
               <Link to="/u/classroom/manage">
                 <button className="button mr-4">
-                  <FcProcess size="18px" /> Yes
+                  <FiCheckCircle className="ok-icon" size="18px" /> Yes
                 </button>
               </Link>
               <button className="button" onClick={handleOpenModal}>
@@ -34,16 +35,22 @@ export default function CreateNewLesson() {
   };
   return (
     <>
-      <h5 className="mt-4 mb-4">Create New Lesson</h5>
-      <div className="bg-white p-4 mt-4 mb-4" style={{ borderRadius: "10px" }}>
+      <h5 className="mb-4">
+        <b>Create New Lesson</b>
+      </h5>
+      <div
+        className={`${
+          isDarkMode ? "bg-darks" : "bg-white"
+        } p-4 shadow-sm mt-4 mb-4`}
+        style={{ borderRadius: "10px" }}
+      >
         <div className="row mb-2">
           <div className="col-md-4">Lesson Name:</div>
           <div className="col-md-8">
             <input
-              className="input-field"
+              className={isDarkMode ? "input-field-dark-mode" : "input-field"}
               type="text"
               placeholder="Enter a lesson name"
-              style={{ width: "100%" }}
             />
           </div>
         </div>
@@ -51,25 +58,25 @@ export default function CreateNewLesson() {
           <div className="col-md-4">Lesson Description:</div>
           <div className="col-md-8">
             <textarea
-              className="input-field"
+              className={isDarkMode ? "input-field-dark-mode" : "input-field"}
               type="text"
               placeholder="Enter lesson description"
-              style={{ width: "100%", height: "150px" }}
+              style={{ height: "150px" }}
             />
           </div>
         </div>
         <div className="row mb-2">
           <div className="col-md-4">Add Materi:</div>
           <div className="col-md-8">
-            <div>
-              <FileUpload />
-            </div>
+            <FileUpload />
           </div>
         </div>
         <div className="row mb-2">
           <div className="col-md-4">Add Quiz:</div>
           <div className="col-md-8">
-            <select className="select-box" style={{ width: "100%", height: "25px" }}>
+            <select
+              className={isDarkMode ? "select-box-dark-mode" : "select-box"}
+            >
               <option></option>
               <option>Quiz 1</option>
               <option>Quiz 2</option>
@@ -80,7 +87,9 @@ export default function CreateNewLesson() {
         <div className="row mb-2">
           <div className="col-md-4">Add Task:</div>
           <div className="col-md-8">
-            <select className="select-box" style={{ width: "100%", height: "25px" }}>
+            <select
+              className={isDarkMode ? "select-box-dark-mode" : "select-box"}
+            >
               <option></option>
               <option>Task 1</option>
               <option>Task 2</option>
@@ -92,16 +101,18 @@ export default function CreateNewLesson() {
           <div className="col-md-4">Embed a Video:</div>
           <div className="col-md-8">
             <input
-              className="input-field"
+              className={isDarkMode ? "input-field-dark-mode" : "input-field"}
               type="text"
               placeholder="Paste a video URL"
               style={{ width: "100%" }}
             />
           </div>
         </div>
-        <button className="button" onClick={handleOpenModal}>Create</button>
+        <button className="button mt-2" onClick={handleOpenModal}>
+          Create
+        </button>
       </div>
-         <CustomModal
+      <CustomModal
         isOpen={isOpen}
         onRequestClose={handleOpenModal}
         componentToPass={<Confirmation />}

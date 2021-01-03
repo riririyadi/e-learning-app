@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
-import Calendar from "./components/Calendar";
+import EventsCalendar from "./components/Calendar";
 import Classroom from "./components/Classroom";
 import ManageClassroom from "./components/ManageClassroom";
 import CreateNewClassroom from "./components/CreateNewClassroom";
@@ -54,7 +54,7 @@ export const StudentRoutes = () => {
   return (
     <Switch>
       <Route exact path="/u/" component={Dashboard} />
-      <Route path="/u/calendar" component={Calendar} />
+      <Route path="/u/calendar" component={EventsCalendar} />
       <Route path="/u/classroom">
         <ClassRoute />
       </Route>
@@ -91,7 +91,7 @@ export const TeacherRoutes = () => {
   return (
     <Switch>
       <Route exact path="/u/" component={Dashboard} />
-      <Route path="/u/calendar" component={Calendar} />
+      <Route path="/u/calendar" component={EventsCalendar} />
       <Route path="/u/classroom">
         <TeacherClassRoute />
       </Route>

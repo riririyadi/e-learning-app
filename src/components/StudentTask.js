@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BsFunnel } from "react-icons/bs";
+import { LayoutContext } from "./NewLayout";
 
 export default function StudentTask() {
+  const { isDarkMode } = useContext(LayoutContext);
   const taskData = [
     {
       task_name: "Task 1",
@@ -35,14 +37,22 @@ export default function StudentTask() {
 
   return (
     <>
-      <h5 className="mb-4 mt-4">Task List</h5>
+      <h5 className="mb-4">
+        <b>Task List</b>
+      </h5>
       <div className="centering mb-2" style={{ width: "300px" }}>
         <BsFunnel size="24px" />
-        <input className="ml-4 input-field" placeholder="Search" type="text" />
+        <input
+          className={
+            isDarkMode ? "ml-4 input-field-dark-mode" : "ml-4 input-field"
+          }
+          placeholder="Search"
+          type="text"
+        />
       </div>
       <table className="table table-borderless table-responsive-sm">
         <thead>
-          <tr className="border-bottom">
+          <tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
             <th scope="col">Task Name</th>
             <th scope="col">Class</th>
             <th scope="col">Status</th>
@@ -50,52 +60,32 @@ export default function StudentTask() {
             <th scope="col">Job Done</th>
           </tr>
         </thead>
-        <tbody className="bg-white">
-          <tr className="border-bottom">
-            <td>Task Blockchain</td>
-            <td>Sistem Keamanan dan Teknologi Informasi</td>
-            <td>
-              <span className="bg-info p-2" style={{ borderRadius: "10px" }}>
-                Open
-              </span>
-            </td>
-            <td>24/11/2020 - 10.00 am</td>
-            <td>
-              <span className="bg-info p-2" style={{ borderRadius: "10px" }}>
-                Done
-              </span>
-            </td>
-          </tr>
-          <tr className="border-bottom">
-            <td>Task Enkripsi Dasar</td>
-            <td>Sistem Keamanan dan Teknologi Informasi</td>
-            <td>
-              <span className="bg-danger p-2" style={{ borderRadius: "10px" }}>
-                Closed
-              </span>
-            </td>
-            <td>24/11/2020 - 10.00 am</td>
-            <td>
-              <span className="bg-info p-2" style={{ borderRadius: "10px" }}>
-                Done
-              </span>
-            </td>
-          </tr>
-          <tr className="border-bottom">
-            <td>Task Requirement Document</td>
-            <td>PPSI</td>
-            <td>
-              <span className="bg-danger p-2" style={{ borderRadius: "10px" }}>
-                Closed
-              </span>
-            </td>
-            <td>24/11/2020 - 10.00 am</td>
-            <td>
-              <span className="bg-danger p-2" style={{ borderRadius: "10px" }}>
-                Yet
-              </span>
-            </td>
-          </tr>
+        <tbody className={isDarkMode ? "bg-darks" : "bg-white"}>
+          {taskData.map((task, i) => (
+            <tr key={i} className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
+              <td>{task.task_name}</td>
+              <td>{task.class}</td>
+              <td>
+                <span
+                  className={`status ${
+                    task.status === "open" ? "open" : "closed"
+                  } ${isDarkMode ? "text-white dark-open" : null} `}
+                >
+                  {task.status}
+                </span>
+              </td>
+              <td>{task.due_date}</td>
+              <td>
+                <span
+                  className={`status ${
+                    task.job_done === "done" ? "open" : "closed"
+                  } ${isDarkMode ? "text-white dark-open" : null} `}
+                >
+                  {task.job_done}
+                </span>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </>

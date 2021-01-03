@@ -1,133 +1,194 @@
-import React from "react";
-import { BsFunnel, BsTrash } from "react-icons/bs";
+import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import { BsFunnel, BsTrash, BsThreeDots } from "react-icons/bs";
 import { BiPencil } from "react-icons/bi";
+import { RiSettingsLine } from "react-icons/ri";
+import { LayoutContext } from "./NewLayout";
+
+import "../styles/Task.css";
 
 export default function Task() {
+  const { isDarkMode } = useContext(LayoutContext);
+  const [selectedRow, setSelectedRow] = useState(true);
   const taskData = [
     {
-      task_name: "Task 1",
-      class: "PPSI",
+      task_name: "Tugas Analisa Sistem 1",
+      class: "4KA21",
+      subject: "Analisis Kinerja Sistem",
       status: "open",
       due_date: "23 Desember 2020 - 12:00 AM",
-      job_done: "yet",
     },
     {
-      task_name: "Task 2",
-      class: "Algoritma Pemrograman",
-      status: "closed",
-      due_date: "24 Desember 2020 - 11:00 AM",
-      job_done: "done",
-    },
-    {
-      task_name: "Task 3",
-      class: "Sistem Basis Data",
-      status: "closed",
-      due_date: "25 Desember 2020 - 10:00 PM",
-      job_done: "done",
-    },
-    {
-      task_name: "Task 4",
-      class: "Analisis Kerja Sistem",
+      task_name: "Tugas 1 Requirement Documents",
+      class: "4KA21",
+      subject: "PPSI",
       status: "open",
-      due_date: "05 January 2021 - 03:00 PM",
-      job_done: "yet",
+      due_date: "23 Januari 2021 - 12:00 AM",
+    },
+    {
+      task_name: "Task 1",
+      class: "4KA21",
+      subject: "Algoritma dan pemrograman",
+      status: "closed",
+      due_date: "23 Januari 2021 - 12:00 AM",
+    },
+    {
+      task_name: "Task 1",
+      class: "4KA21",
+      subject: "Manajemen Layanan Sistem Informasi",
+      status: "open",
+      due_date: "23 Desember 2020 - 12:00 AM",
+    },
+    {
+      task_name: "Tugas 2 Proposal Analisis",
+      class: "4KA21",
+      subject: "PPSI",
+      status: "Closed",
+      due_date: "23 Desember 2020 - 12:00 AM",
     },
   ];
 
   return (
     <>
-      <h5 className="mb-4 mt-4">Task List</h5>
-      <div className="centering mb-2" style={{ width: "300px" }}>
-        <BsFunnel size="24px" />
-        <input className="ml-4 input-field" placeholder="Search" type="text" />
+      <h5 className="mb-4">
+        <b>Task</b>
+      </h5>
+      <div className="mb-2">
+        <span className="mr-2">
+          <BsFunnel size="20px" />
+        </span>
+        <input
+          className={`ml-2  
+            ${isDarkMode ? "input-field-dark-mode" : "input-field"}
+          `}
+          placeholder="Search Task"
+          type="text"
+          style={{ width: "300px" }}
+        />
       </div>
       <table className="table table-borderless table-responsive-sm">
         <thead>
-          <tr className="border-bottom">
+          <tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
+            <th scope="col">
+              <input
+                type="checkbox"
+                value={selectedRow}
+                onChange={() => setSelectedRow((prevState) => !prevState)}
+              />
+            </th>
             <th scope="col">Task Name</th>
             <th scope="col">Class</th>
             <th scope="col">Subject</th>
             <th scope="col">Status</th>
             <th scope="col">Due Date</th>
-            <th scope="col">Action</th>
+            <th scope="col"></th>
           </tr>
         </thead>
-        <tbody className="bg-white">
-          <tr className="border-bottom">
-            <td>Task Blockchain</td>
-            <td>Publik</td>
-            <td>Sistem Keamanan dan Teknologi Informasi</td>
-            <td>
-              <span className="bg-info p-2" style={{ borderRadius: "10px" }}>
-                Open
-              </span>
-            </td>
-            <td>24/11/2020 - 10.00 am</td>
-            <td>
-              <span
-                className="p-2 mr-2"
-                style={{ backgroundColor: "yellow", borderRadius: "5px" }}
-              >
-                <BiPencil size="20px" />
-              </span>
-              <span
-                className="p-2"
-                style={{ backgroundColor: "red", borderRadius: "5px" }}
-              >
-                <BsTrash size="20px" />
-              </span>
-            </td>
-          </tr>
-          <tr className="border-bottom">
-            <td>Task Enkripsi Dasar</td>
-              <td>Publik</td>
-            <td>Sistem Keamanan dan Teknologi Informasi</td>
-            <td>
-              <span className="bg-danger p-2" style={{ borderRadius: "10px" }}>
-                Closed
-              </span>
-            </td>
-            <td>24/11/2020 - 10.00 am</td>
-            <td>
-              <span
-                className="p-2 mr-2"
-                style={{ backgroundColor: "yellow", borderRadius: "5px" }}
-              >
-                <BiPencil size="20px" />
-              </span>
-              <span
-                className="p-2"
-                style={{ backgroundColor: "red", borderRadius: "5px" }}
-              >
-                <BsTrash size="20px" />
-              </span>
-            </td>
-          </tr>
-          <tr className="border-bottom">
-            <td>Task Requirement Document</td>
-              <td>4KA21</td>
-            <td>PPSI</td>
-            <td>
-              <span className="bg-danger p-2" style={{ borderRadius: "10px" }}>
-                Closed
-              </span>
-            </td>
-            <td>24/11/2020 - 10.00 am</td>
-            <td>
-              <span
-                className="p-2 mr-2"
-                style={{ backgroundColor: "yellow", borderRadius: "5px" }}
-              >
-                <BiPencil size="20px" />
-              </span>
-              <span
-                className="p-2"
-                style={{ backgroundColor: "red", borderRadius: "5px" }}
-              >
-                <BsTrash size="20px" />
-              </span>
-            </td>
-          </tr>
+        <tbody className={isDarkMode ? "bg-darks" : "bg-white"}>
+          {taskData.map((task, i) => (
+            <tr key={i} className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
+              <td>
+                <input
+                  type="checkbox"
+                  value={selectedRow}
+                  onChange={() => setSelectedRow((prevState) => !prevState)}
+                />
+              </td>
+              <td data-toggle="tooltip" title="Review">
+                {task.task_name}
+              </td>
+              <td>{task.class}</td>
+              <td>{task.subject}</td>
+              <td>
+                <span
+                  className={`status ${
+                    task.status === "open" ? "open" : "closed"
+                  } ${isDarkMode ? "text-white dark-open" : null} `}
+                >
+                  {task.status}
+                </span>
+              </td>
+              <td>{task.due_date}</td>
+              <td>
+                <div className="dropdown">
+                  <button
+                    className={`${
+                      isDarkMode ? "dark-overlay-btn" : "overlay-btn"
+                    } centering`}
+                    style={{
+                      border: "none",
+                      borderRadius: "30px",
+                      padding: "5px",
+                    }}
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    data-toggle-second="tooltip"
+                    data-placement="right"
+                    title="More options"
+                  >
+                    <BsThreeDots />
+                  </button>
+                  <div
+                    className={`dropdown-menu shadow-sm dropdown-menu-right ${
+                      isDarkMode ? "dropdown-menu-dark" : "dropdown-menu-light"
+                    } p-2 mt-2 mb-2`}
+                  >
+                    <div
+                      className={`dropdown-item rounded ${
+                        isDarkMode ? "dark-mode" : "light-mode"
+                      } pl-2`}
+                      style={
+                        isDarkMode
+                          ? {
+                              cursor: "pointer",
+                            }
+                          : { color: "black", cursor: "pointer" }
+                      }
+                    >
+                      <Link
+                        to="#"
+                        style={
+                          isDarkMode
+                            ? { color: "#F5F5F7" }
+                            : { color: "#000000" }
+                        }
+                      >
+                        <RiSettingsLine />
+                        <span className="ml-2">Edit</span>
+                      </Link>
+                    </div>
+                    <div
+                      className={`dropdown-item rounded  ${
+                        isDarkMode ? "dark-mode" : "light-mode"
+                      } pl-2`}
+                      style={
+                        isDarkMode
+                          ? {
+                              cursor: "pointer",
+                            }
+                          : { cursor: "pointer" }
+                      }
+                      onClick={(e) => alert("oh hi")}
+                    >
+                      <Link
+                        to="#"
+                        style={
+                          isDarkMode
+                            ? { color: "#F5F5F7" }
+                            : { color: "#000000" }
+                        }
+                      >
+                        <BsTrash />
+                        <span className="ml-2">Delete</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </>

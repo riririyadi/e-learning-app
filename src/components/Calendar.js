@@ -1,40 +1,42 @@
-import React from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import listPlugin from "@fullcalendar/list";
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+import React, { useContext } from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import { LayoutContext } from "./NewLayout";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+const localizer = momentLocalizer(moment);
 
+export default function EventsCalendar(props) {
+  const { isDarkMode } = useContext(LayoutContext);
+  const myEventsList = [
+    {
+      title: "All Day Event very long title",
+      allDay: true,
+      start: new Date(2020, 11, 1, 0),
+      end: new Date(2020, 11, 2, 2),
+    },
+  ];
 
-export default function Calendar(){
-
-  const handleDateClick = (arg) =>{
-    alert(arg.dateStr)
-  }
-    return (
-      <div style={{ position: 'relative',
-    zIndex: 0}}>
-      <h5 className="mt-4 mb-4">Calendar</h5>
-      <div className="p-4 bg-white" style={{borderRadius:"10px"}}>
-      <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin, listPlugin]}
-        defaultView="dayGridMonth"
-        headerToolbar={{
-          left:'prev next today',
-          center:'title',
-          right:'dayGridMonth dayGridWeek dayGridDay'
+  return (
+    <div style={{ position: "relative", zIndex: 0 }}>
+      <h5 className="mb-4">
+        <b>Calendar</b>
+      </h5>
+      <div
+        className={isDarkMode ? "bg-darks shadow-sm" : "bg-white shadow-sm"}
+        style={{
+          borderRadius: "10px",
+          padding: "50px",
+          height: "600px",
+          zIndex: 0,
         }}
-          dateClick={handleDateClick}
-        events={[
-          { title: "event 1", date: "2020-12-09" },
-          { title: "event 2", date: "2020-12-15" },
-          { title: "event 3", date: "2020-12-16" },
-          { title: "event 4", date: "2020-12-19" },
-          { title: "event 5", date: "2020-12-20" },
-        ]}
-      />
+      >
+        <Calendar
+          localizer={localizer}
+          events={myEventsList}
+          startAccessor="start"
+          endAccessor="end"
+        />
       </div>
-      </div>
-    );
-  
+    </div>
+  );
 }

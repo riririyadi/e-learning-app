@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import { FcDocument, FcPuzzle, FcTodoList, FcAbout } from "react-icons/fc";
-import { BiCaretRightCircle } from "react-icons/bi";
+import { FcAbout } from "react-icons/fc";
 import CustomModal from "./Modal";
+import { LayoutContext } from "./NewLayout";
 
 export default function DetailClassroom() {
+  const { isDarkMode } = useContext(LayoutContext);
   const [isOpen, setIsOpen] = useState(false);
   function handleOpenModal() {
     setIsOpen(!isOpen);
@@ -94,8 +95,12 @@ export default function DetailClassroom() {
           </div>
           {/* <div className="text-center mt-4" style={{color:"red", backgroundColor:"pink"}}>The Quiz is not open yet</div> */}
           <div
-            className="text-center mt-4"
-            style={{ color: "green", backgroundColor: "lightgreen" }}
+            className="text-center mt-4 p-2"
+            style={{
+              color: "green",
+              backgroundColor: "lightgreen",
+              borderRadius: "5px",
+            }}
           >
             The Quiz is open
           </div>
@@ -118,11 +123,15 @@ export default function DetailClassroom() {
   };
   return (
     <div>
-      <h5 className="mt-4 mb-4">Classroom</h5>
+      <h5 className="mb-4">
+        <b>Classroom</b>
+      </h5>
       <div
         className="mb-4"
         style={{
-          backgroundColor: "#772CE8",
+          backgroundImage:
+            "linear-gradient(to right top, #4ccfa7, #3bcab3, #33c5bd, #36bfc4, #43b9c8, #29b3d0, #09add7, #00a6dd, #009bed, #008efa, #007cff, #4e65ff)",
+
           borderRadius: "5px",
           height: "200px",
         }}
@@ -158,11 +167,7 @@ export default function DetailClassroom() {
       </div>
       <div>
         {lessonData.map((data, i) => (
-          <div
-            className="mb-4 d-flex bd-highlight"
-            style={{ backgroundColor: "#fff", borderRadius: "5px" }}
-            key={data.lessonNamen}
-          >
+          <div className="mb-4 d-flex bd-highlight" key={data.lessonName}>
             <div
               style={{
                 width: "10px",
@@ -170,12 +175,11 @@ export default function DetailClassroom() {
               }}
             ></div>
             <div
+              className={isDarkMode ? "bg-darks" : "bg-white"}
               style={{
-                width: "95%",
-                backgroundColor: "#fff",
-                padding: "10px",
-                borderRadius: "10px",
-                marginLeft: "10px",
+                width: "100%",
+                padding: "10px 10px 10px 20px",
+                borderRadius: "0px 5px 5px 0px",
               }}
             >
               <div className="mb-2">
@@ -189,7 +193,11 @@ export default function DetailClassroom() {
                 <span className="mr-2">📑</span>
                 Tugas {data.tugas}
               </div>
-              <div onClick={handleOpenModal} className="dark-link mb-2">
+              <div
+                onClick={handleOpenModal}
+                className="mb-2"
+                style={{ cursor: "pointer" }}
+              >
                 <span className="mr-2">🧩</span>
                 Quiz {data.quiz}
               </div>

@@ -1,0 +1,148 @@
+abbr[data-title] {
+  position: relative;
+}
+abbr[data-title]:hover::after,
+abbr[data-title]:focus::after {
+  content: attr(data-title);
+  position: absolute;
+  left: 50%;
+  top: -30px;
+  transform: translateX(20%);
+  width: auto;
+  white-space: nowrap;
+  background-color: white;
+  font-family: Calibri, Tahoma, Geneva, sans-serif;
+  color: #000;
+  border: 0.5px solid black;
+  font-size: 12px;
+  padding: 2px 5px;
+  z-index: 9999;
+}
+
+.tooltip-btn {
+  display: inline-block;
+  position: relative;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tooltip-btn .right {
+  min-width: 100px;
+  top: 50%;
+  left: 100%;
+  margin-left: 10px;
+  transform: translate(0, -50%);
+  padding: 5px 10px;
+  color: black;
+  background-color: #ffffff;
+  font-weight: normal;
+  font-size: 13px;
+  border-radius: 2px;
+  position: absolute;
+  z-index: 99999999;
+  box-sizing: border-box;
+  border: 1px solid black;
+  display: none;
+}
+
+.tooltip-btn:hover .right {
+  display: block;
+}
+
+.tooltip-btn .right i {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -12px;
+  width: 12px;
+  height: 24px;
+  overflow: hidden;
+}
+
+.tooltip-btn .right i::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  left: 0;
+  top: 50%;
+  transform: translate(50%, -50%) rotate(-45deg);
+  background-color: #ffffff;
+  border: 1px solid black;
+}
+
+.backdrop {
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  color: black;
+  border-radius: 5px;
+}
+
+.classroom-1,
+.classroom-8 {
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/study.svg");
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: 100%;
+}
+
+.classroom-2,
+.classroom-9 {
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/studying.svg");
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: 100%;
+}
+
+.classroom-3,
+.classroom-10 {
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/research.svg");
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: 100%;
+}
+.classroom-4,
+.classroom-11 {
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/reading.svg");
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: 100%;
+}
+
+.classroom-5,
+.classroom-12 {
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/reading-boi.svg");
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: 100%;
+}
+
+.classroom-6,
+.classroom-13 {
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/work.svg");
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: 100%;
+}
+
+.classroom-7,
+.classroom-14 {
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/reading_time.svg");
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: 100%;
+}

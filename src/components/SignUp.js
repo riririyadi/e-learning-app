@@ -1,5 +1,5 @@
-import React from "react";
-import { NavLink, Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 
 function SignUp() {
@@ -7,7 +7,7 @@ function SignUp() {
     <>
       <Navbar />
       <div className="form-wrapper">
-        <div className="form" style={{ fontSize: "14px" }}>
+        <form className="form">
           <h5>
             <b>Join Us Today</b>
           </h5>
@@ -53,13 +53,17 @@ function SignUp() {
             <b>Pick Your Role</b>
           </label>
           <br />
-          <select className="mb-4 select-box">
+          <select className="select-box mb-4">
             <option></option>
             <option>Student</option>
             <option>Teacher</option>
           </select>
           <br />
-          <button type="submit" className="login-btn mb-4">
+          <button
+            type="submit"
+            className="login-btn mb-4"
+            style={{ padding: "7px 20px" }}
+          >
             Sign Up
           </button>
           <br />
@@ -68,7 +72,7 @@ function SignUp() {
               Have an account? <b>Sign In</b>
             </small>
           </Link>
-        </div>
+        </form>
       </div>
     </>
   );

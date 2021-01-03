@@ -3,6 +3,7 @@ import Datetime from "react-datetime";
 import { FaCalendarAlt } from "react-icons/fa";
 import "react-datetime/css/react-datetime.css";
 import moment from "moment";
+import { LayoutContext } from "./NewLayout";
 
 const MyDTPicker = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -95,8 +96,10 @@ export default function CreateNewTask() {
       <div className="row mb-2">
         <div className="col-md-4">Random Question display: </div>
         <div className="col-md-8">
-          <input type="checkbox" /><label className="ml-2">Yes</label>
-          <input type="checkbox" className="ml-4" /><label className="ml-2">No</label>
+          <input type="checkbox" />
+          <label className="ml-2">Yes</label>
+          <input type="checkbox" className="ml-4" />
+          <label className="ml-2">No</label>
         </div>
       </div>
       <div className="row mb-2">
@@ -114,13 +117,17 @@ export default function CreateNewTask() {
           <input type="checkbox" placeholder="5" />
           <label className="ml-2">True or false</label>
           <br />
-          <button  style={{
-          width: "100%",
-          border: "none",
-          borderRadius: "20px",
-          backgroundColor: "#1EB8CF",
-          padding: "7px",
-        }}>Create Questions</button>
+          <button
+            style={{
+              width: "100%",
+              border: "none",
+              borderRadius: "20px",
+              backgroundColor: "#1EB8CF",
+              padding: "7px",
+            }}
+          >
+            Create Questions
+          </button>
         </div>
       </div>
 
@@ -189,13 +196,17 @@ export default function CreateNewTask() {
               </select>
             </div>
           </div>
-          <button  style={{
-          width: "100%",
-          border: "none",
-          borderRadius: "20px",
-          backgroundColor: "#1EB8CF",
-          padding: "7px",
-        }}>Add Questions</button>
+          <button
+            style={{
+              width: "100%",
+              border: "none",
+              borderRadius: "20px",
+              backgroundColor: "#1EB8CF",
+              padding: "7px",
+            }}
+          >
+            Add Questions
+          </button>
         </div>
       </div>
       <button

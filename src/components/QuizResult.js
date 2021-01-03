@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 export default function QuizResult() {
   return (
     <div>
-      <h5 className="mt-4 mb-4">Classroom</h5>
+      <h5 className="mb-4"><b>Classroom</b></h5>
       <div
         className="mb-4"
         style={{
@@ -43,7 +43,7 @@ export default function QuizResult() {
           </div>
         </div>
       </div>
-      <h5 className="mt-4 mb-4">Result</h5>
+      <h5 className="mt-4 mb-4"><b>Result</b></h5>
       <div
         className="mb-4"
         style={{

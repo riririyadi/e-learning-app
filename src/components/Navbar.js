@@ -1,59 +1,54 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
+import "../styles/Navbar.css";
+
 export default function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg bg-white navbar-light shadow-sm fixed-top">
+    <nav className="navbar navbar-expand-lg fixed-top navbar-light bg-white shadow-sm">
       <div className="container">
-        <NavLink className="navbar-brand" to="/">
-          E-learning
+        <NavLink to="/" className="navbar-brand" href="#">
+          Elearning
         </NavLink>
         <button
-          style={{ border: "none" }}
           className="navbar-toggler"
           type="button"
           data-toggle="collapse"
-          data-target="#navbarNavAltMarkup"
-          aria-controls="navbarNavAltMarkup"
+          data-target="#navbarText"
+          aria-controls="navbarText"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div
-            className="navbar-nav ml-auto centering"
-            style={{ fontSize: "14px" }}
-          >
-            <NavLink
-              className="nav-item nav-link mr-2 ml-2"
-              to="/"
-              exact={true}
-            >
-              Home
-            </NavLink>
-            <NavLink
-              className="nav-item nav-link mr-2 ml-2"
-              to="/about"
-            >
-              About
-            </NavLink>
-            <NavLink
-              className="nav-item nav-link mr-2 ml-2"
-              to="/help"
-            >
-              Help
-            </NavLink>
-            <NavLink
-              className="nav-item nav-link mr-2 ml-2"
-              to="/login"
-            >
-              Log In
-            </NavLink>
-            <NavLink className="nav-item nav-link" to="/register">
-              <div className="login-btn">Sign Up</div>
-            </NavLink>
-          </div>
+        <div className="collapse navbar-collapse" id="navbarText">
+          <ul className="navbar-nav ml-auto centering">
+            <li className="nav-item pl-2 pr-2">
+              <NavLink to="/" className="nav-link" href="#" exact={true}>
+                Home
+              </NavLink>
+            </li>
+            <li className="nav-item pl-2 pr-2">
+              <NavLink to="/about" className="nav-link dark-link" href="#">
+                About
+              </NavLink>
+            </li>
+            <li className="nav-item pl-2 pr-2">
+              <NavLink to="/help" className="nav-link dark-link" href="#">
+                Help
+              </NavLink>
+            </li>
+            <li className="nav-item pl-2 pr-2">
+              <NavLink to="/login" className="nav-link dark-link" href="#">
+                <span>Login</span>
+              </NavLink>
+            </li>
+            <li className="nav-item pl-2 pr-2">
+              <NavLink to="/register" className="nav-link" href="#">
+                <span className="login-btn">Sign Up</span>
+              </NavLink>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>

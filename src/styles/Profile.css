@@ -1,0 +1,97 @@
+/* 
+.img-container {
+  position: relative;
+}
+
+.image {
+  opacity: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: .5s ease;
+  backface-visibility: hidden;
+}
+
+.middle {
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.img-container:hover .image {
+  opacity: 0.3;
+}
+
+.img-container:hover .middle {
+  opacity: 1;
+}
+
+.text {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  padding: 16px 32px;
+} */
+.image-wrapper {
+  position: relative;
+  border-radius: 50%;
+}
+.ava {
+  opacity: 1;
+  transition: 0.5s ease;
+  backface-visibility: hidden;
+  position: relative;
+  border-radius: 50%;
+}
+
+
+.image-wrapper:hover .upload-area {
+  opacity: 1;
+}
+
+.upload-area {
+  position: absolute;
+  width: 100px;
+  top:50%;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  height: 50px;
+  opacity:0;
+}
+
+.label-upload{
+    position: absolute;
+    width: 100px;
+    top:0;
+    height: 50px;
+    z-index: 3;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+.cover {
+  background-image: url("https://www.birlaopenmindspatna.org/news_popup/background-news2.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 5px;
+}
+
+.bg-white-overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+.bg-dark-overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}

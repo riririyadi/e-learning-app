@@ -16,14 +16,13 @@ function Dropzone(props) {
   console.log(files);
   return (
     <>
-      <button
-        type="button"
-        className="mb-2 button"
-        onClick={open}
-      >
+      <button type="button" className="mb-2 button" onClick={open}>
         Open File
       </button>
-      <div className="container rounded centering" style={{border:"1px solid #c3c3c3"}}>
+      <div
+        className="container rounded centering"
+        style={{ border: "1px solid #c3c3c3" }}
+      >
         <div
           {...getRootProps({ className: "dropzone" })}
           style={{

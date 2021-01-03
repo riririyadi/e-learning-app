@@ -1,52 +1,60 @@
-import React from "react";
+import React, { useContext } from "react";
 import Modal from "react-modal";
-
+import { MdClose } from "react-icons/md";
+import { LayoutContext } from "./NewLayout";
 import "../styles/Modal.css";
 
 const customStyles = {
   content: {
+    position: "absolute",
     top: "50%",
     left: "50%",
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    borderTop: "5px solid #772CE8",
+    transform: "translate(-50%, -51%)",
+    borderRadius: "10px",
+    outline: "none",
   },
 };
 
-Modal.setAppElement('body');
+export default function CustomModal({
+  isOpen,
+  onRequestClose,
+  componentToPass,
+}) {
+  const { isDarkMode } = useContext(LayoutContext);
 
-export default function CustomModal({ isOpen, onRequestClose, componentToPass }){
   return (
-  <Modal
-    isOpen={isOpen}
-    onRequestClose={onRequestClose}
-    contentLabel="Modal"
-    className={{
-      base: "modal-base",
-      afterOpen: "modal-base_after-open",
-      beforeClose: "modal-base_before-close",
-    }}
-    overlayClassName={{
-      base: "overlay-base",
-      afterOpen: "overlay-base_after-open",
-      beforeClose: "overlay-base_before-close",
-    }}
-    shouldCloseOnOverlayClick={false}
-    closeTimeoutMS={300}
-    style={customStyles}
-  ><div><div>
-    <button
-      className="float-right close-button"
-      style={{
-        border: "none"
+    <Modal
+      isOpen={isOpen}
+      appElement={document.getElementById("root")}
+      onRequestClose={onRequestClose}
+      contentLabel="Modal"
+      className={{
+        base: `${isDarkMode ? "modal-base-dark-mode" : "modal-base"}`,
+        afterOpen: "modal-base_after-open",
+        beforeClose: "modal-base_before-close",
       }}
-      onClick={onRequestClose}
+      overlayClassName={{
+        base: "overlay-base",
+        afterOpen: "overlay-base_after-open",
+        beforeClose: "overlay-base_before-close",
+      }}
+      shouldCloseOnOverlayClick={true}
+      closeTimeoutMS={200}
+      style={customStyles}
     >
-      x
-    </button>
-    </div>
-    {componentToPass}</div>
-  </Modal>)
-};
+      <div
+        className={`${
+          isDarkMode ? "dark-overlay-btn" : "overlay-btn"
+        } mt-1 mr-1 float-right centering`}
+        style={{ padding: "5px 5px" }}
+        onClick={onRequestClose}
+      >
+        <MdClose size="20px" />
+      </div>
+      <div>{componentToPass}</div>
+    </Modal>
+  );
+}

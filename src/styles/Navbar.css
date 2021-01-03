@@ -1,0 +1,21 @@
+.navbar-dark-mode {
+	background-color: #18181b;
+	color: #c3c3c3;
+}
+
+.navbar-light-mode {
+	background-color: #ffffff;
+	color: #1a1a1a;
+}
+
+.nav-item {
+	color: black !important;
+}
+
+.navbar-brand {
+	color: #772ce8;
+}
+
+.navbar-toggler-icon {
+	color: #000;
+}

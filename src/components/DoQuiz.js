@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import Question from "./Question";
 import CustomModal from "./Modal";
-import { FcProcess, FcMultipleInputs, FcAbout } from "react-icons/fc";
+import { FcMultipleInputs, FcAbout } from "react-icons/fc";
 import "../styles/DoQuiz.css";
 import { MdTimer } from "react-icons/md";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { LayoutContext } from "./NewLayout";
+import { FiCheckCircle } from "react-icons/fi";
 
 const question = [
   {
@@ -48,6 +50,7 @@ const question = [
 ];
 
 export default function DoQuiz() {
+  const { isDarkMode, width } = useContext(LayoutContext);
   const [isOpen, setIsOpen] = useState(false);
   function handleOpenModal() {
     setIsOpen(!isOpen);
@@ -63,7 +66,7 @@ export default function DoQuiz() {
             <div>
               <Link to="/u/classroom/detail/do-quiz/result">
                 <button className="button mr-4">
-                  <FcProcess size="18px" /> Yes
+                  <FiCheckCircle className="ok-icon" size="18px" /> Yes
                 </button>
               </Link>
               <button className="button" onClick={handleOpenModal}>
@@ -83,10 +86,15 @@ export default function DoQuiz() {
         onRequestClose={handleOpenModal}
         componentToPass={<Confirmation />}
       />
-      <h5 className="mt-4 mb-4">Classroom</h5>
+      {width <= 768 && <div style={{ height: "120px" }}></div>}
+      <h5 className="mb-4">
+        <b>Classroom</b>
+      </h5>
       <div
         className="mb-4"
         style={{
+          backgroundImage:
+            "linear-gradient(to right top, #4ccfa7, #3bcab3, #33c5bd, #36bfc4, #43b9c8, #29b3d0, #09add7, #00a6dd, #009bed, #008efa, #007cff, #4e65ff)",
           backgroundColor: "#772CE8",
           borderRadius: "5px",
           height: "200px",
@@ -122,13 +130,85 @@ export default function DoQuiz() {
         </div>
       </div>
       <div className="row">
-        <div className="col-sm-8 col-sm-push-4">
-          <div>
-            <h5 className="mt-4 mb-4">Quiz</h5>
+        <div className="col-md-4 order-md-2">
+          <div
+            className={`${
+              width <= 768
+                ? `fixed-top fixed-top-2 row ${
+                    isDarkMode ? "bg-darks" : "bg-white"
+                  }`
+                : "sticky-top sticky-offset"
+            } p-4`}
+          >
+            <div className={`${width <= 768 ? "col" : null}`}>
+              <h5 className="mb-2">Detail</h5>
+              <div className="mb-2">
+                <MdTimer size="20px" /> 19:59
+              </div>
+              <div>Number of Questions: 4</div>
+            </div>
             <div
-              className="mt-4 mb-4 p-4"
+              className={`${width <= 768 ? "col centering" : "centering pt-4"}`}
+            >
+              <div
+                style={
+                  width <= 768
+                    ? {
+                        width: "60px",
+                        height: "60px",
+                        position: "relative",
+                        zIndex: 0,
+                      }
+                    : {
+                        width: "100px",
+                        height: "100px",
+                        position: "relative",
+                        zIndex: 0,
+                      }
+                }
+              >
+                <CircularProgressbar
+                  value={percentage}
+                  text={`${percentage}%`}
+                  styles={buildStyles({
+                    // Rotation of path and trail, in number of turns (0-1)
+                    rotation: 0.25,
+
+                    // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
+                    strokeLinecap: "butt",
+
+                    // Text size
+                    textSize: "16px",
+
+                    // How long animation takes to go from one percentage to another, in seconds
+                    pathTransitionDuration: 0.5,
+
+                    // Can specify path transition in more detail, or remove it entirely
+                    // pathTransition: 'none',
+
+                    // Colors
+                    pathColor: `rgba(62, 152, 199, ${percentage / 100})`,
+                    textColor: "#f88",
+                    trailColor: "#d6d6d6",
+                    backgroundColor: "#3e98c7",
+                  })}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-8 order-md-1">
+          <div>
+            <h5 className="mt-2 mb-4">
+              <b>Quiz</b>
+            </h5>
+            <div
+              className={
+                isDarkMode
+                  ? "mt-4 mb-4 p-4 bg-darks shadow-sm"
+                  : "mt-4 mb-4 p-4 bg-white shadow-sm"
+              }
               style={{
-                backgroundColor: "white",
                 width: "100%",
                 borderRadius: "5px",
               }}
@@ -148,46 +228,6 @@ export default function DoQuiz() {
               >
                 <FcMultipleInputs size="20px" /> Finish
               </button>
-            </div>
-          </div>
-        </div>
-        <div className="col-sm-4 col-sm-pull-8">
-          <div className="sticky-top sticky-offset p-4">
-            <h5 className="mb-4">Detail</h5>
-            <div className="mb-2">
-              <MdTimer size="20px" /> 19:59
-            </div>
-            <div>Number of Questions: 4</div>
-            <div className="mt-4 p-4 centering">
-              <div style={{ width:"200px", height:"200px", position:"relative", zIndex:0 }}>
-                <CircularProgressbar
-                  value={percentage}
-                  text={`${percentage}%`}
-                    styles={buildStyles({
-    // Rotation of path and trail, in number of turns (0-1)
-    rotation: 0.25,
-
-    // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
-    strokeLinecap: 'butt',
-
-    // Text size
-    textSize: '16px',
-
-    // How long animation takes to go from one percentage to another, in seconds
-    pathTransitionDuration: 0.5,
-
-    // Can specify path transition in more detail, or remove it entirely
-    // pathTransition: 'none',
-
-    // Colors
-    pathColor: `rgba(62, 152, 199, ${percentage / 100})`,
-    textColor: '#f88',
-    trailColor: '#d6d6d6',
-    backgroundColor: '#3e98c7',
-  })}
-                />
-                ;
-              </div>
             </div>
           </div>
         </div>
