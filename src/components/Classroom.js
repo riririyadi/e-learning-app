@@ -1,13 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
 import { IoIosLogIn } from "react-icons/io";
 import { RiSettingsLine } from "react-icons/ri";
 import { BsThreeDots, BsPlusCircle, BsTrash } from "react-icons/bs";
-import { BiRightArrowAlt } from "react-icons/bi";
+import { BiRightArrowAlt, BiPencil } from "react-icons/bi";
 import { LayoutContext } from "./NewLayout";
 import "../styles/Classroom.css";
 import ReactTooltip from "react-tooltip";
+import CustomModal from "./Modal"
 
 const classroomData = [
   { id: 1, subject: "PPSI", className: "4KA21" },
@@ -37,28 +38,6 @@ const classroomData = [
   { id: 13, subject: "Sistem Terdistribusi", className: "4KA21" },
 ];
 
-// const colorPalette = [
-//   "#007AFF",
-//   "#34C759",
-//   "#5856D6",
-//   "#FF9500",
-//   "#FF2D55",
-//   "#AF52DE",
-//   "#FF3B30",
-//   "#5AC8FA",
-//   "#FFCC00",
-// ];
-// const colorPaletteDarkMode = [
-//   "#0A84FF",
-//   "#30D158",
-//   "#5E5CE6",
-//   "#FF9F0A",
-//   "#FF375F",
-//   "#BF5AF2",
-//   "#FF453A",
-//   "#64D2FF",
-//   "#FFD60A",
-// ];
 
 const linearGradient = [
   "to right top, #4ccfa7, #3bcab3, #33c5bd, #36bfc4, #43b9c8, #29b3d0, #09add7, #00a6dd, #009bed, #008efa, #007cff, #4e65ff",
@@ -78,36 +57,55 @@ const linearGradients = Array.from({ length: 3 }).fill(linearGradient).flat();
 export default function Classroom() {
   const { isDarkMode } = useContext(LayoutContext);
 
+   const [isOpen, setIsOpen] = useState(false);
+  function handleOpenModal() {
+    setIsOpen(!isOpen);
+  }
+  const Confirmation = () => {
+    return (
+      <div className="p-4">
+        <div style={{ fontSize: "14px" }}>
+          <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
+          <br />
+          <div className="centering">
+            <div>
+              
+                <button className="button mr-4" onClick={handleOpenModal}>
+                 Yes
+                </button>
+              <button className="button" onClick={handleOpenModal}>
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
   return (
     <>
-      <div className="mb-4 d-flex">
-        <div>
+      <div className="mb-4 d-flex bd-highlight">
+        <div className="bd-highlight">
           <h5>
-            <b>
-              Classroom{" "}
-              <span
-                className="ml-4"
-                data-for="add-classroom"
-                data-tip="Create a new classroom"
-              >
-                <Link
-                  to="/u/classroom/create-new-one"
-                  style={
-                    isDarkMode ? { color: "#F5F5F7" } : { color: "#000000" }
-                  }
-                >
-                  <BsPlusCircle size={18} />
-                  <ReactTooltip
-                    id="add-classroom"
-                    place="right"
-                    type="dark"
-                    effect="solid"
-                    offset={{ right: 10 }}
-                  />
-                </Link>
-              </span>
-            </b>
+            <b>Classroom</b>
           </h5>
+        </div>
+        <div className="ml-4 bd-highlight" style={{ fontSize: "15px" }}>
+          <Link
+            to="/u/classroom/create-new-one"
+            style={isDarkMode ? { color: "#F5F5F7" } : { color: "#000000" }}
+          >
+            <span data-tip="Create a new classroom" data-for="create-classroom">
+              <ReactTooltip
+                id="create-classroom"
+                place="right"
+                type="dark"
+                effect="solid"
+                offset={{ right: 10 }}
+              />
+              <AiOutlinePlusCircle size="20px" />
+            </span>
+          </Link>
         </div>
       </div>
       <div className="row">
@@ -190,18 +188,28 @@ export default function Classroom() {
                             : "dropdown-menu-light"
                         } p-2 mt-2 mb-2`}
                       >
+                          <Link
+                            to="/u/classroom/edit"
+                            style={
+                              isDarkMode
+                                ? { color: "#F5F5F7" }
+                                : { color: "#000000" }
+                            }
+                          >
                         <div
                           className={`dropdown-item rounded ${
-                            isDarkMode ? "dark-mode" : "light-mode"
+                            isDarkMode ? "dark-mode" : "light"
                           } pl-2`}
                           style={
-                            isDarkMode
-                              ? {
-                                  cursor: "pointer",
-                                }
-                              : { color: "black", cursor: "pointer" }
+                         isDarkMode
+                        ? { cursor: "pointer",  color: "#F5F5F7" }                          
+                        : { cursor: "pointer", color: "#000000"  }
                           }
                         >
+                            <BiPencil />
+                            <span className="ml-2">Edit</span>
+                        </div>
+                          </Link>
                           <Link
                             to="#"
                             style={
@@ -210,35 +218,21 @@ export default function Classroom() {
                                 : { color: "#000000" }
                             }
                           >
-                            <RiSettingsLine />
-                            <span className="ml-2">Edit</span>
-                          </Link>
-                        </div>
                         <div
                           className={`dropdown-item rounded  ${
-                            isDarkMode ? "dark-mode" : "light-mode"
+                            isDarkMode ? "dark-mode" : "light"
                           } pl-2`}
                           style={
-                            isDarkMode
-                              ? {
-                                  cursor: "pointer",
-                                }
-                              : { cursor: "pointer" }
+                             isDarkMode
+                        ? { cursor: "pointer",  color: "#F5F5F7" }                          
+                        : { cursor: "pointer", color: "#000000"  }
                           }
-                          onClick={(e) => alert("oh hi")}
+                          onClick={handleOpenModal}
                         >
-                          <Link
-                            to="#"
-                            style={
-                              isDarkMode
-                                ? { color: "#F5F5F7" }
-                                : { color: "#000000" }
-                            }
-                          >
                             <BsTrash />
                             <span className="ml-2">Delete</span>
-                          </Link>
                         </div>
+                          </Link>
                       </div>
                     </div>
                   </div>
@@ -248,6 +242,11 @@ export default function Classroom() {
           </div>
         ))}
       </div>
+       <CustomModal
+        isOpen={isOpen}
+        onRequestClose={handleOpenModal}
+        componentToPass={<Confirmation />}
+      />
     </>
   );
 }

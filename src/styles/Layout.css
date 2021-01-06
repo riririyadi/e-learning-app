@@ -316,7 +316,7 @@ body {
 }
 
 .dropdown-menu-light {
-  background-color: #fbfbfb;
+  background-color: #fffff;
   font-size: 14px;
 }
 .dropdown-menu .dark-mode:hover {
@@ -324,7 +324,7 @@ body {
   background-color: #1a1a1a !important;
 }
 
-.dropdown-menu .light-mode:hover {
+.dropdown-menu .light:hover {
   background-image: none;
   background-color: #e1e1e1 !important;
 }

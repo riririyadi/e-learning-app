@@ -22,6 +22,7 @@ export default function CustomModal({
   isOpen,
   onRequestClose,
   componentToPass,
+  overlayStack
 }) {
   const { isDarkMode } = useContext(LayoutContext);
 
@@ -37,7 +38,7 @@ export default function CustomModal({
         beforeClose: "modal-base_before-close",
       }}
       overlayClassName={{
-        base: "overlay-base",
+        base: `${overlayStack ?"overlay-base-2":"overlay-base"}`,
         afterOpen: "overlay-base_after-open",
         beforeClose: "overlay-base_before-close",
       }}

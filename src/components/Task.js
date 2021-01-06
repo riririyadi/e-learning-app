@@ -4,12 +4,39 @@ import { BsFunnel, BsTrash, BsThreeDots } from "react-icons/bs";
 import { BiPencil } from "react-icons/bi";
 import { RiSettingsLine } from "react-icons/ri";
 import { LayoutContext } from "./NewLayout";
-
+import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
+import ReactTooltip from "react-tooltip";
+import CustomModal from "./Modal";
 import "../styles/Task.css";
 
 export default function Task() {
   const { isDarkMode } = useContext(LayoutContext);
   const [selectedRow, setSelectedRow] = useState(true);
+   const [isOpen, setIsOpen] = useState(false);
+  function handleOpenModal() {
+    setIsOpen(!isOpen);
+  }
+  const Confirmation = () => {
+    return (
+      <div className="p-4">
+        <div style={{ fontSize: "14px" }}>
+          <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
+          <br />
+          <div className="centering">
+            <div>
+              
+                <button className="button mr-4" onClick={handleOpenModal}>
+                 Yes
+                </button>
+              <button className="button" onClick={handleOpenModal}>
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
   const taskData = [
     {
       task_name: "Tugas Analisa Sistem 1",
@@ -50,21 +77,44 @@ export default function Task() {
 
   return (
     <>
-      <h5 className="mb-4">
-        <b>Task</b>
-      </h5>
-      <div className="mb-2">
-        <span className="mr-2">
-          <BsFunnel size="20px" />
-        </span>
-        <input
-          className={`ml-2  
-            ${isDarkMode ? "input-field-dark-mode" : "input-field"}
-          `}
-          placeholder="Search Task"
-          type="text"
-          style={{ width: "300px" }}
-        />
+      <div className="mb-4 d-flex bd-highlight">
+        <div className="bd-highlight">
+          <h5>
+            <b>Task</b>
+          </h5>
+        </div>
+        <div className="ml-4 bd-highlight" style={{ fontSize: "15px" }}>
+          <Link
+            to="/u/task/create-new-task"
+            style={isDarkMode ? { color: "#F5F5F7" } : { color: "#000000" }}
+          >
+            <span data-tip="Create a new task" data-for="create-task">
+              <ReactTooltip
+                id="create-task"
+                place="right"
+                type="dark"
+                effect="solid"
+                offset={{ right: 10 }}
+              />
+              <AiOutlinePlusCircle size="20px" />
+            </span>
+          </Link>
+        </div>
+      </div>
+      <div className="d-flex">
+        <div className="centering">
+          <h6>List of Tasks</h6>
+        </div>
+        <div className="centering mb-2 ml-auto" style={{ width: "200px" }}>
+          <BsFunnel size="24px" />
+          <input
+            className={
+              isDarkMode ? "ml-4 input-field-dark-mode" : "ml-4 input-field"
+            }
+            placeholder="Search"
+            type="text"
+          />
+        </div>
       </div>
       <table className="table table-borderless table-responsive-sm">
         <thead>
@@ -135,9 +185,17 @@ export default function Task() {
                       isDarkMode ? "dropdown-menu-dark" : "dropdown-menu-light"
                     } p-2 mt-2 mb-2`}
                   >
+                      <Link
+                        to="/u/task/edit"
+                        style={
+                          isDarkMode
+                            ? { color: "#F5F5F7" }
+                            : { color: "#000000" }
+                        }
+                      >
                     <div
                       className={`dropdown-item rounded ${
-                        isDarkMode ? "dark-mode" : "light-mode"
+                        isDarkMode ? "dark-mode" : "light"
                       } pl-2`}
                       style={
                         isDarkMode
@@ -147,21 +205,13 @@ export default function Task() {
                           : { color: "black", cursor: "pointer" }
                       }
                     >
-                      <Link
-                        to="#"
-                        style={
-                          isDarkMode
-                            ? { color: "#F5F5F7" }
-                            : { color: "#000000" }
-                        }
-                      >
-                        <RiSettingsLine />
+                        <BiPencil />
                         <span className="ml-2">Edit</span>
-                      </Link>
                     </div>
+                      </Link>
                     <div
                       className={`dropdown-item rounded  ${
-                        isDarkMode ? "dark-mode" : "light-mode"
+                        isDarkMode ? "dark-mode" : "light"
                       } pl-2`}
                       style={
                         isDarkMode
@@ -170,19 +220,10 @@ export default function Task() {
                             }
                           : { cursor: "pointer" }
                       }
-                      onClick={(e) => alert("oh hi")}
+                      onClick={handleOpenModal}
                     >
-                      <Link
-                        to="#"
-                        style={
-                          isDarkMode
-                            ? { color: "#F5F5F7" }
-                            : { color: "#000000" }
-                        }
-                      >
                         <BsTrash />
                         <span className="ml-2">Delete</span>
-                      </Link>
                     </div>
                   </div>
                 </div>
@@ -191,6 +232,11 @@ export default function Task() {
           ))}
         </tbody>
       </table>
+       <CustomModal
+        isOpen={isOpen}
+        onRequestClose={handleOpenModal}
+        componentToPass={<Confirmation />}
+      />
     </>
   );
 }

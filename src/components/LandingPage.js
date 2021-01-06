@@ -117,8 +117,9 @@ function LandingPage() {
         </div>
       </animated.div>
       <div
-        className="footer d-flex flex-column mt-4"
+        className="footer d-flex flex-column"
         style={{
+          marginTop: "200px",
           paddingTop: "20px",
           height: "400px",
           backgroundColor: "black",

@@ -1,100 +1,14 @@
-import React, { useState, useContext } from "react";
+import React from "react";
+import { FcBinoculars, FcAbout } from "react-icons/fc";
 import { Link } from "react-router-dom";
-import Question from "./Question";
-import CustomModal from "./Modal";
-import { FcMultipleInputs, FcAbout } from "react-icons/fc";
-import "../styles/DoQuiz.css";
-import { MdTimer } from "react-icons/md";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
-import { LayoutContext } from "./NewLayout";
-import { FiCheckCircle } from "react-icons/fi";
 
-const question = [
-  {
-    questionText: "What is the capital of Indonesia?",
-    answerOptions: [
-      { answerText: "New York", isCorrect: false },
-      { answerText: "London", isCorrect: false },
-      { answerText: "Bangkok", isCorrect: false },
-      { answerText: "Jekardah", isCorrect: true },
-    ],
-  },
-  {
-    questionText: "What is the point of trying?",
-    answerOptions: [
-      { answerText: "To be good", isCorrect: true },
-      { answerText: "To be fair", isCorrect: false },
-      { answerText: "To be continued", isCorrect: false },
-      { answerText: "To be wrong", isCorrect: false },
-    ],
-  },
-  {
-    questionText: "Who is playing spiderman role?",
-    answerOptions: [
-      { answerText: "Toby Maguire", isCorrect: true },
-      { answerText: "Chris Hemsworth", isCorrect: false },
-      { answerText: "Robert Downey .Jr", isCorrect: false },
-      { answerText: "Channing Tatum", isCorrect: false },
-    ],
-  },
-  {
-    questionText: "Which one of the following cities is located in England?",
-    answerOptions: [
-      { answerText: "Dublin", isCorrect: false },
-      { answerText: "Wellington", isCorrect: false },
-      { answerText: "Cardiff", isCorrect: false },
-      { answerText: "Sheffield", isCorrect: true },
-    ],
-  },
-];
-
-export default function DoQuiz() {
-  const { isDarkMode, width } = useContext(LayoutContext);
-  const [isOpen, setIsOpen] = useState(false);
-  function handleOpenModal() {
-    setIsOpen(!isOpen);
-  }
-  const percentage = 66;
-  const Confirmation = () => {
-    return (
-      <div className="p-4">
-        <div style={{ fontSize: "14px" }}>
-          <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
-          <br />
-          <div className="centering">
-            <div>
-              <Link to="/u/classroom/detail/do-quiz/result">
-                <button className="button mr-4">
-                 Yes
-                </button>
-              </Link>
-              <button className="button" onClick={handleOpenModal}>
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
+export default function Result() {
   return (
-    <>
-      <CustomModal
-        isOpen={isOpen}
-        onRequestClose={handleOpenModal}
-        componentToPass={<Confirmation />}
-      />
-      {width <= 768 && <div style={{ height: "120px" }}></div>}
-      <h5 className="mb-4">
-        <b>Classroom</b>
-      </h5>
+    <div>
+      <h5 className="mb-4"><b>Classroom</b></h5>
       <div
         className="mb-4"
         style={{
-          backgroundImage:
-            "linear-gradient(to right top, #4ccfa7, #3bcab3, #33c5bd, #36bfc4, #43b9c8, #29b3d0, #09add7, #00a6dd, #009bed, #008efa, #007cff, #4e65ff)",
           backgroundColor: "#772CE8",
           borderRadius: "5px",
           height: "200px",
@@ -129,109 +43,44 @@ export default function DoQuiz() {
           </div>
         </div>
       </div>
-      <div className="row">
-        <div className="col-md-4 order-md-2">
-          <div
-            className={`${
-              width <= 768
-                ? `fixed-top fixed-top-2 row shadow-sm ${
-                    isDarkMode ? "bg-dark-nav" : "bg-white"
-                  }`
-                : "sticky-top sticky-offset"
-            } p-4`}
-          >
-            <div className={`${width <= 768 ? "col" : null}`}>
-              <h5 className="mb-2">Detail</h5>
-              <div className="mb-2">
-                <MdTimer size="20px" /> 19:59
-              </div>
-              <div>Number of Questions: 4</div>
-            </div>
-            <div
-              className={`${width <= 768 ? "col centering" : "centering pt-4"}`}
-            >
-              <div
-                style={
-                  width <= 768
-                    ? {
-                        width: "60px",
-                        height: "60px",
-                        position: "relative",
-                        zIndex: 0,
-                      }
-                    : {
-                        width: "100px",
-                        height: "100px",
-                        position: "relative",
-                        zIndex: 0,
-                      }
-                }
-              >
-                <CircularProgressbar
-                  value={percentage}
-                  text={`${percentage}%`}
-                  styles={buildStyles({
-                    // Rotation of path and trail, in number of turns (0-1)
-                    rotation: 0.25,
-
-                    // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
-                    strokeLinecap: "butt",
-
-                    // Text size
-                    textSize: "16px",
-
-                    // How long animation takes to go from one percentage to another, in seconds
-                    pathTransitionDuration: 0.5,
-
-                    // Can specify path transition in more detail, or remove it entirely
-                    // pathTransition: 'none',
-
-                    // Colors
-                    pathColor: `rgba(62, 152, 199, ${percentage / 100})`,
-                    textColor: "#f88",
-                    trailColor: "#d6d6d6",
-                    backgroundColor: "#3e98c7",
-                  })}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-8 order-md-1">
+      <h5 className="mt-4 mb-4"><b>Result</b></h5>
+      <div
+        className="mb-4"
+        style={{
+          backgroundColor: "#00D48C",
+          borderRadius: "5px",
+          height: "200px",
+          position: "relative",
+        }}
+      >
+        <div className="quiz-score p-4 d-flex align-items-start flex-column">
           <div>
-            <h5 className="mt-2 mb-4">
-              <b>Quiz</b>
-            </h5>
-            <div
-              className={
-                isDarkMode
-                  ? "mt-4 mb-4 p-4 bg-darks shadow-sm"
-                  : "mt-4 mb-4 p-4 bg-white shadow-sm"
-              }
-              style={{
-                width: "100%",
-                borderRadius: "5px",
-              }}
-            >
-              <h6 className="mb-2">Quiz 1 - Dasar Enkripsi</h6>
-              <p>
-                <span className="mr-2 mb-4">
-                  <FcAbout />
-                </span>{" "}
-                Kerjakan kuis dengan teliti
-              </p>
-              <Question question={question} />
-              <button
-                className="button"
-                style={{ borderRadius: "5px", padding: "5px 20px" }}
-                onClick={handleOpenModal}
+            {" "}
+            <h6>Your Score for Quiz/Task 1</h6>
+            <p style={{ fontSize: "20px", color: "black" }}>
+              <span
+                style={{
+                  color: "white",
+                  fontSize: "30px",
+                  backgroundColor: "#F0D06E",
+                  padding: "10px",
+                  borderRadius: "10px",
+                  marginRight: "10px",
+                }}
               >
-                <FcMultipleInputs size="20px" /> Finish
-              </button>
-            </div>
+                74
+              </span>
+              /100
+            </p>
+          </div>
+          <div className="mt-auto">
+            <Link to="#" className="dark-link">
+              <FcBinoculars size="20px" />{" "}
+              <span className="ml-2">Review the answers</span>
+            </Link>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

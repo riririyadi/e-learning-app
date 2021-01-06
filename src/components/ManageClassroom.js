@@ -3,9 +3,15 @@ import { Link } from "react-router-dom";
 import { FcAbout } from "react-icons/fc";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { HiTrash } from "react-icons/hi";
+import { BiPencil } from "react-icons/bi";
 import { FaUserCircle } from "react-icons/fa";
 import { RiSettingsLine } from "react-icons/ri";
-import { BsThreeDots, BsBoxArrowInUpRight, BsPlusCircle } from "react-icons/bs";
+import {
+  BsThreeDots,
+  BsBoxArrowInUpRight,
+  BsPlusCircle,
+  BsTrash,
+} from "react-icons/bs";
 import { LayoutContext } from "./NewLayout";
 import ReactTooltip from "react-tooltip";
 import CustomModal from "./Modal";
@@ -17,16 +23,9 @@ const bgColor = [
   "#B34ED4",
   "#F0D06E",
   "#00D48C",
-  "#772CE8",
-  "#FB8779",
-  "#B34ED4",
-  "#F0D06E",
-  "#00D48C",
-  "#772CE8",
-  "#FB8779",
-  "#B34ED4",
-  "#F0D06E",
 ];
+
+const bgColors = Array.from({ length: 5 }).fill(bgColor).flat();
 
 const lessonData = [
   {
@@ -159,9 +158,33 @@ const ClassroomParticipants = () => {
 export default function ManageClassroom() {
   const { isDarkMode } = useContext(LayoutContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
+
+  function handleOpenModal2() {
+    setIsOpen2(!isOpen2);
+  }
+  const Confirmation = () => {
+    return (
+      <div className="p-4">
+        <div style={{ fontSize: "14px" }}>
+          <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
+          <br />
+          <div className="centering">
+            <div>
+            
+                <button className="button mr-4"  onClick={handleOpenModal2}>Yes</button>
+              <button className="button" onClick={handleOpenModal2}>
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div>
@@ -370,7 +393,7 @@ export default function ManageClassroom() {
             <div
               style={{
                 width: "10px",
-                backgroundColor: `${bgColor[i]}`,
+                backgroundColor: `${bgColors[i]}`,
               }}
             ></div>
             <div
@@ -388,22 +411,14 @@ export default function ManageClassroom() {
                 </div>
                 <div className="dropdown ml-auto">
                   <button
-                    className={`centering ${
-                      isDarkMode ? "overlay-btn" : "dark-overlay-btn"
-                    }`}
-                    style={
-                      isDarkMode
-                        ? {
-                            border: "none",
-                            padding: "5px",
-                            color: "#f5f5f7",
-                          }
-                        : {
-                            border: "none",
-                            padding: "5px",
-                            color: "#000000",
-                          }
-                    }
+                    className={`${
+                      isDarkMode ? "dark-overlay-btn" : "overlay-btn"
+                    } centering`}
+                    style={{
+                      border: "none",
+                      borderRadius: "30px",
+                      padding: "5px",
+                    }}
                     type="button"
                     data-toggle="dropdown"
                     aria-haspopup="true"
@@ -419,38 +434,57 @@ export default function ManageClassroom() {
                       isDarkMode ? "dropdown-menu-dark" : "dropdown-menu-light"
                     } p-2 mt-2 mb-2`}
                   >
-                    <div
-                      className={`dropdown-item rounded ${
-                        isDarkMode ? "dark-mode" : "light-mode"
-                      } pl-2`}
+                    <Link
+                      to="/u/classroom/manage/edit-lesson"
                       style={
-                        isDarkMode
-                          ? { color: "#c3c3c3", cursor: "pointer" }
-                          : { color: "black", cursor: "pointer" }
+                        isDarkMode ? { color: "#F5F5F7" } : { color: "#000000" }
                       }
                     >
-                      <Link to="#">
-                        <RiSettingsLine />
+                      <div
+                        className={`dropdown-item rounded ${
+                          isDarkMode ? "dark-mode" : "light"
+                        } pl-2`}
+                        style={
+                          isDarkMode
+                            ? { cursor: "pointer", color: "#F5F5F7" }
+                            : { cursor: "pointer", color: "#000000" }
+                        }
+                      >
+                        <BiPencil />
                         <span className="ml-2">Edit</span>
-                      </Link>
-                    </div>
-                    <div
-                      className={`dropdown-item rounded ${
-                        isDarkMode ? "dark-mode" : "light-mode"
-                      } pl-2`}
+                      </div>
+                    </Link>
+                    <Link
+                      to="#"
                       style={
-                        isDarkMode
-                          ? { color: "#c3c3c3", cursor: "pointer" }
-                          : { color: "black", cursor: "pointer" }
+                        isDarkMode ? { color: "#F5F5F7" } : { color: "#000000" }
                       }
-                      onClick={(e) => alert("oh hi")}
                     >
-                      <HiTrash />
-                      <span className="ml-2">Delete</span>
-                    </div>
+                      <div
+                        className={`dropdown-item rounded  ${
+                          isDarkMode ? "dark-mode" : "light"
+                        } pl-2`}
+                        style={
+                          isDarkMode
+                            ? { cursor: "pointer", color: "#F5F5F7" }
+                            : { cursor: "pointer", color: "#000000" }
+                        }
+                        onClick={handleOpenModal2}
+                      >
+                        <BsTrash />
+                        <span className="ml-2">Delete</span>
+                      </div>
+                    </Link>
                   </div>
                 </div>
+                <CustomModal
+                isOpen={isOpen2}
+                onRequestClose={handleOpenModal2}
+                componentToPass={<Confirmation />}
+                overlayStack={true}
+              />
               </div>
+              
               <div className="mb-2">
                 <span className="mr-2">📙</span>
                 Materi {data.materi}
@@ -468,5 +502,6 @@ export default function ManageClassroom() {
         ))}
       </div>
     </div>
+
   );
 }

@@ -5,7 +5,7 @@ import CustomModal from "./Modal";
 import { FiCheckCircle } from "react-icons/fi";
 import { LayoutContext } from "./NewLayout";
 
-export default function CreateNewLesson() {
+export default function EditLesson() {
   const { isDarkMode } = useContext(LayoutContext);
   const [isOpen, setIsOpen] = useState(false);
   function handleOpenModal() {
@@ -21,7 +21,7 @@ export default function CreateNewLesson() {
             <div>
               <Link to="/u/classroom/manage">
                 <button className="button mr-4">
-                 Yes
+                Yes
                 </button>
               </Link>
               <button className="button" onClick={handleOpenModal}>
@@ -36,7 +36,7 @@ export default function CreateNewLesson() {
   return (
     <>
       <h5 className="mb-4">
-        <b>Create New Lesson</b>
+        <b>Edit Lesson</b>
       </h5>
       <div
         className={`${
@@ -109,7 +109,7 @@ export default function CreateNewLesson() {
           </div>
         </div>
         <button className="button mt-2" onClick={handleOpenModal}>
-          Create
+          Save
         </button>
       </div>
       <CustomModal

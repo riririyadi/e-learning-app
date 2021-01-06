@@ -13,16 +13,20 @@ export default function Grade() {
       <h5 className="mb-4">
         <b>Grade</b>
       </h5>
-      <div className="mb-2">
-        <BsFunnel size="20px" />
-        <input
-          className={`ml-2  
-            ${isDarkMode ? "input-field-dark-mode" : "input-field"}
-          `}
-          placeholder="Search for grade"
-          type="text"
-          style={{ width: "300px" }}
-        />
+      <div className="d-flex pt-2">
+        <div className="centering">
+          <h6>List of Classes</h6>
+        </div>
+        <div className="centering mb-2 ml-auto" style={{ width: "200px" }}>
+          <BsFunnel size="24px" />
+          <input
+            className={
+              isDarkMode ? "ml-4 input-field-dark-mode" : "ml-4 input-field"
+            }
+            placeholder="Search"
+            type="text"
+          />
+        </div>
       </div>
       <table className="table table-borderless table-responsive-sm">
         <thead>
@@ -75,9 +79,17 @@ export default function Grade() {
                       isDarkMode ? "dropdown-menu-dark" : "dropdown-menu-light"
                     } p-2 mt-2 mb-2`}
                   >
+                      <Link
+                        to="/u/grade/view"
+                        style={
+                          isDarkMode
+                            ? { color: "#F5F5F7" }
+                            : { color: "#000000" }
+                        }
+                      >
                     <div
                       className={`dropdown-item rounded ${
-                        isDarkMode ? "dark-mode" : "light-mode"
+                        isDarkMode ? "dark-mode" : "light"
                       } pl-2`}
                       style={
                         isDarkMode
@@ -87,18 +99,10 @@ export default function Grade() {
                           : { color: "black", cursor: "pointer" }
                       }
                     >
-                      <Link
-                        to="#"
-                        style={
-                          isDarkMode
-                            ? { color: "#F5F5F7" }
-                            : { color: "#000000" }
-                        }
-                      >
                         <CgViewList />
                         <span className="ml-2">View</span>
-                      </Link>
                     </div>
+                      </Link>
                   </div>
                 </div>
               </td>

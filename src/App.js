@@ -7,9 +7,21 @@ import LandingPage from "./components/LandingPage";
 import NotMatch from "./components/NotMatch";
 import About from "./components/About";
 import Help from "./components/Help";
+import ForgotPassword from "./components/ForgotPassword";
 import "./App.css";
 
+const LoginRoute = () => {
+  return(
+    <Switch>
+        <Route exact path="/login" component={Login} />
+        <Route path="/login/forgot-password" component={ForgotPassword} />
+    
+      </Switch>
+    )
+}
+
 function App() {
+
   return (
     <div className="App">
       <Switch>
@@ -17,7 +29,7 @@ function App() {
         <Route path="/register" component={SignUp} />
         <Route path="/about" component={About} />
         <Route path="/help" component={Help} />
-        <Route path="/login" component={Login} />
+        <Route path="/login"><LoginRoute/></Route>
         <Route path="/u" component={NewLayout} />
         <Route path="*" component={NotMatch} />
       </Switch>

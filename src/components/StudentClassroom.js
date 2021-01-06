@@ -173,7 +173,7 @@ export default function StudentClassroom() {
                   </h6>
                 </div>
                 <div
-                  className="card-footer mt-auto d-flex bg-transparent pl-2 pr-4"
+                  className="card-footer mt-auto d-flex bg-transparent pl-2 pr-2"
                   style={{ border: "none", width: "100%" }}
                 >
                   <div>

@@ -46,13 +46,14 @@ function Login() {
               {passwordVisibility ? <BsEye /> : <BsEyeSlash />}
             </div>
           </div>
-          <div className="d-flex justify-content-between">
-            <div>
-              <input type="checkbox" /> <small>Remember me</small>
-            </div>
+          <div className="d-flex justify-content-end">
+         
+            <Link to="/login/forgot-password">
+              
             <div style={{ cursor: "pointer" }}>
-              <small onClick={() => {}}>Forgot Password?</small>
+              <small>Forgot Password?</small>
             </div>
+            </Link>
           </div>
           <br />
           <Link to="/u">

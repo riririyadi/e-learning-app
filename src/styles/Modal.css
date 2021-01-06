@@ -1,5 +1,5 @@
 .modal-base {
-  z-index: 100001 !important;
+  z-index: 100010 !important;
   min-width: 300px;
   max-width: 90%;
   background-color: #fff;
@@ -7,7 +7,7 @@
   transition: all 0.2s ease-in-out;
   border-radius: 5px;
   -webkit-font-smoothing: antialiased;
-  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
   max-height: 80%;
   transform: scale(0.8);
   -webkit-filter: blur(0.000001px);
@@ -18,7 +18,7 @@
 }
 
 .modal-base-dark-mode {
-  z-index: 100001 !important;
+  z-index: 100010 !important;
   min-width: 300px;
   max-width: 90%;
   max-height: 80%;
@@ -28,9 +28,9 @@
   transition: all 0.2s ease-in-out;
   -webkit-filter: blur(0.000001px);
   border-radius: 5px;
-  -webkit-box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
   -webkit-font-smoothing: subpixel-antialiased;
 }
 
@@ -53,8 +53,21 @@
   background-color: rgba(0, 0, 0, 0.8);
   opacity: 0;
   transition: all 0.3s ease-out;
+  z-index: 100001 !important;
+}
+
+.overlay-base-2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: all 0.3s ease-out;
   z-index: 100000 !important;
 }
+
 
 .overlay-base_after-open {
   opacity: 1;

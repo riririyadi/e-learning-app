@@ -30,7 +30,7 @@ export default function CreateNewClassroom() {
               <span className="mr-2">
                 <BsPlusCircle color="#00d48c" />
               </span>{" "}
-              PPSI - 4KA21
+              Sistem Teknologi Informatika dan Keamanan Jaringan - 4KA21
             </h6>
           </div>
           <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
@@ -38,9 +38,6 @@ export default function CreateNewClassroom() {
             <div>
               <Link to="/u/classroom">
                 <button className="button mr-2">
-                  <span className="ok-icon mr-2">
-                    <FiCheckCircle size={18} />
-                  </span>
                   Yes
                 </button>
               </Link>
@@ -124,9 +121,7 @@ export default function CreateNewClassroom() {
           onClick={handleOpenModal}
           style={{ padding: "5px 30px", borderRadius: "30px" }}
         >
-          <div className="centering">
-            <FiPlus size={18} /> <span className="ml-2">Create</span>
-          </div>
+         Create
         </button>
       </div>
       <CustomModal

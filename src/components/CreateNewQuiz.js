@@ -6,12 +6,12 @@ import { LayoutContext } from "./NewLayout";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/CreateNewTask.css";
-import { AddTaskQuestion } from "./AddQuestion";
+import { AddQuizQuestion } from "./AddQuestion";
 
-export const CreateTaskContext = createContext();
 
-export default function CreateNewTask() {
-  const [startDate, setStartDate] = useState(new Date());
+export const CreateQuizContext = createContext();
+export default function CreateNewQuiz() {
+	const [startDate, setStartDate] = useState(new Date());
   const [questions, setQuestion] = useState([]);
   const { isDarkMode } = useContext(LayoutContext);
   const [questionType, setQuestionType] = useState("");
@@ -19,28 +19,28 @@ export default function CreateNewTask() {
   return (
     <>
       <h5 className="mb-4">
-        <b>Create New Task</b>
+        <b>Create New Quiz</b>
       </h5>
       <div
         className={`${isDarkMode ? "bg-darks" : "bg-white"} p-4 mt-4 mb-4`}
         style={{ borderRadius: "10px" }}
       >
         <div className="row mb-2">
-          <div className="col-md-4">Task Name:</div>
+          <div className="col-md-4">Quiz Name:</div>
           <div className="col-md-8">
             <input
               className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-              placeholder="Enter a task name"
+              placeholder="Enter a quiz name"
               style={{ width: "100%" }}
             />
           </div>
         </div>
         <div className="row mb-2">
-          <div className="col-md-4">Task Description:</div>
+          <div className="col-md-4">Quiz Description:</div>
           <div className="col-md-8">
             <textarea
               className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-              placeholder="Enter task description"
+              placeholder="Enter quiz description"
               style={{ width: "100%", height: "150px" }}
             />
           </div>
@@ -148,11 +148,8 @@ export default function CreateNewTask() {
             <label className="ml-2">True or False</label>
           </div>
         </div>
-        <CreateTaskContext.Provider value={{ questions, setQuestion }}>
-          <AddTaskQuestion questionType={questionType} />
-        </CreateTaskContext.Provider>
-        <button className="button">Create</button>
-      </div>
-    </>
-  );
-}
+        <CreateQuizContext.Provider value={{ questions, setQuestion }}>
+          <AddQuizQuestion questionType={questionType} />
+        </CreateQuizContext.Provider>
+        <button className="button">Create</button></div></>
+)}

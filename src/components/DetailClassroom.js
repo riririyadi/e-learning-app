@@ -7,10 +7,14 @@ import { LayoutContext } from "./NewLayout";
 export default function DetailClassroom() {
   const { isDarkMode } = useContext(LayoutContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
 
+  function handleOpenModal2() {
+    setIsOpen2(!isOpen2);
+  }
   const bgColor = [
     "#17A2B8",
     "#772CE8",
@@ -18,17 +22,10 @@ export default function DetailClassroom() {
     "#B34ED4",
     "#F0D06E",
     "#00D48C",
-    "#772CE8",
-    "#FB8779",
-    "#B34ED4",
-    "#F0D06E",
-    "#00D48C",
-    "#772CE8",
-    "#FB8779",
-    "#B34ED4",
-    "#F0D06E",
+    
   ];
 
+const bgColors = Array.from({ length: 5 }).fill(bgColor).flat();
   const lessonData = [
     {
       lessonName: "Dasar Enkripsi",
@@ -62,7 +59,7 @@ export default function DetailClassroom() {
     },
   ];
 
-  const Detail = () => {
+  const QuizDetail = () => {
     return (
       <div className="p-4" style={{ fontSize: "14px" }}>
         <div>
@@ -107,6 +104,66 @@ export default function DetailClassroom() {
           <div className="mt-4 centering">
             <div>
               <Link to="/u/classroom/detail/do-quiz">
+                <button className="button mr-4">
+                  ▶️
+                  <span className="ml-1 ">Start</span>
+                </button>
+              </Link>
+              <button className="button" onClick={handleOpenModal}>
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const TaskDetail = () => {
+    return (
+      <div className="p-4" style={{ fontSize: "14px" }}>
+        <div>
+          <h6 className="mb-4 text-center">
+            <b>Task 1 - Dasar Enkripsi</b>
+          </h6>
+          <div className="mb-2">
+            <span>
+              <b>Due Date</b>
+            </span>
+            : 20 Dec 2020 - 10:00 PM
+          </div>
+          <div className="mb-2">
+            <span>
+              <b>Time Limits</b>
+            </span>
+            : 30 minutes
+          </div>
+          <div className="mb-2">
+            <span>
+              <b>Number of Questions</b>
+            </span>
+            : 15
+          </div>
+          <div className="mb-2">
+            <span>
+              <b>Attempts Allowed</b>
+            </span>
+            : 1
+          </div>
+          {/* <div className="text-center mt-4" style={{color:"red", backgroundColor:"pink"}}>The Quiz is not open yet</div> */}
+          <div
+            className="text-center mt-4 p-2"
+            style={{
+              color: "green",
+              backgroundColor: "lightgreen",
+              borderRadius: "5px",
+            }}
+          >
+            The Task is open
+          </div>
+          <div className="mt-4 centering">
+            <div>
+              <Link to="/u/classroom/detail/do-task">
                 <button className="button mr-4">
                   ▶️
                   <span className="ml-1 ">Start</span>
@@ -171,7 +228,7 @@ export default function DetailClassroom() {
             <div
               style={{
                 width: "10px",
-                backgroundColor: `${bgColor[i]}`,
+                backgroundColor: `${bgColors[i]}`,
               }}
             ></div>
             <div
@@ -185,11 +242,11 @@ export default function DetailClassroom() {
               <div className="mb-2">
                 Lesson {i + 1} - {data.lessonName}
               </div>
-              <div className="mb-2">
+              <div className="mb-2" style={{cursor:"pointer"}}>
                 <span className="mr-2">📙</span>
                 Materi {data.materi}
               </div>
-              <div className="mb-2">
+              <div className="mb-2"  onClick={handleOpenModal2} style={{cursor:"pointer"}}>
                 <span className="mr-2">📑</span>
                 Tugas {data.tugas}
               </div>
@@ -208,8 +265,15 @@ export default function DetailClassroom() {
       <CustomModal
         isOpen={isOpen}
         onRequestClose={handleOpenModal}
-        componentToPass={<Detail />}
+        componentToPass={<QuizDetail />}
       />
+       <CustomModal
+        isOpen={isOpen2}
+        onRequestClose={handleOpenModal2}
+        componentToPass={<TaskDetail />}
+        overlayStack={true}
+      />
+
     </div>
   );
 }
