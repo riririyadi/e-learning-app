@@ -3,6 +3,7 @@
 }
 .sticky-offset {
 	top: 85px;
+	z-index: 0;
 }
 .fixed-top-2 {
 	margin-top: 50px;
@@ -16,4 +17,10 @@
 
 .bg-dark-nav{
 	background-color: #18181B
+}
+
+
+.ck-content{
+    color:black;
+    background: black;
 }

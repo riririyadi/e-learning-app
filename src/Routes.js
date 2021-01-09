@@ -12,6 +12,7 @@ import StudentClassroom from "./components/StudentClassroom";
 import DetailClassroom from "./components/DetailClassroom";
 import Quiz from "./components/Quiz";
 import EditQuiz from "./components/EditQuiz";
+import EditProfile from "./components/EditProfile";
 import StudentQuiz from "./components/StudentQuiz";
 import NotMatch from "./components/NotMatch";
 import Result from "./components/Result";
@@ -80,7 +81,7 @@ export const StudentRoutes = () => {
       <Route path="/u/quiz" component={StudentQuiz} />
       <Route path="/u/task" component={StudentTask} />
       <Route path="/u/grade" component={Grade} />
-      <Route path="/u/profile" component={Profile} />
+      <Route path="/u/profile" ><ProfileRoute/></Route>
       <Route path="/u/*" component={NotMatch} />
     </Switch>
   );
@@ -156,6 +157,16 @@ const TeacherGradeRoute = () => {
   );
 };
 
+const ProfileRoute = () => {
+  return (
+    <Switch>
+      <Route exact path="/u/profile/" component={Profile} />
+      <Route path="/u/profile/edit" component={EditProfile} />
+    </Switch>
+  );
+};
+
+
 
 export const TeacherRoutes = () => {
   return (
@@ -172,7 +183,7 @@ export const TeacherRoutes = () => {
         <TeacherTaskRoute />
       </Route>
       <Route path="/u/grade" ><TeacherGradeRoute /></Route>
-      <Route path="/u/profile" component={Profile} />
+      <Route path="/u/profile"><ProfileRoute /></Route>
       <Route path="/u/*" component={NotMatch} />
     </Switch>
   );

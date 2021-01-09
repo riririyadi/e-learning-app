@@ -47,7 +47,7 @@ export default function CreateNewQuiz() {
         </div>
 
         <div className="row mb-2">
-          <div className="col-md-4">Due Date: </div>
+          <div className="col-md-4" >Due Date: </div>
           <div className="col-md-8">
             <div
               className={isDarkMode ? "datepickerWrap-dark" : `datepickerWrap`}
@@ -101,7 +101,7 @@ export default function CreateNewQuiz() {
             <br />
             {questions.length > 0 && (
               <i>
-                To enable the functionality, please delete all the created
+                To enable functionality, please delete all the created
                 questions
               </i>
             )}{" "}

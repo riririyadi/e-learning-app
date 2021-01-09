@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Question from "./Question";
 import CustomModal from "./Modal";
@@ -10,8 +10,8 @@ import "react-circular-progressbar/dist/styles.css";
 import { LayoutContext } from "./NewLayout";
 import { FiCheckCircle } from "react-icons/fi";
 
-const question = [
-  {
+const questions = [
+  {id:1,
     questionText: "What is the capital of Indonesia?",
     answerOptions: [
       { answerText: "New York", isCorrect: false },
@@ -20,7 +20,7 @@ const question = [
       { answerText: "Jekardah", isCorrect: true },
     ],
   },
-  {
+  {id:2,
     questionText: "What is the point of trying?",
     answerOptions: [
       { answerText: "To be good", isCorrect: true },
@@ -29,7 +29,7 @@ const question = [
       { answerText: "To be wrong", isCorrect: false },
     ],
   },
-  {
+  {id:3,
     questionText: "Who is playing spiderman role?",
     answerOptions: [
       { answerText: "Toby Maguire", isCorrect: true },
@@ -38,7 +38,7 @@ const question = [
       { answerText: "Channing Tatum", isCorrect: false },
     ],
   },
-  {
+  {id:4,
     questionText: "Which one of the following cities is located in England?",
     answerOptions: [
       { answerText: "Dublin", isCorrect: false },
@@ -56,6 +56,29 @@ export default function DoQuiz() {
     setIsOpen(!isOpen);
   }
   const percentage = 66;
+
+    const [ minutes, setMinutes ] = useState(2);
+    const [seconds, setSeconds ] =  useState(0);
+    useEffect(()=>{
+    let myInterval = setInterval(() => {
+            if (seconds > 0) {
+                setSeconds(seconds - 1);
+            }
+            if (seconds === 0) {
+                if (minutes === 0) {
+                    clearInterval(myInterval)
+                    alert("Time is up")
+                } else {
+                    setMinutes(minutes - 1);
+                    setSeconds(59);
+                }
+            } 
+        }, 1000)
+        return ()=> {
+            clearInterval(myInterval);
+          };
+    });
+
   const Confirmation = () => {
     return (
       <div className="p-4">
@@ -143,7 +166,12 @@ export default function DoQuiz() {
             <div className={`${width <= 768 ? "col" : null}`}>
               <h5 className="mb-2">Detail</h5>
               <div className="mb-2">
-                <MdTimer size="20px" /> 19:59
+                <MdTimer size="20px" />  
+        { minutes === 0 && seconds === 0
+            ? null
+            :  <span className="ml-2">{minutes}:{seconds < 10 ?  `0${seconds}` : seconds}</span>
+        }
+        
               </div>
               <div>Number of Questions: 4</div>
             </div>
@@ -220,10 +248,10 @@ export default function DoQuiz() {
                 </span>{" "}
                 Kerjakan kuis dengan teliti
               </p>
-              <Question question={question} />
+              <Question questions={questions} />
               <button
                 className="button"
-                style={{ borderRadius: "5px", padding: "5px 20px" }}
+            
                 onClick={handleOpenModal}
               >
                 <FcMultipleInputs size="20px" /> Finish

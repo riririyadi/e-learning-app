@@ -135,13 +135,10 @@ function LandingPage() {
               <div className="mb-3">About Us</div>
               <div className="mb-3">Help</div>
               <div className="mb-3">Privacy and Terms</div>
-              <div className="mb-3">Yes, We use cookies</div>
+              <div className="mb-4">Yes, we use cookies</div>
+              <div style={{marginTop:"50px"}}><b>All rights reserved &#169;2021</b></div>
             </div>
           </div>
-        </div>
-
-        <div className="mt-auto p-4 text-center">
-          All right reserved &#169;2021
         </div>
       </div>
     </>

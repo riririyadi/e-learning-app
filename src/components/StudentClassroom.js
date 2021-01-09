@@ -7,28 +7,7 @@ import { LayoutContext } from "./NewLayout";
 
 import ReactTooltip from "react-tooltip";
 
-const colorPalette = [
-  "#007AFF",
-  "#34C759",
-  "#5856D6",
-  "#FF9500",
-  "#FF2D55",
-  "#AF52DE",
-  "#FF3B30",
-  "#5AC8FA",
-  "#FFCC00",
-];
-const colorPaletteDarkMode = [
-  "#0A84FF",
-  "#30D158",
-  "#5E5CE6",
-  "#FF9F0A",
-  "#FF375F",
-  "#BF5AF2",
-  "#FF453A",
-  "#64D2FF",
-  "#FFD60A",
-];
+
 
 const NewClassSearch = () => {
   const { isDarkMode } = useContext(LayoutContext);
@@ -75,26 +54,26 @@ export default function StudentClassroom() {
       class: "4KA21",
       teacher: "Abdullah Abbas Defaye",
     },
-    {
+    {id: 4,
       subject: "Bahasa Inggris Bisnis",
       class: "4KA21",
       teacher: "Alexander Long",
     },
     {
-      id: 4,
+      id: 5,
       subject: "Audit Sistem Informasi",
       class: "4KA21",
       teacher: "Liam Patrick",
     },
-    { id: 5, subject: "Programming", class: "4KA21", teacher: "Cassidy Love" },
+    { id: 6, subject: "Programming", class: "4KA21", teacher: "Cassidy Love" },
     {
-      id: 6,
+      id: 7,
       subject: "Analisa Kinerja Sistem",
       class: "4KA21",
       teacher: "Sean Maxim",
     },
     {
-      id: 7,
+      id: 8,
       subject: "Sistem Cerdas",
       class: "4KA21",
       teacher: "Goran Atkinfef",

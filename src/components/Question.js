@@ -1,59 +1,18 @@
 import React from "react";
 import { FiCheckCircle } from "react-icons/fi";
+import TextEditor from "./TextEditor";
 
-export default function Question(props) {
-//   const [questions, setQuestions] = useState(false);
-//   const [activeQuestion, setActiveQuestion] = useState(0);
-//   const [totalQuestions, setTotalQuestions] = useState(0);
-//   const [totalCorrectAnswers, setTotalCorrectAnswers] = useState(0);
-//   const [showResults, setShowResults] = useState(false);
-
-// useEffect(() => {
-//  setQuestions(props.question);
-//  setTotalQuestions(props.question.length);
-// }, [])
-
-  // const proceed = (e) => {
-  //   e.preventDefault();
-  //   setActiveQuestion(activeQuestion + 1);
-  // };
-  // const back = (e) => {
-  //   e.preventDefault();
-  //   setActiveQuestion(activeQuestion - 1);
-  // };
-  // const addAnswers = (formData) => {
-  //   const values = {};
-  //   let totalValue = 0;
-  //   for (var pair of formData.entries()) {
-  //     var key = pair[0];
-  //     var value = pair[1];
-
-  //     totalValue += parseFloat(value);
-  //     if (values[key]) {
-  //       if (!(values[key] instanceof Array)) {
-  //         values[key] = new Array(values[key]);
-  //       }
-  //       values[key].push(value);
-  //     } else {
-  //       values[key] = value;
-  //     }
-  //   }
-  //   setTotalCorrectAnswers(totalValue);
-  //   console.log(values);
-  // };
-  // const submit = (e) => {
-  //   e.preventDefault();
-  //   const formData = new FormData(e.target);
-  //   addAnswers(formData);
-  //   setShowResults(true);
-  // };
-
+export default function Question({ questions }) {
   return (
     <>
-	{props.question.map((q, i) => (
-        <div className="mb-4 p-4" style={{borderRadius:"5px", border:"1px solid #2b2b2b"}}  key={i}>
+      {questions.map((q, i) => (
+        <div
+          key={q.id}
+          className="mb-4 p-4"
+          style={{ borderRadius: "5px", border: "1px solid #2b2b2b" }}
+        >
           <div>
-            <h6>Question {i + 1}</h6>
+            <h6>Multiple Choice Question {i + 1}</h6>
             <p>{q.questionText}</p>
           </div>
           <div>
@@ -68,7 +27,66 @@ export default function Question(props) {
             </form>
           </div>
         </div>
-      ))} 
+      ))}
+
+      <div className="mb-4">
+        <div>
+          <h6>Essay Question </h6>
+          <p>What's something good about nothing?</p>
+        </div>
+        <TextEditor />
+      </div>
+
+      <div className="mb-4">
+        <div>
+          <h6>True or False Question</h6>
+          <p>What's something good about nothing?</p>
+        </div>
+        <div>
+          <label>
+            <input type="radio" /> True
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="radio" /> False
+          </label>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div>
+          <h6>Match Pairs Question</h6>
+        </div>
+        <div className="row mt-2">
+          <div className="col-sm-8">
+            What is the latest flagship of apple?
+          </div>
+          <div className="col-sm-4 mb-2">
+            <select className="select-box" style={{width:"100%"}}>
+              <option value=""></option>
+              <option value="">Samsung S20</option>
+              <option value="">Iphone 12</option>
+              <option value="">Oppo</option>
+              <option value="">Xiaomi</option>
+            </select>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-sm-8">
+            What is the latest flagship of samsung?
+          </div>
+          <div className="col-sm-4 mb-2">
+            <select className="select-box" style={{width:"100%"}}>
+              <option value=""></option>
+              <option value="">Samsung S20</option>
+              <option value="">Iphone 12</option>
+              <option value="">Oppo</option>
+              <option value="">Xiaomi</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

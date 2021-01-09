@@ -37,17 +37,22 @@ export default function StudentQuiz() {
   return (
     <div>
       <h5 className="mb-4">
-        <b>Quiz List</b>
+        <b>Quiz</b>
       </h5>
-      <div className="centering mb-2" style={{ width: "300px" }}>
-        <BsFunnel size="24px" />
-        <input
-          className={
-            isDarkMode ? "ml-4 input-field-dark-mode" : "ml-4 input-field"
-          }
-          placeholder="Search"
-          type="text"
-        />
+      <div className="d-flex">
+        <div className="centering">
+          <h6>List of Quizes</h6>
+        </div>
+        <div className="centering mb-2 ml-auto" style={{ width: "200px" }}>
+          <BsFunnel size="24px" />
+          <input
+            className={
+              isDarkMode ? "ml-4 input-field-dark-mode" : "ml-4 input-field"
+            }
+            placeholder="Search"
+            type="text"
+          />
+        </div>
       </div>
       <table className="table table-borderless table-responsive-sm">
         <thead>

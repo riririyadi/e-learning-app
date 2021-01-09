@@ -16,7 +16,7 @@ export const LayoutContext = createContext();
 export default function NewLayout() {
   const [width, setWidth] = useState(window.innerWidth);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isStudent] = useState(true);
+  const [isStudent] = useState(false);
   const [isSidenavCollapsed, setIsSidenavCollapsed] = useState(false);
   const [drawerSidebar, setDrawerSidebar] = useState(false);
   const [searchInput, setSearchInput] = useState("");

@@ -169,7 +169,7 @@ const bgColors = Array.from({ length: 5 }).fill(bgColor).flat();
                   <span className="ml-1 ">Start</span>
                 </button>
               </Link>
-              <button className="button" onClick={handleOpenModal}>
+              <button className="button" onClick={handleOpenModal2}>
                 Back
               </button>
             </div>

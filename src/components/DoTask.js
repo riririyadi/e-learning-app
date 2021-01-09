@@ -10,8 +10,8 @@ import "react-circular-progressbar/dist/styles.css";
 import { LayoutContext } from "./NewLayout";
 import { FiCheckCircle } from "react-icons/fi";
 
-const question = [
-  {
+const questions = [
+  {id:1,
     questionText: "What is the capital of Indonesia?",
     answerOptions: [
       { answerText: "New York", isCorrect: false },
@@ -20,7 +20,7 @@ const question = [
       { answerText: "Jekardah", isCorrect: true },
     ],
   },
-  {
+  {id:2,
     questionText: "What is the point of trying?",
     answerOptions: [
       { answerText: "To be good", isCorrect: true },
@@ -29,7 +29,7 @@ const question = [
       { answerText: "To be wrong", isCorrect: false },
     ],
   },
-  {
+  {id:3,
     questionText: "Who is playing spiderman role?",
     answerOptions: [
       { answerText: "Toby Maguire", isCorrect: true },
@@ -38,7 +38,7 @@ const question = [
       { answerText: "Channing Tatum", isCorrect: false },
     ],
   },
-  {
+  {id:4,
     questionText: "Which one of the following cities is located in England?",
     answerOptions: [
       { answerText: "Dublin", isCorrect: false },
@@ -220,10 +220,9 @@ export default function DoTask() {
                 </span>{" "}
                 Kerjakan tugas dengan teliti
               </p>
-              <Question question={question} />
+              <Question questions={questions} />
               <button
                 className="button"
-                style={{ borderRadius: "5px", padding: "5px 20px" }}
                 onClick={handleOpenModal}
               >
                 <FcMultipleInputs size="20px" /> Finish

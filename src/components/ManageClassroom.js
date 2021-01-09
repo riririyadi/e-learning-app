@@ -357,7 +357,7 @@ export default function ManageClassroom() {
         <div>
           <h5>
             <b>
-              Lesson
+              Lesson</b>
               <span className="ml-4">
                 <Link
                   to="/u/classroom/manage/create-new-lesson"
@@ -379,7 +379,7 @@ export default function ManageClassroom() {
                   />
                 </Link>
               </span>
-            </b>
+            
           </h5>
         </div>
       </div>

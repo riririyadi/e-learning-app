@@ -1,7 +1,9 @@
 import React, { useState, useContext, createContext } from "react";
+import { Link } from "react-router-dom";
 import Datetime from "react-datetime";
 import { FaCalendarAlt } from "react-icons/fa";
 import moment from "moment";
+import CustomModal from "./Modal";
 import { LayoutContext } from "./NewLayout";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,12 +12,38 @@ import { AddTaskQuestion } from "./AddQuestion";
 
 export const CreateTaskContext = createContext();
 
+
 export default function CreateNewTask() {
   const [startDate, setStartDate] = useState(new Date());
   const [questions, setQuestion] = useState([]);
   const { isDarkMode } = useContext(LayoutContext);
   const [questionType, setQuestionType] = useState("");
   const [randomQuestionDisplay, setRandomQuestionDisplay] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
+  function handleOpenModal() {
+    setIsOpen(!isOpen);
+  }
+  const Confirmation = () => {
+    return (
+      <div className="p-4">
+        <div style={{ fontSize: "14px" }}>
+                 <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
+          <div className="centering">
+            <div>
+              <Link to="/u/task">
+                <button className="button mr-2">Yes</button>
+              </Link>
+              <button className="button" onClick={handleOpenModal}>
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <h5 className="mb-4">
@@ -101,8 +129,7 @@ export default function CreateNewTask() {
             <br />
             {questions.length > 0 && (
               <i>
-                To enable the functionality, please delete all the created
-                questions
+                To enable functionality, please delete all the created questions
               </i>
             )}{" "}
           </div>
@@ -151,8 +178,13 @@ export default function CreateNewTask() {
         <CreateTaskContext.Provider value={{ questions, setQuestion }}>
           <AddTaskQuestion questionType={questionType} />
         </CreateTaskContext.Provider>
-        <button className="button">Create</button>
+        <button className="button" onClick={handleOpenModal}>Create</button>
       </div>
+      <CustomModal
+        isOpen={isOpen}
+        onRequestClose={handleOpenModal}
+        componentToPass={<Confirmation />}
+      />
     </>
   );
 }

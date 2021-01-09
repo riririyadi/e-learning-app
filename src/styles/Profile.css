@@ -40,6 +40,8 @@
 .image-wrapper {
   position: relative;
   border-radius: 50%;
+  width:100px;
+  height: 100px
 }
 .ava {
   opacity: 1;

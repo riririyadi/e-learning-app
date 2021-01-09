@@ -91,13 +91,13 @@ export default function Grade() {
                       className={`dropdown-item rounded ${
                         isDarkMode ? "dark-mode" : "light"
                       } pl-2`}
-                      style={
-                        isDarkMode
-                          ? {
-                              cursor: "pointer",
-                            }
-                          : { color: "black", cursor: "pointer" }
-                      }
+                
+                         style={
+                          isDarkMode
+                            ? { color: "#F5F5F7", cursor:"pointer" }
+                            : { color: "#000000", cursor:"pointer" }
+                        }
+                      
                     >
                         <CgViewList />
                         <span className="ml-2">View</span>

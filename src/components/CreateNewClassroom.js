@@ -21,25 +21,27 @@ export default function CreateNewClassroom() {
             style={{
               backgroundColor: `${isDarkMode ? "#f5f5f7" : "#e1e1e1"}`,
               color: `${isDarkMode ? "black" : "black"}`,
-              padding: "10px",
+              padding: "20px",
               borderRadius: "5px",
             }}
           >
-            <h6>Creating a new classroom</h6>{" "}
-            <h6 style={{ display: "flex", alignItems: "center" }}>
-              <span className="mr-2">
-                <BsPlusCircle color="#00d48c" />
-              </span>{" "}
-              Sistem Teknologi Informatika dan Keamanan Jaringan - 4KA21
-            </h6>
+            <h6>Creating a new classroom</h6>
+            <div className="d-flex bd-highlight">
+              <div className="bd-highlight">
+                <BsPlusCircle color="#00d48c" size={16}/>
+              </div>
+              <div className="bd-highlight pl-2 pt-1">
+                <h6>
+                  Sistem Teknologi Informatika dan Keamanan Jaringan - 4KA21
+                </h6>
+              </div>
+            </div>
           </div>
           <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
           <div className="centering">
             <div>
               <Link to="/u/classroom">
-                <button className="button mr-2">
-                  Yes
-                </button>
+                <button className="button mr-2">Yes</button>
               </Link>
               <button className="button" onClick={handleOpenModal}>
                 No
@@ -121,7 +123,7 @@ export default function CreateNewClassroom() {
           onClick={handleOpenModal}
           style={{ padding: "5px 30px", borderRadius: "30px" }}
         >
-         Create
+          Create
         </button>
       </div>
       <CustomModal

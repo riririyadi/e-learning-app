@@ -136,7 +136,7 @@ const Confirmation = () => {
             <br />
             {questions.length > 0 && (
               <i>
-                To enable the functionality, please delete all the created
+                To enable functionality, please delete all the created
                 questions
               </i>
             )}{" "}

@@ -1,14 +1,33 @@
-import React, { useState, useContext, useRef } from "react";
+import React, {
+  useState,
+  useContext,
+  useRef,
+  useEffect,
+  useCallback,
+} from "react";
+import { getCroppedImg, getRotatedImage } from "./canvasUtils";
+import { Link } from "react-router-dom";
 import { BiPencil } from "react-icons/bi";
+import { FaUserCircle } from "react-icons/fa";
+import { BsThreeDots } from "react-icons/bs";
 import { ImCamera } from "react-icons/im";
 import { MdClass } from "react-icons/md";
 import { LayoutContext } from "./NewLayout";
 import ReactTooltip from "react-tooltip";
 import "../styles/Profile.css";
+import Cropper from "react-easy-crop";
+import { getOrientation } from "get-orientation/browser";
+
+const ORIENTATION_TO_ANGLE = {
+  3: 180,
+  6: 90,
+  8: -90,
+};
 
 export default function Profile() {
   const { isDarkMode } = useContext(LayoutContext);
   const [name, setName] = useState("John Doe");
+  const [openFileUploader, setOpenFileUploader] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   let nameRef = useRef();
 
@@ -21,92 +40,170 @@ export default function Profile() {
     { class: "Seni Budaya Dasar - 2KA21" },
   ];
 
+  const [imageSrc, setImageSrc] = React.useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState(0);
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [croppedImage, setCroppedImage] = useState(null);
+
+  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const showCroppedImage = useCallback(async () => {
+    try {
+      const croppedImage = await getCroppedImg(
+        imageSrc,
+        croppedAreaPixels,
+        rotation
+      );
+      console.log("donee", { croppedImage });
+      setCroppedImage(croppedImage);
+      setImageSrc(null);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [imageSrc, croppedAreaPixels, rotation]);
+
+  const onClose = useCallback(() => {
+    setCroppedImage(null);
+  }, []);
+
+  const onFileChange = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      let imageDataUrl = await readFile(file);
+
+      // apply rotation if needed
+      const orientation = await getOrientation(file);
+      const rotation = ORIENTATION_TO_ANGLE[orientation];
+      if (rotation) {
+        imageDataUrl = await getRotatedImage(imageDataUrl, rotation);
+      }
+
+      setImageSrc(imageDataUrl);
+    }
+  };
+
   return (
     <>
       <div className="row">
-        <div className="col-md-12  mb-2">
+        <div className="col-md-12">
           <div
-            className="card p-4 cover shadow-sm centering"
+            className="card cover shadow-sm"
             style={{
               minHeight: "300px",
               border: "none",
-              borderRadius: "10px",
               display: "flex",
-              justifyContent: "center",
+              borderRadius: "10px",
             }}
           >
-            <div className="image-wrapper">
-              <img
-                className="ava"
-                src="https://cdn.nohat.cc/thumb/f/720/comvecteezy420553.jpg"
-                alt="avatar"
-                style={{
-                  height: "100px",
-                  width: "100px",
-                  borderRadius: "50%",
-                }}
-              />
-
-              <div className="upload-area">
-                <div className="centering">
-                  <span style={{ zIndex: 1, marginTop: "10px" }}>
-                    <ImCamera size="24px" />
-                  </span>
-                </div>
-                <label className="label-upload" htmlFor="upload">
-                  <input type="file" id="upload" hidden />
-                </label>
-              </div>
-            </div>
-            <div className="centering mt-4">
-              <div style={{ marginRight: "-25px" }}>
-                <span
-                  ref={nameRef}
+            <div className="d-flex mt-2 mr-2">
+              <div className="dropdown ml-auto">
+                <button
+                  className={`${
+                    isDarkMode ? "dark-overlay-btn" : "overlay-btn"
+                  } centering`}
                   style={{
-                    minWidth: "10px",
-                    fontSize: "24px",
-                    fontWeight: "bold",
-                    color: "#121212",
+                    border: "none",
+                    borderRadius: "30px",
+                    padding: "5px",
                   }}
-                  className="input"
-                  role="textbox"
-                  onChange={(e) => setName(e.target.value)}
-                  contentEditable={isEditing}
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  data-toggle-second="tooltip"
+                  data-placement="right"
+                  title="More options"
                 >
-                  {name}
-                </span>
-                <span
-                  className="ml-2"
-                  style={{ cursor: "pointer" }}
-                  onClick={(e) => setIsEditing(!isEditing)}
+                  <BsThreeDots />
+                </button>
+                <div
+                  className={`dropdown-menu shadow-sm dropdown-menu-right ${
+                    isDarkMode ? "dropdown-menu-dark" : "dropdown-menu-light"
+                  } p-2 mt-2 mb-2`}
                 >
-                  {isEditing ? (
-                    <button className="button" style={{ fontSize: "12px" }}>
-                      Save
-                    </button>
-                  ) : (
-                    <span data-tip="Edit name" style={{ color: "black" }}>
-                      <ReactTooltip
-                        place="right"
-                        type="dark"
-                        effect="solid"
-                        offset={{ right: 10 }}
-                      />
-                      <BiPencil size="16px" />
-                    </span>
-                  )}
-                </span>
+                  <Link
+                    to="/u/profile/edit"
+                    style={
+                      isDarkMode ? { color: "#F5F5F7" } : { color: "#000000" }
+                    }
+                  >
+                    <div
+                      className={`dropdown-item rounded ${
+                        isDarkMode ? "dark-mode" : "light"
+                      } pl-2`}
+                      style={
+                        isDarkMode
+                          ? { color: "#F5F5F7", cursor: "pointer" }
+                          : { color: "#000000", cursor: "pointer" }
+                      }
+                    >
+                      <BiPencil />
+                      <span className="ml-2">Edit</span>
+                    </div>
+                  </Link>
+                </div>
               </div>
             </div>
-            <div className="text-white">
+            <div className="centering">
+              <div className="image-wrapper">
+                <img
+                  className="ava"
+                  src={
+                    croppedImage
+                      ? croppedImage
+                      : `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGgEDxzI3XkNdei9mDK-kqW2RuRXQMWta0YA&usqp=CAU`
+                  }
+                  alt="avatar"
+                  style={{
+                    height: "100px",
+                    width: "100px",
+                    borderRadius: "50%",
+                  }}
+                />
+
+                <div className="upload-area">
+                  <div className="centering">
+                    <span style={{ zIndex: 1, marginTop: "10px" }}>
+                      <ImCamera size="24px" />
+                    </span>
+                  </div>
+                  <label className="label-upload" htmlFor="upload">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="upload"
+                      hidden
+                      onChange={onFileChange}
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+          
+            <div className="text-center mt-4">
+              <h5>
+                <b>{name}</b>
+              </h5>
+            </div>
+            <div className="text-white text-center">
               <i>
                 <b>Bekasi, Student</b>
               </i>
             </div>
-            <div className="text-white" style={{ fontSize: "18px" }}>
+            <div
+              className="text-white text-center"
+              style={{ fontSize: "18px" }}
+            >
               Universitas Gunadarma
             </div>
-            <div className="text-white" style={{ fontSize: "18px" }}>
+            <div
+              className="text-white text-center"
+              style={{ fontSize: "18px" }}
+            >
               Fakultas Ilmu Komputer dan Teknologi Informasi
             </div>
           </div>
@@ -121,10 +218,14 @@ export default function Profile() {
             } p-4`}
             style={{ minHeight: "200px", border: "none", borderRadius: "5px" }}
           >
-            <h5>About</h5>
+            <h5>
+              <b>About</b>
+            </h5>
             <div>Morning Person</div>
             <div>Kucing Lovers</div>
-            <h5 className="mt-4">Announcement</h5>
+            <h5 className="mt-4">
+              <b>Announcement</b>
+            </h5>
             <div>Pernah menjadi bagian proyek NASA</div>
           </div>
         </div>
@@ -138,7 +239,9 @@ export default function Profile() {
               borderRadius: "5px",
             }}
           >
-            <h5 className="mb-4">Class Timeline</h5>
+            <h5 className="mb-4">
+              <b>Class Timeline</b>
+            </h5>
             {classHistory.map((data, i) => (
               <p className="text-white" key={i}>
                 <span className="mr-2">
@@ -150,6 +253,56 @@ export default function Profile() {
           </div>
         </div>
       </div>
+        {imageSrc && (
+              <div className="shadow"
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%,-50%)",
+                  minWidth: "360px",
+                  maxWidth:"90%",
+                  zIndex:4,
+                  backgroundColor:"white",
+                  padding:"20px",
+                  borderRadius:"10px"
+                }}
+              >
+              <div className="mb-2"><h5><b>Set Image</b></h5></div>
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    height: "200px",
+                    background: "#333",
+                  }}
+                >
+                  <Cropper
+                    image={imageSrc}
+                    crop={crop}
+                    rotation={rotation}
+                    zoom={zoom}
+                    aspect={1 / 1}
+                    onCropChange={setCrop}
+                    onRotationChange={setRotation}
+                    onCropComplete={onCropComplete}
+                    onZoomChange={setZoom}
+                  />
+                </div>
+                <div>
+                  <button className="button mt-3" onClick={showCroppedImage}>Submit</button>
+                    <button className="button ml-3" onClick={()=>setImageSrc(null)}>Cancel</button>
+                </div>
+              </div>
+            )}
     </>
   );
+}
+
+function readFile(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(reader.result), false);
+    reader.readAsDataURL(file);
+  });
 }
