@@ -1,15 +1,19 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BsFunnel, BsTrash, BsThreeDots } from "react-icons/bs";
 import { BiPencil } from "react-icons/bi";
-import { RiSettingsLine } from "react-icons/ri";
 import { LayoutContext } from "./NewLayout";
-import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 import ReactTooltip from "react-tooltip";
 import CustomModal from "./Modal";
 import "../styles/Task.css";
 
 export default function Task() {
+
+
+  useEffect(() => {
+ document.title = "E-learning | Task"
+  }, [])
   const { isDarkMode } = useContext(LayoutContext);
   const [selectedRow, setSelectedRow] = useState(true);
    const [isOpen, setIsOpen] = useState(false);
@@ -77,7 +81,7 @@ export default function Task() {
 
   return (
     <>
-      <div className="mb-4 d-flex bd-highlight">
+      <div className="mb-3 d-flex bd-highlight">
         <div className="bd-highlight">
           <h5>
             <b>Task</b>
@@ -101,6 +105,7 @@ export default function Task() {
           </Link>
         </div>
       </div>
+       <div className="p-4" style={ isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
       <div className="d-flex">
         <div className="centering">
           <h6>List of Tasks</h6>
@@ -116,7 +121,7 @@ export default function Task() {
           />
         </div>
       </div>
-      <table className="table table-borderless table-responsive-sm">
+      <table className="table table-borderless table-responsive-md">
         <thead>
           <tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
             <th scope="col">
@@ -195,12 +200,12 @@ export default function Task() {
                       >
                     <div
                       className={`dropdown-item rounded ${
-                        isDarkMode ? "dark-mode" : "light"
+                        isDarkMode ? "dd-dark-mode" : "light"
                       } pl-2`}
                       style={
                         isDarkMode
                           ? {
-                              cursor: "pointer",
+                              cursor: "pointer", color: "#F5F5F7" 
                             }
                           : { color: "black", cursor: "pointer" }
                       }
@@ -211,12 +216,12 @@ export default function Task() {
                       </Link>
                     <div
                       className={`dropdown-item rounded  ${
-                        isDarkMode ? "dark-mode" : "light"
+                        isDarkMode ? "dd-dark-mode" : "light"
                       } pl-2`}
                       style={
                         isDarkMode
                           ? {
-                              cursor: "pointer",
+                              cursor: "pointer", color: "#F5F5F7" 
                             }
                           : { cursor: "pointer" }
                       }
@@ -232,6 +237,7 @@ export default function Task() {
           ))}
         </tbody>
       </table>
+      </div>
        <CustomModal
         isOpen={isOpen}
         onRequestClose={handleOpenModal}

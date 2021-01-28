@@ -3,6 +3,8 @@ import "../styles/LandingPage.css";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useSpring, animated } from "react-spring";
+import Footer from "./Footer"
+
 
 const calcY = (o) => `translateY(${o * -0.1}px)`;
 const calcMinY = (o) => `translateY(${o * 0.1}px)`;
@@ -11,6 +13,7 @@ const calcMinX = (o) => `translateX(${o * -0.1}px)`;
 
 function LandingPage() {
   const ref = useRef();
+  const [width, setWidth] = useState(window.innerWidth);
   const [{ offset }, set] = useSpring(() => ({ offset: 0 }));
 
   const handleScroll = () => {
@@ -19,6 +22,18 @@ function LandingPage() {
     const offset = window.pageYOffset - posY;
     set({ offset });
   };
+
+ useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
+
+  useEffect(() => {
+ document.title = "E-learning | Home"
+  }, [])
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -76,10 +91,15 @@ function LandingPage() {
           </h5>
         </div>
       </animated.div>
-      <div className="p-4">
+      <div className="p-4 mb-4">
         <animated.div
           className="container shadow"
-          style={{
+          style={width < 768 ?  {height: "500px",
+            backgroundColor: "black",
+            color: "white",
+            padding: "40px",
+            borderRadius: "15px",
+          } : {
             height: "500px",
             transform: offset.interpolate(calcMinX),
             backgroundColor: "black",
@@ -97,15 +117,20 @@ function LandingPage() {
           </div>
         </animated.div>
       </div>
+           <div className="p-4 mb-4">
       <animated.div
         className="container shadow"
-        style={{
+        style={width < 768 ?  {height: "500px",
+            backgroundColor: "white",
+            color: "black",
+            padding: "40px",
+            borderRadius: "15px",
+          } : {
           height: "500px",
           transform: offset.interpolate(calcX),
-          paddingTop: "50px",
+          padding: "50px",
           backgroundColor: "white",
           borderRadius: "15px",
-          padding: "40px",
         }}
       >
         <div className="row" style={{ height: "100%" }}>
@@ -116,31 +141,8 @@ function LandingPage() {
           <div className="col-md-8 image-bg-3"></div>
         </div>
       </animated.div>
-      <div
-        className="footer d-flex flex-column"
-        style={{
-          marginTop: "200px",
-          paddingTop: "20px",
-          height: "400px",
-          backgroundColor: "black",
-          color: "gray",
-          clear: "both",
-          position: "relative",
-          bottom: "0",
-        }}
-      >
-        <div className="container d-flex p-4">
-          <div className="ml-auto mr-4 centering">
-            <div>
-              <div className="mb-3">About Us</div>
-              <div className="mb-3">Help</div>
-              <div className="mb-3">Privacy and Terms</div>
-              <div className="mb-4">Yes, we use cookies</div>
-              <div style={{marginTop:"50px"}}><b>All rights reserved &#169;2021</b></div>
-            </div>
-          </div>
-        </div>
-      </div>
+           </div>
+     <Footer />
     </>
   );
 }

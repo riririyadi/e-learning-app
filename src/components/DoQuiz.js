@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useRouteMatch, useParams } from "react-router-dom";
 import Question from "./Question";
 import CustomModal from "./Modal";
 import { FcMultipleInputs, FcAbout } from "react-icons/fc";
@@ -9,77 +9,135 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { LayoutContext } from "./NewLayout";
 import { FiCheckCircle } from "react-icons/fi";
+import axios from "axios";
+import { Loader } from "./Loader"
 
-const questions = [
-  {id:1,
-    questionText: "What is the capital of Indonesia?",
-    answerOptions: [
-      { answerText: "New York", isCorrect: false },
-      { answerText: "London", isCorrect: false },
-      { answerText: "Bangkok", isCorrect: false },
-      { answerText: "Jekardah", isCorrect: true },
-    ],
-  },
-  {id:2,
-    questionText: "What is the point of trying?",
-    answerOptions: [
-      { answerText: "To be good", isCorrect: true },
-      { answerText: "To be fair", isCorrect: false },
-      { answerText: "To be continued", isCorrect: false },
-      { answerText: "To be wrong", isCorrect: false },
-    ],
-  },
-  {id:3,
-    questionText: "Who is playing spiderman role?",
-    answerOptions: [
-      { answerText: "Toby Maguire", isCorrect: true },
-      { answerText: "Chris Hemsworth", isCorrect: false },
-      { answerText: "Robert Downey .Jr", isCorrect: false },
-      { answerText: "Channing Tatum", isCorrect: false },
-    ],
-  },
-  {id:4,
-    questionText: "Which one of the following cities is located in England?",
-    answerOptions: [
-      { answerText: "Dublin", isCorrect: false },
-      { answerText: "Wellington", isCorrect: false },
-      { answerText: "Cardiff", isCorrect: false },
-      { answerText: "Sheffield", isCorrect: true },
-    ],
-  },
-];
+
+
+// const data = [
+//   {
+//     id: 1,
+//     questionText: "What is the capital of Indonesia?",
+//     answerOptions: [
+//       { answerText: "New York", isCorrect: false },
+//       { answerText: "London", isCorrect: false },
+//       { answerText: "Bangkok", isCorrect: false },
+//       { answerText: "Jekardah", isCorrect: true },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     questionText: "What is the point of trying?",
+//     answerOptions: [
+//       { answerText: "To be good", isCorrect: true },
+//       { answerText: "To be fair", isCorrect: false },
+//       { answerText: "To be continued", isCorrect: false },
+//       { answerText: "To be wrong", isCorrect: false },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     questionText: "Who is playing spiderman role?",
+//     answerOptions: [
+//       { answerText: "Toby Maguire", isCorrect: true },
+//       { answerText: "Chris Hemsworth", isCorrect: false },
+//       { answerText: "Robert Downey .Jr", isCorrect: false },
+//       { answerText: "Channing Tatum", isCorrect: false },
+//     ],
+//   },
+//   {
+//     id: 4,
+//     questionText: "Which one of the following cities is located in England?",
+//     answerOptions: [
+//       { answerText: "Dublin", isCorrect: false },
+//       { answerText: "Wellington", isCorrect: false },
+//       { answerText: "Cardiff", isCorrect: false },
+//       { answerText: "Sheffield", isCorrect: true },
+//     ],
+//   },
+// ];
 
 export default function DoQuiz() {
   const { isDarkMode, width } = useContext(LayoutContext);
+  let history = useHistory();
+  let { id } = useParams();
+  let match = useRouteMatch();
+  const [questions, setQuestions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
-  const percentage = 66;
 
-    const [ minutes, setMinutes ] = useState(2);
-    const [seconds, setSeconds ] =  useState(0);
-    useEffect(()=>{
+  const [percentage, setPercentage] = useState(0);
+
+  const addPercentage = () => {
+    setPercentage((prevState) => prevState + 2);
+  };
+  const [minutes, setMinutes] = useState(localStorage.getItem("min") || 0);
+  const [seconds, setSeconds] = useState(localStorage.getItem("sec") || 0);
+  const [min, setMin] = useState();
+  const [sec, setSec] = useState();
+
+  useEffect(() => {
+    document.title = "E-learning | Quiz";
+       getQuiz();
+  }, []);
+
+  useEffect(() => {
+    if (!localStorage.getItem("min") && !localStorage.getItem("sec")) {
+      localStorage.setItem("min", minutes);
+      localStorage.setItem("sec", seconds);
+    }
+
+    localStorage.setItem("min", minutes);
+    localStorage.setItem("sec", seconds);
+
     let myInterval = setInterval(() => {
-            if (seconds > 0) {
-                setSeconds(seconds - 1);
-            }
-            if (seconds === 0) {
-                if (minutes === 0) {
-                    clearInterval(myInterval)
-                    alert("Time is up")
-                } else {
-                    setMinutes(minutes - 1);
-                    setSeconds(59);
-                }
-            } 
-        }, 1000)
-        return ()=> {
-            clearInterval(myInterval);
-          };
-    });
+      if (seconds > 0) {
+        setSeconds(seconds - 1);
+      }
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(myInterval);
+          localStorage.removeItem("min");
+          localStorage.removeItem("sec");
+          // history.push(`${match.url}/result`);
+        } else {
+          setMinutes(minutes - 1);
+          setSeconds(59);
+        }
+      }
+    }, 1000);
+    return () => {
+      clearInterval(myInterval);
+    };
+  });
 
-  const Confirmation = () => {
+const token = localStorage.getItem("token");
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+
+   const getQuiz = async () => {
+    try {
+      const res = await axios.get(`http://elearning.havicrm.tk/api/quiz/${id}`, {
+        headers: header,
+      });
+      localStorage.setItem("questions", JSON.stringify(res.data.data.questions))
+      setQuestions(JSON.parse(localStorage.getItem("questions")));
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
+  };
+
+
+
+
+const Confirmation = () => {
     return (
       <div className="p-4">
         <div style={{ fontSize: "14px" }}>
@@ -87,10 +145,8 @@ export default function DoQuiz() {
           <br />
           <div className="centering">
             <div>
-              <Link to="/u/classroom/detail/do-quiz/result">
-                <button className="button mr-4">
-                 Yes
-                </button>
+              <Link to={`${match.url}/result`}>
+                <button className="button mr-4">Yes</button>
               </Link>
               <button className="button" onClick={handleOpenModal}>
                 No
@@ -109,7 +165,7 @@ export default function DoQuiz() {
         onRequestClose={handleOpenModal}
         componentToPass={<Confirmation />}
       />
-      {width <= 768 && <div style={{ height: "120px" }}></div>}
+      {width <= 768 && <div style={{ height: "140px" }}></div>}
       <h5 className="mb-4">
         <b>Classroom</b>
       </h5>
@@ -152,38 +208,58 @@ export default function DoQuiz() {
           </div>
         </div>
       </div>
+      {isLoading ? <div className="centering"><Loader /></div>:
       <div className="row">
         <div className="col-md-4 order-md-2">
           <div
             className={`${
               width <= 768
-                ? `fixed-top fixed-top-2 row shadow-sm ${
+                ? `fixed-top fixed-top-2 row shadow-sm p-4 ${
                     isDarkMode ? "bg-dark-nav" : "bg-white"
                   }`
                 : "sticky-top sticky-offset"
-            } p-4`}
+            }`}
           >
             <div className={`${width <= 768 ? "col" : null}`}>
-              <h5 className="mb-2">Detail</h5>
-              <div className="mb-2">
-                <MdTimer size="20px" />  
-        { minutes === 0 && seconds === 0
-            ? null
-            :  <span className="ml-2">{minutes}:{seconds < 10 ?  `0${seconds}` : seconds}</span>
-        }
-        
+              <h5 className={`${width <= 768 ? "" : "mb-4"}`}>
+                <b>Detail</b>
+              </h5>
+              <div
+                className="mb-2"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "20px",
+                }}
+              >
+                <MdTimer size="24px" />
+                {minutes === 0 && seconds === 0 ? (
+                  <span className="ml-2" style={{ color: "red" }}>
+                    Time is up
+                  </span>
+                ) : (
+                  <span
+                    className="ml-2"
+                    style={
+                      minutes < 2 ? { color: "red" } : { color: "#00d48c" }
+                    }
+                  >
+                    {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+                  </span>
+                )}
               </div>
               <div>Number of Questions: 4</div>
             </div>
             <div
               className={`${width <= 768 ? "col centering" : "centering pt-4"}`}
+              style={{ flexDirection: "column" }}
             >
               <div
                 style={
                   width <= 768
                     ? {
-                        width: "60px",
-                        height: "60px",
+                        width: "80px",
+                        height: "80px",
                         position: "relative",
                         zIndex: 0,
                       }
@@ -227,7 +303,7 @@ export default function DoQuiz() {
         </div>
         <div className="col-md-8 order-md-1">
           <div>
-            <h5 className="mt-2 mb-4">
+            <h5 className="mb-4">
               <b>Quiz</b>
             </h5>
             <div
@@ -245,21 +321,17 @@ export default function DoQuiz() {
               <p>
                 <span className="mr-2 mb-4">
                   <FcAbout />
-                </span>{" "}
+                </span>
                 Kerjakan kuis dengan teliti
               </p>
-              <Question questions={questions} />
-              <button
-                className="button"
-            
-                onClick={handleOpenModal}
-              >
+              <Question questions={questions} setQuestions={setQuestions} />
+              <button className="button mt-4" onClick={handleOpenModal}>
                 <FcMultipleInputs size="20px" /> Finish
               </button>
             </div>
           </div>
         </div>
-      </div>
+      </div>}
     </>
   );
 }

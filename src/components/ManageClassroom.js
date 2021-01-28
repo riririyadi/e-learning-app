@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext,useEffect } from "react";
+import { Link, useParams, useRouteMatch } from "react-router-dom";
 import { FcAbout } from "react-icons/fc";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { HiTrash } from "react-icons/hi";
@@ -15,6 +15,7 @@ import {
 import { LayoutContext } from "./NewLayout";
 import ReactTooltip from "react-tooltip";
 import CustomModal from "./Modal";
+import axios from "axios";
 
 const bgColor = [
   "#17A2B8",
@@ -62,6 +63,7 @@ const lessonData = [
 
 const ClassroomParticipants = () => {
   const { isDarkMode } = useContext(LayoutContext);
+
   const participants = [
     { name: "Frank Donnie Vardy", location: "Washington DC" },
     { name: "John Doe", location: "Massachusetts" },
@@ -102,12 +104,12 @@ const ClassroomParticipants = () => {
         }}
       >
         {" "}
-        <h6>Sistem Keamanan Teknologi Informasi - 4KA21</h6>
+        <h6>????????</h6>        
         <div>
           <span className="mr-2">
             <FcAbout size="20px" />
           </span>
-          Kelas ini untuk mahasiswa Gunadarma
+       ?????
         </div>
       </div>
       <div className="pl-4 pt-2 pb-2">
@@ -156,9 +158,39 @@ const ClassroomParticipants = () => {
 };
 
 export default function ManageClassroom() {
+const match = useRouteMatch();
+
   const { isDarkMode } = useContext(LayoutContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
+
+  const [classroom, setClassroom] = useState({})
+  const { id } = useParams()
+
+const token = localStorage.getItem("token");
+
+  const header = {
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  console.log(id)
+
+const getDetailClassroom = async() => {
+try{
+  const res = await axios.get(`http://elearning.havicrm.tk/api/classroom/${id}`, {headers: header})
+  console.log(res.data);
+  setClassroom(res.data);
+}catch(err){
+console.log(err)
+}
+}
+
+useEffect(() => {
+getDetailClassroom();
+}, [])
+
+
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
@@ -203,16 +235,17 @@ export default function ManageClassroom() {
         <div className="classroom-detail p-4 text-white d-flex align-items-start flex-column">
           <div>
             <b style={{ fontSize: "16px" }}>
-              Sistem Keamanan dan Teknologi Informasi - 4KA21
+              {classroom.subject} - {classroom.name}
             </b>
           </div>
           <div>
             <span className="mr-2">
               <FcAbout size="20px" />
             </span>
-            Kelas ini untuk mahasiswa Gunadarma
+            {classroom.description}
           </div>
           <div className="mt-auto">
+          <div>code: {classroom.code}</div>
             <div className="mb-2">Participants: </div>
             <span
               data-tip="James"
@@ -353,34 +386,28 @@ export default function ManageClassroom() {
         onRequestClose={handleOpenModal}
         componentToPass={<ClassroomParticipants />}
       />
-      <div className="mt-4 mb-4 d-flex">
-        <div>
+         <div className="mb-3 d-flex bd-highlight">
+        <div className="bd-highlight">
           <h5>
-            <b>
-              Lesson</b>
-              <span className="ml-4">
-                <Link
-                  to="/u/classroom/manage/create-new-lesson"
-                  data-tip="Create a new lesson"
-                  style={
-                    isDarkMode
-                      ? { color: "#f5f5f7" }
-                      : {
-                          color: "#000000",
-                        }
-                  }
-                >
-                  <BsPlusCircle size={18} />
-                  <ReactTooltip
-                    place="right"
-                    type="dark"
-                    effect="solid"
-                    data-offset={{ right: 20 }}
-                  />
-                </Link>
-              </span>
-            
+            <b>Lesson</b>
           </h5>
+        </div>
+        <div className="ml-4 bd-highlight" style={{ fontSize: "15px" }}>
+          <Link
+            to={`${match.url}/create-new-lesson`}
+            style={isDarkMode ? { color: "#F5F5F7" } : { color: "#000000" }}
+          >
+            <span data-tip="Create a new lesson" data-for="create-classroom">
+              <ReactTooltip
+                id="create-classroom"
+                place="right"
+                type="dark"
+                effect="solid"
+                offset={{ right: 10 }}
+              />
+              <AiOutlinePlusCircle size="20px" />
+            </span>
+          </Link>
         </div>
       </div>
       <div>

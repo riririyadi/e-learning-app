@@ -280,7 +280,7 @@ body {
   background-color: #1f1f23;
   height: 36px;
   padding: 0px 7px;
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 7px 7px 0;
   color: #4d4d4d;
   font-size: 20px;
 }
@@ -311,7 +311,7 @@ body {
   border: none;
 }
 .dropdown-menu-dark {
-  background-color: #000000;
+  background-color: #18181B;
   font-size: 14px;
 }
 
@@ -319,9 +319,9 @@ body {
   background-color: #fffff;
   font-size: 14px;
 }
-.dropdown-menu .dark-mode:hover {
+.dropdown-menu .dd-dark-mode:hover {
   background-image: none;
-  background-color: #1a1a1a !important;
+  background-color: #000000 !important;
 }
 
 .dropdown-menu .light:hover {
@@ -343,7 +343,6 @@ body {
   position: relative;
   height: 22px;
   box-sizing: border-box;
-  float: inline-end;
 }
 
 .knobs,
@@ -372,7 +371,6 @@ body {
   width: 50px;
   height: 100%;
   padding: 0;
-  margin-left: -10px;
   opacity: 0;
   cursor: pointer;
   z-index: 3;

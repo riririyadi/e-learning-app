@@ -1,28 +1,104 @@
 import React, { useState, useEffect, useRef, createContext } from "react";
+import { Route, Switch, useHistory } from "react-router-dom";
 import "../styles/NewLayout.css";
 import "../styles/Layout.css";
 import { BiLogOutCircle } from "react-icons/bi";
 import { BsBoxArrowInDownLeft } from "react-icons/bs";
 import { VscSymbolColor } from "react-icons/vsc";
-import { RiProfileLine } from "react-icons/ri";
+import { RiProfileLine, RiSearchLine } from "react-icons/ri";
 import * as FaIcons from "react-icons/fa";
 import { StudentRoutes, TeacherRoutes } from "../Routes";
 import { SidebarData } from "./SidebarData";
 import { NavLink, Link } from "react-router-dom";
-import Dropdown from "./Dropdown";
+import useOnclickOutside from "react-cool-onclickoutside";
+import { Loader } from "./Loader";
+import axios from "axios";
 
 export const LayoutContext = createContext();
 
 export default function NewLayout() {
+  let history = useHistory();
   const [width, setWidth] = useState(window.innerWidth);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isStudent] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(getInitialMode());
+  const [isLoading, setIsLoading] = useState(true);
+  const [role, setRole] = useState(false);
   const [isSidenavCollapsed, setIsSidenavCollapsed] = useState(false);
   const [drawerSidebar, setDrawerSidebar] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [openMiniSearchBar, setOpenMiniSearchBar] = useState(false);
   const [open, setOpen] = useState(false);
+  const uid = localStorage.getItem("user_id");
+  const [error, setError] = useState("");
   const ddRef = useRef();
+  const [openMenu, setOpenMenu] = useState(false);
+  const [openMenu2, setOpenMenu2] = useState(false);
+
+  const handleBtnClick = () => {
+    setOpenMenu(!openMenu);
+  };
+  const handleBtnClick2 = () => {
+    setOpenMenu2(!openMenu2);
+  };
+  const closeMenu = () => {
+    setOpenMenu(false);
+  };
+  const closeMenu2 = () => {
+    setOpenMenu2(false);
+  };
+
+  const ref = useOnclickOutside(() => {
+    closeMenu();
+  });
+
+  const ref2 = useOnclickOutside(() => {
+    closeMenu2();
+  });
+  useEffect(() => {
+    localStorage.setItem("dark", JSON.stringify(isDarkMode));
+  }, [isDarkMode]);
+
+  function getInitialMode() {
+    const isReturningUser = "dark" in localStorage;
+    const savedMode = JSON.parse(localStorage.getItem("dark"));
+    const userPrefersDark = getPrefColorScheme();
+    if (isReturningUser) {
+      return savedMode;
+    } else if (userPrefersDark) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function getPrefColorScheme() {
+    if (!window.matchMedia) return;
+    return window.matchMedia("(prefers-color-scheme:dark)").matches;
+  }
+
+  const token = localStorage.getItem("token");
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const authMe = async () => {
+    try {
+      const res = await axios.get("http://elearning.havicrm.tk/api/auth/me", {
+        headers: header,
+      });
+      localStorage.setItem("role", res.data.role);
+      localStorage.setItem("user_id", res.data.id);
+      setRole(localStorage.getItem("role"));
+    } catch (err) {
+      console.log(err);
+      setError(err.message);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    authMe();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
@@ -45,6 +121,13 @@ export default function NewLayout() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    history.push("/");
+  };
+
   return (
     <div className={`${isDarkMode ? "dark-mode" : "light-mode"} layout`}>
       <nav
@@ -63,10 +146,10 @@ export default function NewLayout() {
               <button
                 className={`mini-search-bar-btn ${
                   isDarkMode ? `dark-mode-icon` : `light-mode-icon`
-                } pb-2`}
+                } pb-1 mr-1`}
                 onClick={() => setOpenMiniSearchBar((prevState) => !prevState)}
               >
-                <BsBoxArrowInDownLeft />
+                <BsBoxArrowInDownLeft size={20}/>
               </button>
             </div>
             <div className="flex-grow-1 bd-highlight">
@@ -114,7 +197,7 @@ export default function NewLayout() {
                         : "bd-highlight search-icon"
                     }
                   >
-                    <FaIcons.FaSearch />
+                    <RiSearchLine />
                   </div>
                 </Link>
               </div>
@@ -217,7 +300,7 @@ export default function NewLayout() {
                           : "bd-highlight search-icon mr-2"
                       }
                     >
-                      <FaIcons.FaSearch />
+                      <RiSearchLine />
                     </div>
                   </Link>
                 </div>
@@ -227,32 +310,65 @@ export default function NewLayout() {
               {width <= 576 && (
                 <div
                   className="centering mr-4"
+                   style={{marginTop:"-5px"}}
                   onClick={() =>
                     setOpenMiniSearchBar((prevState) => !prevState)
                   }
                 >
-                  <FaIcons.FaSearch size="20px" />
+                  <RiSearchLine size="20px" />
                 </div>
               )}
-              <div className="centering mr-4">
-                <FaIcons.FaBell size="20px" />
-              </div>
-              <div className="centering">
-                <Dropdown
-                  isDarkMode={isDarkMode}
-                  myRef={ddRef}
-                  open={open}
-                  setOpen={setOpen}
-                  icon={<FaIcons.FaUserCircle size="20px" />}
+              <div className="btn-group" style={{marginTop:"-5px"}}>
+                <button
+                  className={`dropdown mr-4 ${isDarkMode? "dark-mode-icon":"light-mode-icon"}`}
+                  style={{background:'none', border:"none"}}
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
                 >
-                  <li className="d-flex dd-link mb-1 pt-1 pl-2">
+                  <FaIcons.FaBell size="20px" />
+                </button>
+                <div className="dropdown-menu dropdown-menu-right mt-3 shadow-sm p-2" style={{fontSize:"14px",  backgroundColor:`${isDarkMode?"#18181B":"#FFFFFF"}`}}>
+                     <li className={`d-flex dropdown-item rounded ${
+                                isDarkMode ? "dd-dark-mode" : "light"
+                              } pl-2`}
+                              style={
+                                isDarkMode
+                                  ? { cursor: "pointer", color: "#F5F5F7" }
+                                  : { cursor: "pointer", color: "#000000" }
+                              }>Notification</li>
+                </div>
+              </div>
+
+              <div className="btn-group" style={{marginTop:"-5px"}}>
+                <button
+                   className={`dropdown ${isDarkMode? "dark-mode-icon":"light-mode-icon"}`}
+                  style={{background:'none', border:"none"}}
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <FaIcons.FaUserCircle size="20px" />
+                </button>
+                <div className="dropdown-menu dropdown-menu-right mt-3 shadow-sm p-2" style={{fontSize:"14px", backgroundColor:`${isDarkMode?"#18181B":"#FFFFFF"}`}}>
+                  <li className={`d-flex dropdown-item rounded ${
+                                isDarkMode ? "dd-dark-mode" : "light"
+                              } pl-2`}
+                              style={
+                                isDarkMode
+                                  ? { cursor: "pointer", color: "#F5F5F7" }
+                                  : { cursor: "pointer", color: "#000000" }
+                              }>
                     <div
-                      className={`centering ${
+                      className={`${
                         isDarkMode ? "dd-dark" : "dd-white"
                       }`}
+                      style={{marginRight:"30px"}}
                     >
                       <VscSymbolColor />
-                      <span className="ml-2 mr-4">Theme</span>
+                      <span className="ml-2">Theme</span>
                     </div>
                     <div className="toggle-button-cover">
                       <div className="btn-dark-mode r" id="button-9">
@@ -272,84 +388,127 @@ export default function NewLayout() {
                       </div>
                     </div>
                   </li>
-                  <li>
                     <Link
                       to="/u/profile"
-                      className={`${
-                        isDarkMode ? "dd-dm-link" : "dd-lm-link"
-                      } d-flex`}
+                      className="d-flex"
+                        style={
+                              isDarkMode
+                                ? { color: "#F5F5F7" }
+                                : { color: "#000000" }
+                            }
                     >
-                      <div
-                        className={`centering ${
-                          isDarkMode ? "dd-dark" : "dd-white"
-                        }`}
-                      >
+                  <li className={`dropdown-item rounded ${
+                                isDarkMode ? "dd-dark-mode" : "light"
+                              } pl-2`}
+                              style={
+                                isDarkMode
+                                  ? { cursor: "pointer", color: "#F5F5F7" }
+                                  : { cursor: "pointer", color: "#000000" }
+                              }>
+                      <div>
                         <RiProfileLine />
                         <span className="ml-2">Profile</span>
                       </div>
-                    </Link>
                   </li>
-                  <li>
-                    <Link
-                      to="/"
-                      className={`${
-                        isDarkMode ? "dd-dm-link" : "dd-lm-link"
-                      } d-flex`}
-                    >
+                    </Link>
+                  <li className={`dropdown-item rounded ${
+                                isDarkMode ? "dd-dark-mode" : "light"
+                              } pl-2`}
+                              style={
+                                isDarkMode
+                                  ? { cursor: "pointer", color: "#F5F5F7" }
+                                  : { cursor: "pointer", color: "#000000" }
+                              }>
+               
                       <div
-                        className={`centering ${
+                        className={`${
                           isDarkMode ? "dd-dark" : "dd-white"
                         }`}
+                        onClick={handleLogout}
                       >
                         <BiLogOutCircle />
                         <span className="ml-2">Sign Out</span>
                       </div>
-                    </Link>
                   </li>
-                </Dropdown>
+                </div>
               </div>
             </div>
           </>
         )}
       </nav>
-      <div className="layer-underneath-navbar">&nbsp;</div>
-      <div className="main-wrapper">
+
+      {isLoading ? (
         <div
-          className={`sidenav ${
-            isSidenavCollapsed ? "sidenav-collapsed" : "sidenav-expanded"
-          } ${isDarkMode ? "dark" : "light"}-sidenav`}
+          style={{
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          {SidebarData.map((item, index) => (
-            <NavLink
-              key={index}
-              to={item.path}
-              activeClassName="active-sidenav-link"
-              className={`${isDarkMode ? "dark" : "light"}-sidenav-link`}
-              exact={item.path === "/u" ? true : false}
+          <Loader />
+        </div>
+      ) : (
+        <>
+          {" "}
+          {error ? (
+            <div
+              className="centering"
+              style={{ minHeight: "100vh", color: "red" }}
             >
-              <div
-                style={{ display: "flex", alignItems: "center" }}
-                {...(isSidenavCollapsed && { className: "tooltip--btn" })}
-              >
-                {item.icon}
-                {isSidenavCollapsed && (
-                  <abbr className="classic">{item.title}</abbr>
-                )}
-                <span>{item.title}</span>
+              {error}
+            </div>
+          ) : (
+            <>
+              <div className="layer-underneath-navbar">&nbsp;</div>{" "}
+              <div className="main-wrapper">
+                <div
+                  className={`sidenav ${
+                    isSidenavCollapsed
+                      ? "sidenav-collapsed"
+                      : "sidenav-expanded"
+                  } ${isDarkMode ? "dark" : "light"}-sidenav`}
+                >
+                  {SidebarData.map((item, index) => (
+                    <NavLink
+                      key={index}
+                      to={item.path}
+                      activeClassName="active-sidenav-link"
+                      className={`${
+                        isDarkMode ? "dark" : "light"
+                      }-sidenav-link`}
+                      exact={item.path === "/u" ? true : false}
+                    >
+                      <div
+                        style={{ display: "flex", alignItems: "center" }}
+                        {...(isSidenavCollapsed && {
+                          className: "tooltip--btn",
+                        })}
+                      >
+                        {item.icon}
+                        {isSidenavCollapsed && (
+                          <abbr className="classic">{item.title}</abbr>
+                        )}
+                        <span>{item.title}</span>
+                      </div>
+                    </NavLink>
+                  ))}
+                </div>
+                <div
+                  className={`main ${isDarkMode ? "dark-mode-area" : null} ${
+                    isSidenavCollapsed ? "area-expanded" : "area-collapsed"
+                  }`}
+                >
+                  <LayoutContext.Provider value={{ isDarkMode, width, uid }}>
+                    {role === "guru" && <TeacherRoutes />}
+                    {role === "murid" && <StudentRoutes />}
+                  </LayoutContext.Provider>
+                </div>
               </div>
-            </NavLink>
-          ))}
-        </div>
-        <div
-          className={`main ${isDarkMode ? "dark-mode-area" : null} ${
-            isSidenavCollapsed ? "area-expanded" : "area-collapsed"
-          }`}
-        >
-          <LayoutContext.Provider value={{ isDarkMode, width }}>
-            {isStudent ? <StudentRoutes /> : <TeacherRoutes />}
-          </LayoutContext.Provider>
-        </div>
-      </div>
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 }

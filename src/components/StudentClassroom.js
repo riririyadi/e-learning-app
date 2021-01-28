@@ -1,85 +1,127 @@
-import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useRouteMatch } from "react-router-dom";
 import CustomModal from "./Modal";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { IoIosLogIn } from "react-icons/io";
 import { LayoutContext } from "./NewLayout";
-
 import ReactTooltip from "react-tooltip";
+import axios from "axios";
+import { Loader } from "./Loader";
 
-
-
-const NewClassSearch = () => {
-  const { isDarkMode } = useContext(LayoutContext);
-  const [searchValue, setSearchValue] = useState("");
-  function handleSubmit(e) {
-    e.preventDefault();
-    console.log(searchValue);
-  }
-  return (
-    <div className="p-4" style={{ fontSize: "14px" }}>
-      <h6>Join New Class</h6>
-      <input
-        type="text"
-        value={searchValue}
-        className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-        placeholder="Enter Classroom Code"
-        onChange={(e) => setSearchValue(e.target.value)}
-      />
-      <button className="button mt-2" onClick={handleSubmit}>
-        Join
-      </button>
-    </div>
-  );
-};
-
+ 
 export default function StudentClassroom() {
+   const token = localStorage.getItem("token");
+   let match = useRouteMatch();
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
   const { isDarkMode } = useContext(LayoutContext);
   const [isOpen, setIsOpen] = useState(false);
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
 
-  const classroomData = [
-    { id: 1, subject: "PPSI", class: "4KA21", teacher: "Casey Dubravka" },
-    {
-      id: 2,
-      subject: "Manajemen Sistem Informasi",
-      class: "4KA21",
-      teacher: "Ibrahim Affelay",
-    },
-    {
-      id: 3,
-      subject: "Sistem Multimedia",
-      class: "4KA21",
-      teacher: "Abdullah Abbas Defaye",
-    },
-    {id: 4,
-      subject: "Bahasa Inggris Bisnis",
-      class: "4KA21",
-      teacher: "Alexander Long",
-    },
-    {
-      id: 5,
-      subject: "Audit Sistem Informasi",
-      class: "4KA21",
-      teacher: "Liam Patrick",
-    },
-    { id: 6, subject: "Programming", class: "4KA21", teacher: "Cassidy Love" },
-    {
-      id: 7,
-      subject: "Analisa Kinerja Sistem",
-      class: "4KA21",
-      teacher: "Sean Maxim",
-    },
-    {
-      id: 8,
-      subject: "Sistem Cerdas",
-      class: "4KA21",
-      teacher: "Goran Atkinfef",
-    },
-  ];
+    const [error, setError] = useState("");
+  const [classroomData, setClassroomData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+document.title = "E-learning | Classroom"
+  },[])
+
+
+   const getAllClassroom = async () => {
+    try {
+      const res = await axios.get("http://elearning.havicrm.tk/api/classroom", {
+        headers: header,
+      });
+      setClassroomData(res.data);
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+      setError(err.message)
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getAllClassroom();
+  }, []);
+
+
+const NewClassSearch = () => {
+  const [code, setCode] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isJoined, setIsJoined] = useState(false);
+    const [error, setError] = useState("");
+
+const data = {
+  classcode: code
+}
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setIsSubmitting(true);
+      const res = await axios.post(
+        "http://elearning.havicrm.tk/api/classroom/join",
+        data,
+        {
+          headers: header,
+        }
+      );
+      setIsJoined(true);
+    getAllClassroom();
+    handleOpenModal();
+    }catch(err) {
+      console.log(err);
+      setError(err);
+    setIsSubmitting(false)
+    }
+  };
+
+
+  return (
+    <div className="p-4" style={{ fontSize: "14px" }}>
+      {isSubmitting ? (
+        <>
+          <h6>Joining New Class</h6>{" "}
+          <div className="centering mb-4 mt-4">
+            {" "}
+            <Loader />{" "}
+          </div>{" "}
+        </>
+      ) : (
+        <>
+          {isJoined ? (
+            <div className="centering mb-4 mt-4">
+              {" "}
+              You has joined to the classroom
+            </div>
+          ) : (
+            <>
+              <h6>Join New Class</h6>
+              {error && <div style={{ color: "red" }}>Invalid Code</div>}
+              <input
+                type="text"
+                value={code}
+                className={isDarkMode ? "input-field-dark-mode" : "input-field"}
+                placeholder="Enter Classroom Code"
+                onChange={(e) => setCode(e.target.value)}
+              />
+              <button className="button mt-2" onClick={handleSubmit}>
+                Join
+              </button>
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+  
   const linearGradient = [
     "to right top, #4ccfa7, #3bcab3, #33c5bd, #36bfc4, #43b9c8, #29b3d0, #09add7, #00a6dd, #009bed, #008efa, #007cff, #4e65ff",
     "to left top, #ffffff, #f6f7f9, #eaeff3, #dee7eb, #d2e0e2, #c9d7d8, #c0cdcf, #b7c4c5, #aeb6ba, #a5a9ac, #9b9c9e, #909090",
@@ -93,7 +135,7 @@ export default function StudentClassroom() {
     "to right top, #3fb979, #44bc79, #49bf7a, #4dc17a, #52c47a, #53ca78, #54d076, #56d674, #57e06d, #59eb65, #5ef55b, #65ff4e",
   ];
 
-  const linearGradients = Array.from({ length: 3 }).fill(linearGradient).flat();
+  const linearGradients = Array.from({ length: 5 }).fill(linearGradient).flat();
 
   return (
     <div>
@@ -125,12 +167,12 @@ export default function StudentClassroom() {
           />
         </div>
       </div>
-
+{isLoading? <div className="centering" style={{minHeight:"calc(100vh - 220px)"}}><Loader/></div>:
       <div className="row">
         {classroomData.map((data, i) => (
           <div className="col-lg-3 mb-4" key={data.id}>
             <div
-              className="card shadow"
+              className="card"
               style={{
                 backgroundImage: `linear-gradient(${linearGradients[i]})`,
                 border: "none",
@@ -157,7 +199,7 @@ export default function StudentClassroom() {
                 >
                   <div>
                     <Link
-                      to="/u/classroom/detail"
+                      to={`${match.url}/${data.id}`}
                       className={`${
                         isDarkMode ? "dark-manage-link" : "manage-link"
                       }`}
@@ -180,7 +222,7 @@ export default function StudentClassroom() {
 
                   <div className="ml-auto">
                     <span
-                      data-tip={`Teacher: ${data.teacher}`}
+                      data-tip={`Teacher: ${data.teacher.name}`}
                       data-for="teacher"
                     >
                       <ReactTooltip
@@ -205,7 +247,7 @@ export default function StudentClassroom() {
             </div>
           </div>
         ))}
-      </div>
+      </div>}
     </div>
   );
 }

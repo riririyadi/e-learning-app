@@ -1,43 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 import { IoIosLogIn } from "react-icons/io";
-import { RiSettingsLine } from "react-icons/ri";
-import { BsThreeDots, BsPlusCircle, BsTrash } from "react-icons/bs";
-import { BiRightArrowAlt, BiPencil } from "react-icons/bi";
+import { BsThreeDots, BsTrash } from "react-icons/bs";
+import { BiPencil, BiMinusCircle } from "react-icons/bi";
 import { LayoutContext } from "./NewLayout";
 import "../styles/Classroom.css";
 import ReactTooltip from "react-tooltip";
-import CustomModal from "./Modal"
-
-const classroomData = [
-  { id: 1, subject: "PPSI", className: "4KA21" },
-  {
-    id: 2,
-    subject: "Manajemen Sistem Informasi",
-    className: "3KA21",
-  },
-  { id: 3, subject: "Sistem Multimedia", className: "4KA21" },
-  {
-    id: 4,
-    subject: "Bahasa Inggris Bisnis",
-    className: "4DB02",
-  },
-  {
-    id: 5,
-    subject: "Bahasa Inggris Bisnis",
-    className: "4DB04",
-  },
-  { id: 6, subject: "Programming", className: "1KA21" },
-  { id: 7, subject: "Networking", className: "3IA21" },
-  { id: 8, subject: "Artificial Intellegence", className: "4KA21" },
-  { id: 9, subject: "Sistem Terdistribusi", className: "4KA21" },
-  { id: 10, subject: "Programming", className: "1KA21" },
-  { id: 11, subject: "Networking", className: "3IA21" },
-  { id: 12, subject: "Artificial Intellegence", className: "4KA21" },
-  { id: 13, subject: "Sistem Terdistribusi", className: "4KA21" },
-];
-
+import CustomModal from "./Modal";
+import axios from "axios";
+import { Loader } from "./Loader";
 
 const linearGradient = [
   "to right top, #4ccfa7, #3bcab3, #33c5bd, #36bfc4, #43b9c8, #29b3d0, #09add7, #00a6dd, #009bed, #008efa, #007cff, #4e65ff",
@@ -52,39 +24,119 @@ const linearGradient = [
   "to right top, #3fb979, #44bc79, #49bf7a, #4dc17a, #52c47a, #53ca78, #54d076, #56d674, #57e06d, #59eb65, #5ef55b, #65ff4e",
 ];
 
-const linearGradients = Array.from({ length: 3 }).fill(linearGradient).flat();
+const linearGradients = Array.from({ length: 5 }).fill(linearGradient).flat();
 
 export default function Classroom() {
-  const { isDarkMode } = useContext(LayoutContext);
 
-   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+ document.title = "E-learning | Classroom"
+  }, [])
+
+
+  const { isDarkMode } = useContext(LayoutContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState("");
+  const [classroomData, setClassroomData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
+
+  const token = localStorage.getItem("token");
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const getAllClassroom = async () => {
+    try {
+      const res = await axios.get("http://elearning.havicrm.tk/api/classroom", {
+        headers: header,
+      });
+      setClassroomData(res.data);
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+      setError(err.message)
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getAllClassroom();
+  },[]);
+
+  const [classData, setClassData] = useState({});
+
+  async function handleDelete(e, id) {
+    e.preventDefault();
+    try {
+      setIsSubmitting(true);
+      const res = await axios.delete(
+        `http://elearning.havicrm.tk/api/classroom/${id}`,
+        {
+          headers: header,
+        }
+      );
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+    getAllClassroom();
+    handleOpenModal();
+  }
+
   const Confirmation = () => {
     return (
       <div className="p-4">
         <div style={{ fontSize: "14px" }}>
+        {isSubmitting ? <div className="centering mb-4 mt-4"><Loader/></div>:<>
+          <div
+            className="mb-4"
+            style={{
+              backgroundColor: `${isDarkMode ? "#f5f5f7" : "#e1e1e1"}`,
+              color: `${isDarkMode ? "black" : "black"}`,
+              padding: "20px",
+              borderRadius: "5px",
+            }}
+          >
+            <h6>Deleting a classroom</h6>
+            <div className="d-flex bd-highlight">
+              <div className="bd-highlight">
+                <BiMinusCircle color="red" size={16} />
+              </div>
+              <div className="bd-highlight pl-2 pt-1">
+                <h6>
+                  {classData.subject} - {classData.name}
+                </h6>
+              </div>
+            </div>
+          </div>
           <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
           <br />
           <div className="centering">
             <div>
-              
-                <button className="button mr-4" onClick={handleOpenModal}>
-                 Yes
-                </button>
+              <button
+                className="button mr-4"
+                onClick={(e) => handleDelete(e, classData.id)}
+              >
+                Yes
+              </button>
               <button className="button" onClick={handleOpenModal}>
                 No
               </button>
             </div>
-          </div>
+          </div></>}
         </div>
       </div>
     );
   };
+
   return (
     <>
-      <div className="mb-4 d-flex bd-highlight">
+      <div className="mb-3 d-flex bd-highlight">
         <div className="bd-highlight">
           <h5>
             <b>Classroom</b>
@@ -108,107 +160,120 @@ export default function Classroom() {
           </Link>
         </div>
       </div>
-      <div className="row">
-        {classroomData.map((data, i) => (
-          <div className="col-lg-3 mb-4" key={data.id}>
-            <div
-              className="card shadow"
-              style={{
-                backgroundImage: `linear-gradient(${linearGradients[i]})`,
-                border: "none",
-                height: "246px",
-                borderRadius: "10px",
-                transition: "color 0.3s",
-              }}
-            >
+      {isLoading ? (
+        <div
+          style={{
+            minHeight: "calc(100vh - 220px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Loader />
+        </div>
+      ) : (
+      <>{error? <div className="centering" style={{minHeight:"calc(100vh - 220px)", color:"red"}}>{error}</div>:
+        <div className="row">
+          {classroomData.map((data, i) => (
+            <div className="col-lg-3 mb-4" key={data.id}>
               <div
-                className={`classroom-${
-                  i + 1
-                }  d-flex align-items-start flex-column`}
+                className="card"
+                style={{
+                  backgroundImage: `linear-gradient(${linearGradients[i]})`,
+                  border: "none",
+                  height: "246px",
+                  borderRadius: "10px",
+                  transition: "color 0.3s",
+                }}
               >
-                <div className="p-4">
-                  <h5>
-                    <b>{data.subject}</b>
-                  </h5>
-                  <h6>
-                    <b>{data.className}</b>
-                  </h6>
-                </div>
                 <div
-                  className="card-footer mt-auto d-flex bg-transparent p-2"
-                  style={{ border: "none", width: "100%" }}
+                  className={`classroom-${
+                    i + 1
+                  }  d-flex align-items-start flex-column`}
                 >
-                  <div>
-                    <Link
-                      to="/u/classroom/manage"
-                      className={`${
-                        isDarkMode ? "dark-manage-link" : "manage-link"
-                      }`}
-                    >
-                      <div className="centering">
+                  <div className="p-4">
+                    <h5>
+                      <b>{data.subject}</b>
+                    </h5>
+                    <h6>
+                      <b>{data.name}</b>
+                    </h6>
+                  </div>
+                  <div
+                    className="card-footer mt-auto d-flex bg-transparent p-2"
+                    style={{ border: "none", width: "100%" }}
+                  >
+                    <div>
+                      <Link
+                        to={`/u/classroom/${data.id}/manage`}
+                        className={`${
+                          isDarkMode ? "dark-manage-link" : "manage-link"
+                        }`}
+                      >
+                        <div className="centering">
+                          <button
+                            className={`${
+                              isDarkMode ? "dark-overlay-btn" : "overlay-btn"
+                            } centering`}
+                            style={{
+                              padding: "5px 5px",
+                            }}
+                          >
+                            <IoIosLogIn />
+                          </button>
+                          <span className="ml-2">Manage</span>
+                        </div>
+                      </Link>
+                    </div>
+                    <div className="ml-auto">
+                      <div className="dropdown">
                         <button
                           className={`${
                             isDarkMode ? "dark-overlay-btn" : "overlay-btn"
                           } centering`}
                           style={{
-                            padding: "5px 5px",
+                            border: "none",
+                            borderRadius: "30px",
+                            padding: "5px",
                           }}
+                          type="button"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                          data-toggle-second="tooltip"
+                          data-placement="right"
+                          title="More options"
                         >
-                          <IoIosLogIn />
+                          <BsThreeDots />
                         </button>
-                        <span className="ml-2">Manage</span>
-                      </div>
-                    </Link>
-                  </div>
-                  <div className="ml-auto">
-                    <div className="dropdown">
-                      <button
-                        className={`${
-                          isDarkMode ? "dark-overlay-btn" : "overlay-btn"
-                        } centering`}
-                        style={{
-                          border: "none",
-                          borderRadius: "30px",
-                          padding: "5px",
-                        }}
-                        type="button"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        data-toggle-second="tooltip"
-                        data-placement="right"
-                        title="More options"
-                      >
-                        <BsThreeDots />
-                      </button>
-                      <div
-                        className={`dropdown-menu shadow-sm dropdown-menu-right ${
-                          isDarkMode
-                            ? "dropdown-menu-dark"
-                            : "dropdown-menu-light"
-                        } p-2 mt-2 mb-2`}
-                      >
+                        <div
+                          className={`dropdown-menu shadow-sm dropdown-menu-right ${
+                            isDarkMode
+                              ? "dropdown-menu-dark"
+                              : "dropdown-menu-light"
+                          } p-2 mt-2 mb-2`}
+                        >
                           <Link
-                            to="/u/classroom/edit"
+                            to={`/u/classroom/edit/${data.id}`}
                             style={
                               isDarkMode
                                 ? { color: "#F5F5F7" }
                                 : { color: "#000000" }
                             }
                           >
-                        <div
-                          className={`dropdown-item rounded ${
-                            isDarkMode ? "dark-mode" : "light"
-                          } pl-2`}
-                          style={
-                         isDarkMode
-                        ? { cursor: "pointer",  color: "#F5F5F7" }                          
-                        : { cursor: "pointer", color: "#000000"  }
-                          }
-                        >
-                            <BiPencil />
-                            <span className="ml-2">Edit</span>
-                        </div>
+                            <div
+                              className={`dropdown-item rounded ${
+                                isDarkMode ? "dd-dark-mode" : "light"
+                              } pl-2`}
+                              style={
+                                isDarkMode
+                                  ? { cursor: "pointer", color: "#F5F5F7" }
+                                  : { cursor: "pointer", color: "#000000" }
+                              }
+                            >
+                              <BiPencil />
+                              <span className="ml-2">Edit</span>
+                            </div>
                           </Link>
                           <Link
                             to="#"
@@ -218,31 +283,35 @@ export default function Classroom() {
                                 : { color: "#000000" }
                             }
                           >
-                        <div
-                          className={`dropdown-item rounded  ${
-                            isDarkMode ? "dark-mode" : "light"
-                          } pl-2`}
-                          style={
-                             isDarkMode
-                        ? { cursor: "pointer",  color: "#F5F5F7" }                          
-                        : { cursor: "pointer", color: "#000000"  }
-                          }
-                          onClick={handleOpenModal}
-                        >
-                            <BsTrash />
-                            <span className="ml-2">Delete</span>
-                        </div>
+                            <div
+                              className={`dropdown-item rounded  ${
+                                isDarkMode ? "dd-dark-mode" : "light"
+                              } pl-2`}
+                              style={
+                                isDarkMode
+                                  ? { cursor: "pointer", color: "#F5F5F7" }
+                                  : { cursor: "pointer", color: "#000000" }
+                              }
+                              onClick={() => {
+                                setClassData(data);
+                                handleOpenModal();
+                              }}
+                            >
+                              <BsTrash />
+                              <span className="ml-2">Delete</span>
+                            </div>
                           </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-       <CustomModal
+          ))}
+        </div>}</>
+      )}
+      <CustomModal
         isOpen={isOpen}
         onRequestClose={handleOpenModal}
         componentToPass={<Confirmation />}

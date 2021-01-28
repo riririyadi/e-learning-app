@@ -8,12 +8,10 @@ import React, {
 import { getCroppedImg, getRotatedImage } from "./canvasUtils";
 import { Link } from "react-router-dom";
 import { BiPencil } from "react-icons/bi";
-import { FaUserCircle } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { ImCamera } from "react-icons/im";
 import { MdClass } from "react-icons/md";
 import { LayoutContext } from "./NewLayout";
-import ReactTooltip from "react-tooltip";
 import "../styles/Profile.css";
 import Cropper from "react-easy-crop";
 import { getOrientation } from "get-orientation/browser";
@@ -25,11 +23,13 @@ const ORIENTATION_TO_ANGLE = {
 };
 
 export default function Profile() {
+
+  useEffect(() => {
+ document.title = "E-learning | Profile"
+  }, [])
+
   const { isDarkMode } = useContext(LayoutContext);
-  const [name, setName] = useState("John Doe");
-  const [openFileUploader, setOpenFileUploader] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  let nameRef = useRef();
+  const [name] = useState("John Doe");
 
   const classHistory = [
     { class: "Matematika Dasar - 2KA21" },
@@ -66,9 +66,7 @@ export default function Profile() {
     }
   }, [imageSrc, croppedAreaPixels, rotation]);
 
-  const onClose = useCallback(() => {
-    setCroppedImage(null);
-  }, []);
+
 
   const onFileChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {

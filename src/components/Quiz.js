@@ -1,21 +1,58 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BsFunnel, BsTrash, BsThreeDots } from "react-icons/bs";
-import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 import ReactTooltip from "react-tooltip";
 import { BiPencil } from "react-icons/bi";
-import { RiSettingsLine } from "react-icons/ri";
 import { LayoutContext } from "./NewLayout";
 import CustomModal from "./Modal";
-
+import axios from "axios";
+import moment from "moment";
+import { Loader } from './Loader' 
 
 export default function Quiz() {
+
+
+  useEffect(() => {
+ document.title = "E-learning | Quiz"
+  }, [])
+
   const { isDarkMode } = useContext(LayoutContext);
   const [selectedRow, setSelectedRow] = useState(true);
+  const [quizData, setQuizData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
+
+const token = localStorage.getItem("token");
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const getAllQuiz = async () => {
+    try {
+      const res = await axios.get("http://elearning.havicrm.tk/api/quiz", {
+        headers: header,
+      });
+      console.log(res.data);
+      setQuizData(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getAllQuiz();
+  },[]);
+
+
+const format1 = "YYYY-MM-DD HH:mm:ss"
+
+
   const Confirmation = () => {
     return (
       <div className="p-4">
@@ -37,46 +74,10 @@ export default function Quiz() {
     );
   };
 
-  const quizData = [
-    {
-      quiz_name: "Quiz Analisa Sistem 1",
-      class: "4KA21",
-      subject: "Analisis Kinerja Sistem",
-      status: "open",
-      due_date: "23 Desember 2020 - 12:00 AM",
-    },
-    {
-      quiz_name: "Quiz 1 Requirement Documents",
-      class: "4KA21",
-      subject: "PPSI",
-      status: "open",
-      due_date: "23 Desember 2020 - 12:00 AM",
-    },
-    {
-      quiz_name: "Quiz 1",
-      class: "4KA21",
-      subject: "Algoritma dan pemrograman",
-      status: "closed",
-      due_date: "23 Desember 2020 - 12:00 AM",
-    },
-    {
-      quiz_name: "Quiz 1",
-      class: "4KA21",
-      subject: "Manajemen Layanan Sistem Informasi",
-      status: "open",
-      due_date: "23 Desember 2020 - 12:00 AM",
-    },
-    {
-      quiz_name: "Quiz 2 Proposal Analisis",
-      class: "4KA21",
-      subject: "PPSI",
-      status: "Closed",
-      due_date: "23 Desember 2020 - 12:00 AM",
-    },
-  ];
+ 
   return (
     <div>
-      <div className="mb-4 d-flex bd-highlight">
+      <div className="mb-3 d-flex bd-highlight">
         <div className="bd-highlight">
           <h5>
             <b>Quiz</b>
@@ -100,6 +101,8 @@ export default function Quiz() {
           </Link>
         </div>
       </div>
+      {isLoading? <div className="centering" style={{minHeight: "calc(100vh - 220px)"}}><Loader/></div>:
+      <div className="p-4" style={isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
       <div className="d-flex">
         <div className="centering">
           <h6>List of Quizes</h6>
@@ -115,7 +118,7 @@ export default function Quiz() {
           />
         </div>
       </div>
-      <table className="table table-borderless table-responsive-sm">
+      <table className="table table-borderless table-responsive-md">
         <thead>
           <tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
             <th scope="col">
@@ -125,7 +128,7 @@ export default function Quiz() {
                 onChange={() => setSelectedRow((prevState) => !prevState)}
               />
             </th>
-            <th scope="col">Task Name</th>
+            <th scope="col">Quiz Name</th>
             <th scope="col">Class</th>
             <th scope="col">Subject</th>
             <th scope="col">Status</th>
@@ -144,16 +147,16 @@ export default function Quiz() {
                 />
               </td>
 
-              <td>{quiz.quiz_name}</td>
+              <td>{quiz.name}</td>
               <td>{quiz.class}</td>
               <td>{quiz.subject}</td>
               <td>
                 <span
                   className={`status ${
-                    quiz.status === "open" ? "open" : "closed"
+                   moment().isAfter(quiz.due_date) ? "closed" : "open"
                   } ${isDarkMode ? "text-white dark-open" : null} `}
                 >
-                  {quiz.status}
+                  {moment().isAfter(quiz.due_date) ? "closed":"open" }
                 </span>
               </td>
               <td>{quiz.due_date}</td>
@@ -184,7 +187,7 @@ export default function Quiz() {
                     } p-2 mt-2 mb-2`}
                   >
                       <Link
-                        to="/u/quiz/edit"
+                        to={`/u/quiz/edit/${quizData.id}`}
                         style={
                           isDarkMode
                             ? { color: "#F5F5F7" }
@@ -193,7 +196,7 @@ export default function Quiz() {
                       >
                     <div
                       className={`dropdown-item rounded ${
-                        isDarkMode ? "dark-mode" : "light"
+                        isDarkMode ? "dd-dark-mode" : "light"
                       } pl-2`}
                       style={
                          isDarkMode
@@ -215,7 +218,7 @@ export default function Quiz() {
                       >
                     <div
                       className={`dropdown-item rounded  ${
-                        isDarkMode ? "dark-mode" : "light"
+                        isDarkMode ? "dd-dark-mode" : "light"
                       } pl-2`}
                       style={
                        isDarkMode
@@ -235,6 +238,7 @@ export default function Quiz() {
           ))}
         </tbody>
       </table>
+      </div>}
       <CustomModal
         isOpen={isOpen}
         onRequestClose={handleOpenModal}

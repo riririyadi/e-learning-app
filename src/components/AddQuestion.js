@@ -1,40 +1,93 @@
-import React, { useState, useContext, createContext } from "react";
-import { FiCheckCircle, FiPlus } from "react-icons/fi";
+import React, { useState, useContext } from "react";
 import { LayoutContext } from "./NewLayout";
 import { CreateTaskContext } from "./CreateNewTask";
 import { CreateQuizContext } from "./CreateNewQuiz";
 import { EditTaskContext } from "./EditTask";
 import { EditQuizContext } from "./EditQuiz";
-import { BiPencil } from "react-icons/bi";
-import { BsThreeDots, BsPlusCircle, BsTrash } from "react-icons/bs";
+import { FaCheckCircle } from "react-icons/fa";
+import { BsThreeDots, BsTrash } from "react-icons/bs";
+
+function Option({ option, index, correctOption }) {
+  const { isDarkMode } = useContext(LayoutContext);
+
+  const handleClick = () => {
+    correctOption(index);
+  };
+
+  return (
+      <div
+        style={{
+          width: "100%",
+          backgroundColor: `${isDarkMode? "#464649" :"#e5e5e5"}`,
+          padding: "10px",
+          borderRadius: "7px",
+          marginBottom: "10px",
+        }}
+        onClick={handleClick}
+      >
+        {option.option} {option.is_true && <span className="ml-2"><FaCheckCircle color="#00d48c"/></span>}
+      </div>
+  );
+}
+
+function OptionForm({ addOption, length }) {
+  const { isDarkMode } = useContext(LayoutContext);
+
+  const [value, setValue] = useState("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!value) return;
+    addOption(value);
+    setValue("");
+  };
+  return (
+    <form onSubmit={handleSubmit}>
+      {length < 4 && (
+        <>
+          <textarea
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            className={`${
+              isDarkMode ? "input-field-dark-mode" : "input-field"
+            } mb-2`}
+            placeholder="Type an option"
+            style={{ width: "100%", minHeight: "40px" }}
+          />
+          <button className="button" onClick={handleSubmit}>
+            Save and Add Option
+          </button>
+        </>
+      )}
+    </form>
+  );
+}
 
 const MPCFormQuestion = (props) => {
   const { isDarkMode } = useContext(LayoutContext);
 
-  const handleChangeMPC = (e) => {
-    const { name, value } = e.target;
-    setMPCQuestion({ ...mPCQuestion, [name]: value });
-  };
-  const [mPCQuestion, setMPCQuestion] = useState({
-    questionText: "",
-    option1: "",
-    option2: "",
-    option3: "",
-    option4: "",
-    answer: "",
-  }); 
-    const handleSubmitMPC = (e) => {
-    e.preventDefault();
-    if (!mPCQuestion) return;
-    props.addQuestion(mPCQuestion);
-    setMPCQuestion({questionText: "",
-    option1: "",
-    option2: "",
-    option3: "",
-    option4: "",
-    answer: "",});
+  const [question, setQuestion] = useState("");
+  const [options, setOptions] = useState([]);
+  const addOption = (option) => {
+    const NewOptions = [...options, { option }];
+    setOptions(NewOptions);
   };
 
+
+  const correctOption = (index) => {
+    const newList = [...options];
+    newList[index].is_true === true
+      ? (newList[index].is_true = false)
+      : (newList[index].is_true = true);
+    setOptions(newList);
+  };
+
+  const handleSubmitMPC = (e) => {
+    e.preventDefault();
+    if (!question || options.length < 4) return;
+    props.addQuestion(question, null, options);
+    setQuestion("");
+    setOptions([]);
+  };
   return (
     <>
       {props.list && (
@@ -66,7 +119,6 @@ const MPCFormQuestion = (props) => {
                   isDarkMode ? "dropdown-menu-dark" : "dropdown-menu-light"
                 } p-2 mt-2 mb-2`}
               >
-            
                 <div
                   className={`dropdown-item rounded  ${
                     isDarkMode ? "dark-mode" : "light"
@@ -86,134 +138,67 @@ const MPCFormQuestion = (props) => {
           </div>
         </div>
       )}
-      <div className={`row pb-4 ${!props.list ? "border-top pt-4":"pt-2" } `}>
+      <div className={`row pb-4 ${!props.list ? "border-top pt-4" : "pt-2"} `}>
         <div className="col-md-4 mb-2">{!props.list && "Question:"}</div>
-        <div className="col-md-8">
-          <textarea
-            value={
-              props.question
-                ? props.question.data.questionText
-                : mPCQuestion.questionText
-            }
-            onChange={handleChangeMPC}
-            readOnly={props.list ? true : false}
-            name="questionText"
-            className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-            placeholder="Add Question"
-            style={{ width: "100%", minHeight: "60px" }}
-          />
-          <div className="row">
-            <div className="col-10">
-              <label>Options:</label>
+        {props.list ? (
+          <div className="col-md-8">
+            <textarea
+              value={props.question.question}
+              readOnly
+              className={isDarkMode ? "input-field-dark-mode" : "input-field"}
+              placeholder="Add Question"
+              style={{ width: "100%", minHeight: "60px" }}
+            />
+            <div className="row">
+              <div className="col-10">
+                <label>Options:</label>
+              </div>
             </div>
+            {props.question.options.map((op, i) => (
+                 <div key={i}
+        style={{
+          width: "100%",
+          backgroundColor: `${isDarkMode? "#464649" :"#e5e5e5"}`,
+          padding: "10px",
+          borderRadius: "7px",
+          marginBottom: "10px",
+        }}
+      >
+        {op.option} {op.is_true && <span className="ml-2"><FaCheckCircle color="#00d48c"/></span>}
+      </div>
+            ))}
           </div>
-
-          <div className="row">
-            <div className="col-10">
-              <textarea
-                value={
-                  props.question
-                    ? props.question.data.option1
-                    : mPCQuestion.option1
-                }
-                onChange={handleChangeMPC}
-                name="option1"
-                className={`${
-                  isDarkMode ? "input-field-dark-mode" : "input-field"
-                } mb-2`}
-                readOnly={props.list ? true : false}
-                placeholder="1st Option"
-                style={{ width: "100%", minHeight:"40px" }}
+        ) : (
+          <div className="col-md-8">
+            <textarea
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              name="questionText"
+              className={isDarkMode ? "input-field-dark-mode" : "input-field"}
+              placeholder="Add Question"
+              style={{ width: "100%", minHeight: "60px" }}
+            />
+            <div className="row">
+              <div className="col-10">
+                <label>
+                  Options: {options.length > 0 && !("is_true" === true in options) && <span style={{color:"red"}}>Click to select the correct option</span>}
+                </label>
+              </div>
+            </div>
+            {options.map((option, index) => (
+              <Option
+                key={index}
+                index={index}
+                option={option}
+                correctOption={correctOption}
               />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-10">
-              <textarea
-           value={
-                  props.question
-                    ? props.question.data.option2
-                    : mPCQuestion.option2
-                }
-                onChange={handleChangeMPC}
-                name="option2"
-                className={`${
-                  isDarkMode ? "input-field-dark-mode" : "input-field"
-                } mb-2`}
-                placeholder="2nd Option"
-                readOnly={props.list ? true : false}
-                style={{ width: "100%", minHeight:"40px" }}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-10">
-              <textarea
-                value={
-                  props.question
-                    ? props.question.data.option3
-                    : mPCQuestion.option3
-                }
-                onChange={handleChangeMPC}
-                name="option3"
-                className={`${
-                  isDarkMode ? "input-field-dark-mode" : "input-field"
-                } mb-2`}
-                placeholder="3rd Option"
-                readOnly={props.list ? true : false}
-                style={{ width: "100%", minHeight:"40px" }}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-10">
-              <textarea
-                value={
-                  props.question
-                    ? props.question.data.option4
-                    : mPCQuestion.option4
-                }
-                onChange={handleChangeMPC}
-                name="option4"
-                className={`${
-                  isDarkMode ? "input-field-dark-mode" : "input-field"
-                } mb-2`}
-                placeholder="4th Option"
-                style={{ width: "100%", minHeight:"40px" }}
-                readOnly={props.list ? true : false}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-10">
-              <label>Answer:</label>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-10">
-              <textarea
-                value={
-                  props.question
-                    ? props.question.data.answer
-                    : mPCQuestion.answer
-                }
-                onChange={handleChangeMPC}
-                name="answer"
-                className={`${
-                  isDarkMode ? "input-field-dark-mode" : "input-field"
-                } mb-2`}
-                placeholder="Paste the answer"
-                readOnly={props.list ? true : false}
-                style={{ width: "100%", minHeight:"40px" }}
-              />
-            </div>
-          </div>
-          {!props.list && (
+            ))}
+            <OptionForm addOption={addOption} length={options.length} />
             <button className="button mt-4" onClick={handleSubmitMPC}>
-              Save and Add
+              Save and Add Question
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </>
   );
@@ -230,101 +215,8 @@ const EssayFormQuestion = (props) => {
   const handleSubmitEssay = (e) => {
     e.preventDefault();
     if (!essayQuestion) return;
-    props.addQuestion(essayQuestion);
+    props.addQuestion(essayQuestion, null, null);
     setEssayQuestion("");
-  };
-
-  return (
-
-    <>
-     {props.list && (
-        <div className="row border-top pl-3 pr-3 pt-2 d-flex">
-          <div>Question: {props.index + 1}</div>
-          <div className="ml-auto">
-            <div className="dropdown">
-              <button
-                className={`${
-                  isDarkMode ? "dark-overlay-btn" : "overlay-btn"
-                } centering`}
-                style={{
-                  border: "none",
-                  borderRadius: "30px",
-                  padding: "5px",
-                }}
-                type="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-                data-toggle-second="tooltip"
-                data-placement="right"
-                title="More options"
-              >
-                <BsThreeDots />
-              </button>
-              <div
-                className={`dropdown-menu shadow-sm dropdown-menu-right ${
-                  isDarkMode ? "dropdown-menu-dark" : "dropdown-menu-light"
-                } p-2 mt-2 mb-2`}
-              >
-              
-                <div
-                  className={`dropdown-item rounded  ${
-                    isDarkMode ? "dark-mode" : "light"
-                  } pl-2`}
-                  style={
-                    isDarkMode
-                      ? { cursor: "pointer", color: "#F5F5F7" }
-                      : { cursor: "pointer", color: "#000000" }
-                  }
-                  onClick={props.handleDelete}
-                >
-                  <BsTrash />
-                  <span className="ml-2">Delete</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      <div className={`row pb-4 ${!props.list ? "border-top pt-4" : "pt-2"}`}>
-        <div className="col-md-4 mb-2">{!props.list && "Question:"}</div>
-        <div className="col-md-8">
-          <textarea
-            value={props.question? props.question.data:essayQuestion}
-            className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-            placeholder="Add Question"
-            style={{ width: "100%", minHeight: "60px" }}
-            onChange={handleChangeEssay}
-            readOnly={props.list? true: false}
-          />
-           {!props.list && (
-            <button className="button mt-4" onClick={handleSubmitEssay}>
-              Save and Add
-            </button>
-          )}
-        </div>
-      </div>
-    </>
-  );
-};
-
-const TOFFormQuestion = (props) => {
-  const { isDarkMode } = useContext(LayoutContext);
-   const [toFQuestion, setToFQuestion] = useState({
-    questionText: "",
-    answer: "",
-  });
-
-  const handleChangeToF = (e) => {
-    const { name, value } = e.target;
-    setToFQuestion({ ...toFQuestion, [name]: value });
-  };
-
-  const handleSubmitToF = (e) => {
-    e.preventDefault();
-    if (!toFQuestion) return;
-    props.addQuestion(toFQuestion);
-    setToFQuestion({questionText:"", answer:""});
   };
 
   return (
@@ -358,7 +250,6 @@ const TOFFormQuestion = (props) => {
                   isDarkMode ? "dropdown-menu-dark" : "dropdown-menu-light"
                 } p-2 mt-2 mb-2`}
               >
-              
                 <div
                   className={`dropdown-item rounded  ${
                     isDarkMode ? "dark-mode" : "light"
@@ -382,62 +273,41 @@ const TOFFormQuestion = (props) => {
         <div className="col-md-4 mb-2">{!props.list && "Question:"}</div>
         <div className="col-md-8">
           <textarea
-            value={props.question? props.question.data.questionText : toFQuestion.questionText}
-            onChange={handleChangeToF}
-            name="questionText"
-            readOnly={props.list ? true :false}
+            value={props.question ? props.question.question : essayQuestion}
             className={isDarkMode ? "input-field-dark-mode" : "input-field"}
             placeholder="Add Question"
             style={{ width: "100%", minHeight: "60px" }}
+            onChange={handleChangeEssay}
+            readOnly={props.list ? true : false}
           />
-          <label>Answer:</label>
-          <select
-            className={isDarkMode ? "select-box-dark-mode" : "select-box"}
-            name="answer"
-            onChange={handleChangeToF}
-            readOnly
-            value={props.question? props.question.data.answer: toFQuestion.answer}
-          >
-            <option></option>
-            <option value="True">True</option>
-            <option value="False">False</option>
-          </select>
-           {!props.list && (
-            <button className="button mt-4" onClick={handleSubmitToF}>
+          {!props.list && (
+            <button className="button mt-4" onClick={handleSubmitEssay}>
               Save and Add
             </button>
-          )}  
+          )}
         </div>
       </div>
     </>
   );
 };
 
-const MPFormQuestion = (props) => {
+const TOFFormQuestion = (props) => {
   const { isDarkMode } = useContext(LayoutContext);
-  const [mPQuestion, setMPQuestion] = useState({
-    questionText: "",
-    answer: "",
-  });
 
- 
-  const handleChangeMP = (e) => {
-    const { name, value } = e.target;
-    setMPQuestion({ ...mPQuestion, [name]: value });
-  };
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
 
-  const handleSubmitMP = (e) => {
+  const handleSubmitToF = (e) => {
     e.preventDefault();
-    if (!mPQuestion) return;
-    props.addQuestion(mPQuestion);
-    setMPQuestion({
-    questionText: "",
-    answer: "",
-  });
+    if (!question || !answer) return;
+    props.addQuestion(question, answer);
+    setQuestion("");
+    setAnswer("");
   };
+
   return (
     <>
-     {props.list && (
+      {props.list && (
         <div className="row border-top pl-3 pr-3 pt-2 d-flex">
           <div>Question: {props.index + 1}</div>
           <div className="ml-auto">
@@ -466,7 +336,6 @@ const MPFormQuestion = (props) => {
                   isDarkMode ? "dropdown-menu-dark" : "dropdown-menu-light"
                 } p-2 mt-2 mb-2`}
               >
-            
                 <div
                   className={`dropdown-item rounded  ${
                     isDarkMode ? "dark-mode" : "light"
@@ -490,35 +359,128 @@ const MPFormQuestion = (props) => {
         <div className="col-md-4 mb-2">{!props.list && "Question:"}</div>
         <div className="col-md-8">
           <textarea
-                value={props.question? props.question.data.questionText: mPQuestion.questionText}
-            onChange={handleChangeMP}
-            name="questionText"
+            value={props.question ? props.question.question : question}
+            onChange={(e) => setQuestion(e.target.value)}
+            readOnly={props.list ? true : false}
             className={isDarkMode ? "input-field-dark-mode" : "input-field"}
             placeholder="Add Question"
             style={{ width: "100%", minHeight: "60px" }}
-            readOnly={props.list? true:false}
+          />
+          <label>Answer:</label>
+          <select
+            className={isDarkMode ? "select-box-dark-mode" : "select-box"}
+            onChange={(e) => setAnswer(e.target.value)}
+            readOnly
+            value={props.question ? props.question.answer : answer}
+          >
+            <option></option>
+            <option value="True">True</option>
+            <option value="False">False</option>
+          </select>
+          {!props.list && (
+            <button className="button mt-4" onClick={handleSubmitToF}>
+              Save and Add
+            </button>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+
+const MPFormQuestion = (props) => {
+  const { isDarkMode } = useContext(LayoutContext);
+
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+
+  const handleSubmitMP = (e) => {
+    e.preventDefault();
+    if (!question || !answer) return;
+    props.addQuestion(question, answer);
+    setQuestion("");
+    setAnswer("");
+  };
+  return (
+    <>
+      {props.list && (
+        <div className="row border-top pl-3 pr-3 pt-2 d-flex">
+          <div>Question: {props.index + 1}</div>
+          <div className="ml-auto">
+            <div className="dropdown">
+              <button
+                className={`${
+                  isDarkMode ? "dark-overlay-btn" : "overlay-btn"
+                } centering`}
+                style={{
+                  border: "none",
+                  borderRadius: "30px",
+                  padding: "5px",
+                }}
+                type="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                data-toggle-second="tooltip"
+                data-placement="right"
+                title="More options"
+              >
+                <BsThreeDots />
+              </button>
+              <div
+                className={`dropdown-menu shadow-sm dropdown-menu-right ${
+                  isDarkMode ? "dropdown-menu-dark" : "dropdown-menu-light"
+                } p-2 mt-2 mb-2`}
+              >
+                <div
+                  className={`dropdown-item rounded  ${
+                    isDarkMode ? "dark-mode" : "light"
+                  } pl-2`}
+                  style={
+                    isDarkMode
+                      ? { cursor: "pointer", color: "#F5F5F7" }
+                      : { cursor: "pointer", color: "#000000" }
+                  }
+                  onClick={props.handleDelete}
+                >
+                  <BsTrash />
+                  <span className="ml-2">Delete</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className={`row pb-4 ${!props.list ? "border-top pt-4" : "pt-2"}`}>
+        <div className="col-md-4 mb-2">{!props.list && "Question:"}</div>
+        <div className="col-md-8">
+          <textarea
+            value={props.question ? props.question.question : question}
+            onChange={(e) => setQuestion(e.target.value)}
+            className={isDarkMode ? "input-field-dark-mode" : "input-field"}
+            placeholder="Add Question"
+            style={{ width: "100%", minHeight: "60px" }}
+            readOnly={props.list ? true : false}
           />
           <label>Answer:</label>
           <div className="row">
             <div className="col-10">
               <textarea
                 name="answer"
-                value={props.question? props.question.data.answer: mPQuestion.answer}
-                onChange={handleChangeMP}
+                value={props.question ? props.question.answer : answer}
+                onChange={(e) => setAnswer(e.target.value)}
                 className={`${
                   isDarkMode ? "input-field-dark-mode" : "input-field"
                 } mb-2`}
                 placeholder="Answer"
-            readOnly={props.list? true:false}
-            style={{ width: "100%", minHeight: "60px" }}
-                
-                style={{ width: "100%" }}
+                readOnly={props.list ? true : false}
+                style={{ width: "100%", minHeight: "60px" }}
               />
-                 {!props.list && (
-            <button className="button mt-4" onClick={handleSubmitMP}>
-              Save and Add
-            </button>
-          )}  
+              {!props.list && (
+                <button className="button mt-4" onClick={handleSubmitMP}>
+                  Save and Add
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -535,17 +497,13 @@ export const Question = ({
   deleteList,
 }) => {
 
-  const handleClick = () => {
-    listComplete(index);
-  };
-
   const handleDelete = () => {
     deleteList(index);
   };
 
   return (
     <>
-      {questionType === "Multiple Choice" && (
+      {questionType === "MULTIPLE_CHOICE" && (
         <MPCFormQuestion
           list={true}
           question={question}
@@ -553,7 +511,7 @@ export const Question = ({
           index={index}
         />
       )}
-      {questionType === "Essay" && (
+      {questionType === "ESSAY" && (
         <EssayFormQuestion
           list={true}
           question={question}
@@ -561,7 +519,7 @@ export const Question = ({
           index={index}
         />
       )}
-      {questionType === "True or False" && (
+      {questionType === "TRUE_OR_FALSE" && (
         <TOFFormQuestion
           list={true}
           question={question}
@@ -569,7 +527,7 @@ export const Question = ({
           index={index}
         />
       )}
-      {questionType === "Match Pairs" && (
+      {questionType === "MATCH_PAIR" && (
         <MPFormQuestion
           list={true}
           question={question}
@@ -582,23 +540,19 @@ export const Question = ({
 };
 
 export const QuestionForm = ({ addQuestion, questionType }) => {
-
-  
   return (
     <>
-      {questionType === "Multiple Choice" && (
-        <MPCFormQuestion
-          addQuestion={addQuestion}
-        />
+      {questionType === "MULTIPLE_CHOICE" && (
+        <MPCFormQuestion addQuestion={addQuestion} />
       )}
-      {questionType === "Essay" && (
-        <EssayFormQuestion  addQuestion={addQuestion} />
+      {questionType === "ESSAY" && (
+        <EssayFormQuestion addQuestion={addQuestion} />
       )}
-      {questionType === "True or False" && (
-        <TOFFormQuestion  addQuestion={addQuestion} />
+      {questionType === "TRUE_OR_FALSE" && (
+        <TOFFormQuestion addQuestion={addQuestion} />
       )}
-      {questionType === "Match Pairs" && (
-       <MPFormQuestion addQuestion={addQuestion}/>
+      {questionType === "MATCH_PAIR" && (
+        <MPFormQuestion addQuestion={addQuestion} />
       )}
     </>
   );
@@ -666,8 +620,8 @@ export const AddTaskQuestion = (props) => {
 export const AddQuizQuestion = (props) => {
   const { questions, setQuestion } = useContext(CreateQuizContext);
   const questionType = props.questionType;
-  const addQuestion = (data) => {
-    const questionList = [...questions, { data }];
+  const addQuestion = (question, answer, options) => {
+    const questionList = [...questions, { question, answer, options }];
     setQuestion(questionList);
   };
 
@@ -784,7 +738,7 @@ export const EditTaskQuestion = (props) => {
 export const EditQuizQuestion = (props) => {
   const { questions, setQuestion } = useContext(EditQuizContext);
   const questionType = props.questionType;
-  const addQuestion = (data) => {
+    const addQuestion = (data) => {
     const questionList = [...questions, { data }];
     setQuestion(questionList);
   };
@@ -837,6 +791,5 @@ export const EditQuizQuestion = (props) => {
         )}
       </div>
     </div>
-
   );
 };

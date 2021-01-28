@@ -1,7 +1,5 @@
-import React, { useState, useContext, createContext } from "react";
-import { Link } from "react-router-dom";
-import Datetime from "react-datetime";
-import { FaCalendarAlt } from "react-icons/fa";
+import React, { useState, useContext, createContext, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import moment from "moment";
 import { LayoutContext } from "./NewLayout";
 import DatePicker from "react-datepicker";
@@ -9,10 +7,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../styles/CreateNewTask.css";
 import CustomModal from "./Modal";
 import { EditQuizQuestion } from "./AddQuestion";
+import axios from "axios";
 
 export const EditQuizContext = createContext();
 
 export default function EditQuiz() {
+  let { id } = useParams();
+
 const [startDate, setStartDate] = useState(new Date());
   const [questions, setQuestion] = useState([]);
   const { isDarkMode } = useContext(LayoutContext);
@@ -22,6 +23,32 @@ const [startDate, setStartDate] = useState(new Date());
 	function handleOpenModal() {
 		setIsOpen(!isOpen);
 	}
+
+
+  const token = localStorage.getItem("token");
+
+  const header = {
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  const getDetailQuiz = async () => {
+    try {
+      const res = await axios.get(
+        `http://elearning.havicrm.tk/api/quiz/${id}`,
+        {
+          headers: header,
+        }
+      );
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+  getDetailQuiz();
+  }, [])
 
 
 const Confirmation = () => {
@@ -34,6 +61,7 @@ const Confirmation = () => {
 					</h6>
 					<div className="centering pt-4">
 						<div>
+
 							<Link to="/u/quiz">
 								<button className="button mr-2">Yes</button>
 							</Link>
@@ -90,11 +118,10 @@ const Confirmation = () => {
                 placeholderText="Click to select a date"
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
-                locale="pt-BR"
                 showTimeSelect
                 timeFormat="p"
                 timeIntervals={15}
-                dateFormat="Pp"
+                dateFormat="yyyy-MM-DD HH:mm:ss"
               />
             </div>
           </div>

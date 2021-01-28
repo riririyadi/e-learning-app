@@ -1,8 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { BsFunnel } from "react-icons/bs";
 import { LayoutContext } from "./NewLayout";
 
 export default function StudentQuiz() {
+
+
+  useEffect(()=>{
+document.title = "E-learning | Quiz"
+  },[])
+
   const { isDarkMode } = useContext(LayoutContext);
   const quizData = [
     {
@@ -39,6 +45,8 @@ export default function StudentQuiz() {
       <h5 className="mb-4">
         <b>Quiz</b>
       </h5>
+       <div className="p-4" style={ isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
+
       <div className="d-flex">
         <div className="centering">
           <h6>List of Quizes</h6>
@@ -54,9 +62,10 @@ export default function StudentQuiz() {
           />
         </div>
       </div>
-      <table className="table table-borderless table-responsive-sm">
+      <table className="table table-borderless table-responsive-md">
         <thead>
           <tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
+            <th scope="col"><input type="checkbox"/></th>
             <th scope="col">Quiz Name</th>
             <th scope="col">Class</th>
             <th scope="col">Status</th>
@@ -67,6 +76,7 @@ export default function StudentQuiz() {
         <tbody className={isDarkMode ? "bg-darks" : "bg-white"}>
           {quizData.map((quiz, i) => (
             <tr key={i} className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
+              <td><input type="checkbox"/></td>
               <td>{quiz.quiz_name}</td>
               <td>{quiz.class}</td>
               <td>
@@ -92,6 +102,7 @@ export default function StudentQuiz() {
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 }

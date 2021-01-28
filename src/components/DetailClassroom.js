@@ -1,13 +1,17 @@
-import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useParams, useRouteMatch } from "react-router-dom";
 import { FcAbout } from "react-icons/fc";
 import CustomModal from "./Modal";
 import { LayoutContext } from "./NewLayout";
+import axios from "axios";
+import { Loader } from "./Loader";
 
 export default function DetailClassroom() {
   const { isDarkMode } = useContext(LayoutContext);
+  let match = useRouteMatch();
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
@@ -24,6 +28,31 @@ export default function DetailClassroom() {
     "#00D48C",
     
   ];
+
+  const [classroom, setClassroom] = useState({})
+  const { id } = useParams()
+
+const token = localStorage.getItem("token");
+
+  const header = {
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+const getDetailClassroom = async() => {
+try{
+  const res = await axios.get(`http://elearning.havicrm.tk/api/classroom/${id}`, {headers: header})
+  console.log(res.data);
+  setClassroom(res.data);
+}catch(err){
+console.log(err)
+}
+setIsLoading(false);
+}
+
+useEffect(() => {
+getDetailClassroom();
+}, [])
 
 const bgColors = Array.from({ length: 5 }).fill(bgColor).flat();
   const lessonData = [
@@ -103,7 +132,7 @@ const bgColors = Array.from({ length: 5 }).fill(bgColor).flat();
           </div>
           <div className="mt-4 centering">
             <div>
-              <Link to="/u/classroom/detail/do-quiz">
+              <Link to={`${match.url}/do-quiz/3`}>
                 <button className="button mr-4">
                   ▶️
                   <span className="ml-1 ">Start</span>
@@ -163,7 +192,7 @@ const bgColors = Array.from({ length: 5 }).fill(bgColor).flat();
           </div>
           <div className="mt-4 centering">
             <div>
-              <Link to="/u/classroom/detail/do-task">
+              <Link to={`${match.url}/do-task`}>
                 <button className="button mr-4">
                   ▶️
                   <span className="ml-1 ">Start</span>
@@ -183,6 +212,7 @@ const bgColors = Array.from({ length: 5 }).fill(bgColor).flat();
       <h5 className="mb-4">
         <b>Classroom</b>
       </h5>
+      {isLoading ? <div className="centering" style={{minHeight: "200px"}}><Loader/></div>:
       <div
         className="mb-4"
         style={{
@@ -196,14 +226,14 @@ const bgColors = Array.from({ length: 5 }).fill(bgColor).flat();
         <div className="classroom-detail p-4 text-white d-flex align-items-start flex-column">
           <div>
             <b style={{ fontSize: "16px" }}>
-              Sistem Keamanan dan Teknologi Informasi - 4KA21
+              {classroom.subject} - {classroom.name}
             </b>
           </div>
           <div>
             <span className="mr-2">
               <FcAbout size="20px" />
             </span>
-            Kelas ini untuk mahasiswa Gunadarma
+            {classroom.description}
           </div>
           <div className="mt-auto">
             <div>Teacher: </div>
@@ -218,10 +248,10 @@ const bgColors = Array.from({ length: 5 }).fill(bgColor).flat();
                 }}
               />
             </span>
-            Casey Dubravka
+            {classroom.teacher}
           </div>
         </div>
-      </div>
+      </div>}
       <div>
         {lessonData.map((data, i) => (
           <div className="mb-4 d-flex bd-highlight" key={data.lessonName}>

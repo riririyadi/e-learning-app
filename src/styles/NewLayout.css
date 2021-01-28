@@ -13,6 +13,10 @@
   background-color: #000000;
 }
 
+.dd-dark-mode{
+  background-color:#18181B;
+}
+
 .card-content {
   background: -webkit-linear-gradient(-45deg, #9b95c9, #da98b3, #ffa177);
   -webkit-background-clip: text;
@@ -304,7 +308,7 @@ button:focus {
 }
 
 .dark-sidenav-link:hover {
-  background-color: #1a1a1a;
+  background-color: #000000;
   color: #772ce8;
 }
 

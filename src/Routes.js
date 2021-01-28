@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useRouteMatch } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import EventsCalendar from "./components/Calendar";
 import Classroom from "./components/Classroom";
@@ -28,163 +28,184 @@ import DoTask from "./components/DoTask";
 import SearchResult from "./components/SearchResult";
 import EditClassroom from "./components/EditClassroom"
 
-const DoQuizRoute = () => {
+
+function DoQuizRoute() {
+  const match = useRouteMatch();
+
   return (
     <Switch>
-      <Route exact path="/u/classroom/detail/do-quiz" component={DoQuiz} />
-      <Route path="/u/classroom/detail/do-quiz/result" component={Result} />
+      <Route exact path={`${match.path}`} component={DoQuiz} />
+      <Route path={`${match.path}/result`} component={Result} />
     </Switch>
   );
 };
 
-const DoTaskRoute = () => {
+function DoTaskRoute() {
+  const match = useRouteMatch();
+
   return (
     <Switch>
-      <Route exact path="/u/classroom/detail/do-task" component={DoTask} />
-      <Route path="/u/classroom/detail/do-task/result" component={Result} />
+      <Route exact path={`${match.path}`} component={DoTask} />
+      <Route path={`${match.path}/result`} component={Result} />
     </Switch>
   );
 };
 
 
-const ClassInnerRoute = () => {
+function ClassInnerRoute() {
+  const match = useRouteMatch();
+
   return (
     <Switch>
-      <Route exact path="/u/classroom/detail" component={DetailClassroom} />
-      <Route path="/u/classroom/detail/do-quiz">
+      <Route exact path={`${match.path}`} component={DetailClassroom} />
+      <Route path={`${match.path}/do-quiz/:id`}>
         <DoQuizRoute />
       </Route>
-      <Route path="/u/classroom/detail/do-task"><DoTaskRoute/></Route>
+      <Route path={`${match.path}/do-task`}><DoTaskRoute/></Route>
     </Switch>
   );
 };
 
-const ClassRoute = () => {
+function ClassRoute() {
+  const match = useRouteMatch();
   return (
     <Switch>
-      <Route exact path="/u/classroom/" component={StudentClassroom} />
-      <Route path="/u/classroom/detail">
+      <Route exact path={`${match.path}`} component={StudentClassroom} />
+      <Route path={`${match.path}/:id`}>
         <ClassInnerRoute />
       </Route>
     </Switch>
   );
 };
-export const StudentRoutes = () => {
+export function StudentRoutes() {
+  const match = useRouteMatch();
   return (
     <Switch>
-      <Route exact path="/u/" component={Dashboard} />
-      <Route path="/u/calendar" component={EventsCalendar} />
-      <Route path="/u/classroom">
+      <Route exact path={`${match.path}`} component={Dashboard} />
+      <Route path={`${match.path}/calendar`} component={EventsCalendar} />
+      <Route path={`${match.path}/classroom`}>
         <ClassRoute />
       </Route>
-      <Route path="/u/search" component={SearchResult} />
-      <Route path="/u/quiz" component={StudentQuiz} />
-      <Route path="/u/task" component={StudentTask} />
-      <Route path="/u/grade" component={Grade} />
-      <Route path="/u/profile" ><ProfileRoute/></Route>
-      <Route path="/u/*" component={NotMatch} />
+      <Route path={`${match.path}/search`} component={SearchResult} />
+      <Route path={`${match.path}/quiz`} component={StudentQuiz} />
+      <Route path={`${match.path}/task`} component={StudentTask} />
+      <Route path={`${match.path}/grade`} component={Grade} />
+      <Route path={`${match.path}/profile`}><ProfileRoute/></Route>
+      <Route path={`${match.path}/*`}component={NotMatch} />
     </Switch>
   );
 };
 
-const ManageClassroomRoute = () => {
+function ManageClassroomRoute() {
+   const match = useRouteMatch();
   return (
     <Switch>
-      <Route exact path="/u/classroom/manage" component={ManageClassroom} />
+      <Route exact path={`${match.path}`} component={ManageClassroom} />
       <Route
-        path="/u/classroom/manage/create-new-lesson"
+        path={`${match.path}/create-new-lesson`}
         component={CreateNewLesson}
       />
       <Route
-        path="/u/classroom/manage/edit-lesson"
+        path={`${match.path}/edit-lesson`}
         component={EditLesson}
       />
     </Switch>
   );
 };
 
-const TeacherClassRoute = () => {
+function TeacherClassRoute() {
+  const match = useRouteMatch();
+
   return (
     <Switch>
-      <Route exact path="/u/classroom/" component={Classroom} />
+      <Route exact path={`${match.path}`} component={Classroom} />
       <Route
-        path="/u/classroom/create-new-one"
+        path={`${match.path}/create-new-one`}
         component={CreateNewClassroom}
       />
         <Route
-        path="/u/classroom/edit"
+        path={`${match.path}/edit/:id`}
         component={EditClassroom}
       />
-      <Route path="/u/classroom/manage">
+      <Route path={`${match.path}/:id/manage`}>
         <ManageClassroomRoute />
       </Route>
     </Switch>
   );
 };
 
-const TeacherTaskRoute = () => {
+function TeacherTaskRoute() {
+  const match = useRouteMatch();
+
   return (
     <Switch>
-      <Route exact path="/u/task/" component={Task} />
-      <Route path="/u/task/create-new-task" component={CreateNewTask} />
+      <Route exact  path={`${match.path}`} component={Task} />
+      <Route path={`${match.path}/create-new-task`} component={CreateNewTask} />
         <Route
-        path="/u/task/edit"
+       path={`${match.path}/edit`}
         component={EditTask}
       />
     </Switch>
   );
 };
 
-const TeacherQuizRoute = () => {
+function TeacherQuizRoute() {
+  const match = useRouteMatch();
+
   return (
     <Switch>
-      <Route exact path="/u/quiz/" component={Quiz} />
-      <Route path="/u/quiz/create-new-quiz" component={CreateNewQuiz} />
+      <Route exact path={`${match.path}`} component={Quiz} />
+      <Route path={`${match.path}/create-new-quiz`} component={CreateNewQuiz} />
         <Route
-        path="/u/quiz/edit"
+         path={`${match.path}/edit/:id`}
         component={EditQuiz}
       />
     </Switch>
   );
 };
 
-const TeacherGradeRoute = () => {
+function TeacherGradeRoute() {
+  const match = useRouteMatch();
   return (
     <Switch>
-      <Route exact path="/u/grade/" component={Grade} />
-      <Route path="/u/grade/view" component={ViewGrade} />
+      <Route exact  path={`${match.path}`} component={Grade} />
+      <Route ppath={`${match.path}/view`} component={ViewGrade} />
     </Switch>
   );
 };
 
-const ProfileRoute = () => {
+function ProfileRoute() {
+  const match = useRouteMatch();
+
   return (
     <Switch>
-      <Route exact path="/u/profile/" component={Profile} />
-      <Route path="/u/profile/edit" component={EditProfile} />
+      <Route exact path={`${match.path}`} component={Profile} />
+      <Route path={`${match.path}/edit`} component={EditProfile} />
     </Switch>
   );
 };
 
 
 
-export const TeacherRoutes = () => {
+export function TeacherRoutes(){
+  const match = useRouteMatch();
+
   return (
     <Switch>
-      <Route exact path="/u/" component={Dashboard} />
-      <Route path="/u/calendar" component={EventsCalendar} />
-      <Route path="/u/classroom">
+      <Route exact path={`${match.path}`} component={Dashboard} />
+      <Route path={`${match.path}/calendar`} component={EventsCalendar} />
+      <Route  path={`${match.path}/classroom`}>
         <TeacherClassRoute />
       </Route>
-      <Route path="/u/search" component={SearchResult} />
-      <Route path="/u/quiz"><TeacherQuizRoute />
+      <Route  path={`${match.path}/search`} component={SearchResult} />
+      <Route  path={`${match.path}/quiz`}><TeacherQuizRoute />
       </Route>
-      <Route path="/u/task">
+      <Route  path={`${match.path}/task`}>
         <TeacherTaskRoute />
       </Route>
-      <Route path="/u/grade" ><TeacherGradeRoute /></Route>
-      <Route path="/u/profile"><ProfileRoute /></Route>
-      <Route path="/u/*" component={NotMatch} />
+      <Route  path={`${match.path}/grade`} ><TeacherGradeRoute /></Route>
+      <Route path={`${match.path}/profile`}><ProfileRoute /></Route>
+      <Route  path={`${match.path}/*`} component={NotMatch} />
     </Switch>
   );
 };

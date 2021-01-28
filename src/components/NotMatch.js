@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 function NotMatch() {
+useEffect(() => {
+document.title="404 Not Found"
+}, [])
+
     return (
-        <div className="text-center mt-4">
-           OOPS!! HALAMAN TIDAK TERSEDIA
+        <div className="centering" style={{minHeight:"100vh", flexDirection:"column"}}>
+           <h5>404 Not Found.</h5>
+           <p>You're accessing the wrong URL.</p>
         </div>
     )
 }

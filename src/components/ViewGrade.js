@@ -10,6 +10,7 @@ export default function ViewGrade() {
 			<h5 className="mb-4">
 				<b>Grade</b>
 			</h5>
+      <div className="p-4" style={isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
 			   <div className="d-flex pt-2">
         <div className="centering">
           <h6>PPSI - 4KA21</h6>
@@ -25,9 +26,10 @@ export default function ViewGrade() {
           />
         </div>
       </div>
-			<table className="table table-borderless table-responsive-sm">
+			<table className="table table-borderless table-responsive-md">
 				<thead>
 					<tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
+					<th scope="col"><input type="checkbox"/></th>
 						<th scope="col">Participant</th>
 						<th scope="col">Task 1</th>
 						<th scope="col">Quiz 1</th>
@@ -47,6 +49,7 @@ export default function ViewGrade() {
 							key={i}
 							className={`${isDarkMode ? "tr-dark" : "tr-light"}`}
 						>
+						<td><input type="checkbox"/></td>
 							<td>{data.participant}</td>
 							<td>{data.t1}</td>
 							<td>{data.q1}</td>
@@ -62,6 +65,7 @@ export default function ViewGrade() {
 					))}
 				</tbody>
 			</table>
+			</div>
 		</div>
 	);
 }

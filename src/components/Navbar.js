@@ -4,11 +4,12 @@ import { NavLink } from "react-router-dom";
 import "../styles/Navbar.css";
 
 export default function Navbar() {
+const isLoggedIn = localStorage.getItem('token');
   return (
     <nav className="navbar navbar-expand-lg fixed-top navbar-light bg-white shadow-sm">
       <div className="container">
         <NavLink to="/" className="navbar-brand" href="#">
-          Elearning
+          E-learning
         </NavLink>
         <button
           className="navbar-toggler"
@@ -38,6 +39,11 @@ export default function Navbar() {
                 Help
               </NavLink>
             </li>
+    {isLoggedIn     ?       <li className="nav-item pl-2 pr-2">
+              <NavLink to="/u" className="nav-link" href="#">
+                <span className="login-btn">Go to Dashboard</span>
+              </NavLink>
+            </li>:<>
             <li className="nav-item pl-2 pr-2">
               <NavLink to="/login" className="nav-link dark-link" href="#">
                 <span>Login</span>
@@ -47,7 +53,7 @@ export default function Navbar() {
               <NavLink to="/register" className="nav-link" href="#">
                 <span className="login-btn">Sign Up</span>
               </NavLink>
-            </li>
+            </li></>}
           </ul>
         </div>
       </div>

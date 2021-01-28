@@ -2,11 +2,11 @@
 	min-height: 100vh;
 }
 .sticky-offset {
-	top: 85px;
+	top: 80px;
 	z-index: 0;
 }
 .fixed-top-2 {
-	margin-top: 50px;
+	margin-top: 48px;
 	z-index: 1;
 }
 

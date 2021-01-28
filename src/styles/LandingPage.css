@@ -32,7 +32,6 @@
   background-image: url("../assets/people_connection.svg");
   background-size: 60%;
   background-repeat: no-repeat;
-
   background-position-x: 10%;
   background-position-y: 20%;
 }
@@ -110,6 +109,22 @@
     background-repeat: no-repeat;
     background-position-y: 80%;
   }
+.image-bg-2 {
+  background-image: url("../assets/completed_task.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position-x: 50%;
+  background-position-y: 50%;
+}
+
+.image-bg-3 {
+  background-image: url("../assets/people_connection.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position-x: 50%;
+  background-position-y: 50%;
+}
+
 }
 
 @media only screen and (max-width: 576px) {

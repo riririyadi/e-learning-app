@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect} from "react";
 import { BsFunnel, BsThreeDots } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
@@ -8,12 +8,18 @@ import { CgViewList } from "react-icons/cg";
 
 export default function Grade() {
   const { isDarkMode } = useContext(LayoutContext);
+
+
+  useEffect(() => {
+ document.title = "E-learning | Grade"
+  }, [])
   return (
     <>
       <h5 className="mb-4">
         <b>Grade</b>
       </h5>
-      <div className="d-flex pt-2">
+      <div className="p-4" style={isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
+      <div className="d-flex">
         <div className="centering">
           <h6>List of Classes</h6>
         </div>
@@ -28,9 +34,10 @@ export default function Grade() {
           />
         </div>
       </div>
-      <table className="table table-borderless table-responsive-sm">
+      <table className="table table-borderless table-responsive-md">
         <thead>
           <tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
+          <th scope="col"><input type="checkbox"/></th>
             <th scope="col">Class</th>
             <th scope="col">Subject</th>
             <th scope="col">Num of Participants</th>
@@ -41,6 +48,8 @@ export default function Grade() {
         <tbody className={isDarkMode ? "bg-darks" : "bg-white"}>
           {classGrade.map((data, i) => (
             <tr key={i} className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
+          <td><input type="checkbox"/></td>
+
               <td>{data.class}</td>
               <td>{data.subject}</td>
               <td>{data.numOfParticipants}</td>
@@ -89,7 +98,7 @@ export default function Grade() {
                       >
                     <div
                       className={`dropdown-item rounded ${
-                        isDarkMode ? "dark-mode" : "light"
+                        isDarkMode ? "dd-dark-mode" : "light"
                       } pl-2`}
                 
                          style={
@@ -110,6 +119,7 @@ export default function Grade() {
           ))}
         </tbody>
       </table>
+      </div>
     </>
   );
 }

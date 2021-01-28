@@ -1,35 +1,86 @@
-import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useParams, useHistory } from "react-router-dom";
 import CustomModal from "./Modal";
 import { LayoutContext } from "./NewLayout";
 import { BsPlusCircle } from "react-icons/bs";
 import { FiCheckCircle, FiPlus } from "react-icons/fi";
 import { IoIosCreate } from "react-icons/io";
+import axios from "axios";
+import {Loader} from "./Loader";
 
 export default function EditClassroom() {
+	let { id } = useParams();
+	let history = useHistory();
 	const { isDarkMode } = useContext(LayoutContext);
+	const [classroom, setClassroom] = useState({})
 	const [isOpen, setIsOpen] = useState(false);
+	const [error, setError] = useState("");
+	const [isLoading, setIsLoading] = useState(true);
 	function handleOpenModal() {
 		setIsOpen(!isOpen);
 	}
 
+ function handleChange(e) {
+    const { name, value } = e.target;
+    setClassroom({ ...classroom, [name]: value });
+  }
+
+	const token = localStorage.getItem("token");
+
+	const header = {
+		"Authorization": `Bearer ${token}`,
+		"Content-Type": "application/json",
+	};
+
+	const getDetailClassroom = async () => {
+		try {
+			const res = await axios.get(
+				`http://elearning.havicrm.tk/api/classroom/${id}`,
+				{
+					headers: header,
+				}
+			);
+			console.log(res.data);
+			setClassroom(res.data)
+		} catch (err) {
+			console.log(err);
+			setError(err.message);
+		}
+		setIsLoading(false);
+	};
+
+	useEffect(() => {
+	getDetailClassroom();
+	}, [])
+
+	const updateDetailClassroom = async(e) => {
+		e.preventDefault();
+		try{
+			const res = await axios.post(
+						`http://elearning.havicrm.tk/api/classroom/${id}`, classroom,
+						{
+							headers: header,
+						})
+						history.push("/u/classroom")
+
+		}catch(err){console.log(err)}
+	} 
 
 	const Confirmation = () => {
 		return (
 			<div className="p-4">
 				<div style={{ fontSize: "14px" }}>
-				
 					<h6 style={{ textAlign: "center" }}>
 						Do you want to proceed?
 					</h6>
 					<div className="centering pt-4">
 						<div>
 							<Link to="/u/classroom">
-								<button className="button mr-2">Yes</button>
+								<button className="button mr-2" onClick={updateDetailClassroom}>Yes</button>
 							</Link>
 							<button
 								className="button"
-								onClick={handleOpenModal}
+							onClick={handleOpenModal}
 							>
 								No
 							</button>
@@ -44,6 +95,7 @@ export default function EditClassroom() {
 			<h5 className="mb-4">
 				<b>Edit Classroom</b>
 			</h5>
+			{isLoading? <div className="centering" style={{minHeight: "calc(100vh - 220px)"}}><Loader/></div>: <>{error ? <div className="centering" style={{minHeight:"calc(100vh - 220px)",color:"red"}}>{error}</div>:
 			<div
 				className={`${
 					isDarkMode ? "bg-darks" : "bg-white"
@@ -55,6 +107,9 @@ export default function EditClassroom() {
 					<div className="col-md-8">
 						<input
 							type="text"
+							value={classroom.name||""}
+							onChange={handleChange}
+							name="name"
 							className={
 								isDarkMode
 									? "input-field-dark-mode"
@@ -70,6 +125,9 @@ export default function EditClassroom() {
 					<div className="col-md-8">
 						<input
 							type="text"
+							value={classroom.subject||""}
+							onChange={handleChange}
+							name="subject"
 							className={
 								isDarkMode
 									? "input-field-dark-mode"
@@ -85,6 +143,9 @@ export default function EditClassroom() {
 					<div className="col-md-8">
 						<textarea
 							type="text"
+							value={classroom.description||""}
+							onChange={handleChange}
+							name="description"
 							className={
 								isDarkMode
 									? "input-field-dark-mode"
@@ -100,21 +161,9 @@ export default function EditClassroom() {
 					<div className="col-md-8">
 						<input
 							type="text"
-							className={
-								isDarkMode
-									? "input-field-dark-mode"
-									: "input-field"
-							}
-							placeholder="50"
-							style={{ width: "100%" }}
-						/>
-					</div>
-				</div>
-				<div className="row mb-2">
-					<div className="col-md-4">Class Duration (Hours):</div>
-					<div className="col-md-8">
-						<input
-							type="text"
+							value={classroom.max_student||""}
+							onChange={handleChange}
+							name="max_student"
 							className={
 								isDarkMode
 									? "input-field-dark-mode"
@@ -132,7 +181,7 @@ export default function EditClassroom() {
 				>
 					Save
 				</button>
-			</div>
+			</div>}</>}
 			<CustomModal
 				isOpen={isOpen}
 				onRequestClose={handleOpenModal}

@@ -1,21 +1,67 @@
-import React, { useState, createContext, useEffect } from "react";
-import { Route, Switch } from "react-router-dom";
+import React from "react";
+import { Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
 import NewLayout from "./components/NewLayout";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
+import SignUpSucceed from "./components/SignUpSucceed";
 import LandingPage from "./components/LandingPage";
 import NotMatch from "./components/NotMatch";
 import About from "./components/About";
 import Help from "./components/Help";
 import ForgotPassword from "./components/ForgotPassword";
-import "./App.css";
+import jwt from "jsonwebtoken";
+import "./App.css"; 
 
-const LoginRoute = () => {
+const checkToken = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return false;
+  }
+  try {
+    const { exp } = jwt.decode(token);
+    if (exp < new Date().getTime()/1000) {
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+  return true;
+};
+
+ const ProtectedRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={(props) =>
+      checkToken() ? (
+        <Component {...props} />
+      ) : (
+        <Redirect to={{ pathname: "/" }} />
+      )
+    }
+  />
+);
+
+
+
+function LoginRoute() {
+  const match = useRouteMatch();
   return(
     <Switch>
-        <Route exact path="/login" component={Login} />
-        <Route path="/login/forgot-password" component={ForgotPassword} />
-    
+        <Route exact path={`${match.path}`} render={(props) => <Login {...props} />} />
+        <Route path={`${match.path}/forgot-password`} render={(props) => <ForgotPassword {...props} />} />
+      </Switch>
+    )
+}
+
+function SignUpRoute() {
+  const match = useRouteMatch();
+  return(
+    <Switch>
+        <Route exact path={`${match.path}`} render={(props) => <SignUp {...props} />} />
+        <Route path={`${match.path}/kfjHFsnf/redirecting`} render={(props) => <SignUpSucceed {...props} />} />
       </Switch>
     )
 }
@@ -25,12 +71,12 @@ function App() {
   return (
     <div className="App">
       <Switch>
-        <Route exact path="/" component={LandingPage} />
-        <Route path="/register" component={SignUp} />
-        <Route path="/about" component={About} />
-        <Route path="/help" component={Help} />
+        <Route exact path="/" render={(props) => <LandingPage {...props} />} />
+        <Route path="/register"><SignUpRoute/></Route>
+        <Route path="/about"render={(props) => <About {...props} />} />
+        <Route path="/help" render={(props) => <Help {...props} />} />
         <Route path="/login"><LoginRoute/></Route>
-        <Route path="/u" component={NewLayout} />
+        <ProtectedRoute path="/u" component={NewLayout} />
         <Route path="*" component={NotMatch} />
       </Switch>
     </div>

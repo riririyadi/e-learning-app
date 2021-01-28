@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { LayoutContext } from "./NewLayout";
@@ -6,6 +6,12 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 const localizer = momentLocalizer(moment);
 
 export default function EventsCalendar(props) {
+
+
+  useEffect(() => {
+ document.title = "E-learning | Calendar"
+  }, [])
+
   const { isDarkMode } = useContext(LayoutContext);
   const myEventsList = [
     {

@@ -1,14 +1,56 @@
 import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
-import CustomModal from "./Modal";
+import { Link, useHistory } from "react-router-dom";
 import { LayoutContext } from "./NewLayout";
+import CustomModal from "./Modal";
 import { BsPlusCircle } from "react-icons/bs";
 import { FiCheckCircle, FiPlus } from "react-icons/fi";
 import { IoIosCreate } from "react-icons/io";
+import axios from "axios";
+import { Loader } from "./Loader";
 
 export default function CreateNewClassroom() {
-  const { isDarkMode } = useContext(LayoutContext);
+  let history = useHistory();
+  const { isDarkMode, uid } = useContext(LayoutContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [name, setName] = useState("");
+  const [subject, setSubject] = useState("");
+  const [description, setDescription] = useState("");
+  const [maxStudent, setMaxStudent] = useState("");
+
+  const token = localStorage.getItem("token");
+
+  const data = {
+    name: name,
+    subject: subject,
+    description: description,
+    max_student: maxStudent,
+    teacher_user_id: uid,
+  };
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true)
+    try {
+      const res = await axios.post(
+        "http://elearning.havicrm.tk/api/classroom",
+        data,
+        {
+          headers: header,
+        }
+      );
+      history.push("/u/classroom");
+    } catch (err) {
+      console.log(err);
+    }
+    setIsSubmitting(false);
+  };
+
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
@@ -16,6 +58,7 @@ export default function CreateNewClassroom() {
     return (
       <div className="p-4">
         <div style={{ fontSize: "14px" }}>
+        {isSubmitting? <div className="centering mb-4 mt-4" ><Loader/></div>:<>
           <div
             className="mb-4"
             style={{
@@ -28,11 +71,11 @@ export default function CreateNewClassroom() {
             <h6>Creating a new classroom</h6>
             <div className="d-flex bd-highlight">
               <div className="bd-highlight">
-                <BsPlusCircle color="#00d48c" size={16}/>
+                <BsPlusCircle color="#00d48c" size={16} />
               </div>
               <div className="bd-highlight pl-2 pt-1">
                 <h6>
-                  Sistem Teknologi Informatika dan Keamanan Jaringan - 4KA21
+                  {subject} - {name}
                 </h6>
               </div>
             </div>
@@ -40,14 +83,14 @@ export default function CreateNewClassroom() {
           <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
           <div className="centering">
             <div>
-              <Link to="/u/classroom">
-                <button className="button mr-2">Yes</button>
-              </Link>
+              <button className="button mr-2" onClick={handleSubmit}>
+                Yes
+              </button>
               <button className="button" onClick={handleOpenModal}>
                 No
               </button>
             </div>
-          </div>
+          </div></>}
         </div>
       </div>
     );
@@ -68,6 +111,8 @@ export default function CreateNewClassroom() {
           <div className="col-md-8">
             <input
               type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className={isDarkMode ? "input-field-dark-mode" : "input-field"}
               placeholder="Enter a class name"
               style={{ width: "100%" }}
@@ -79,6 +124,8 @@ export default function CreateNewClassroom() {
           <div className="col-md-8">
             <input
               type="text"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
               className={isDarkMode ? "input-field-dark-mode" : "input-field"}
               placeholder="Enter subject name"
               style={{ width: "100%" }}
@@ -90,6 +137,8 @@ export default function CreateNewClassroom() {
           <div className="col-md-8">
             <textarea
               type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className={isDarkMode ? "input-field-dark-mode" : "input-field"}
               placeholder="Enter class description"
               style={{ width: "100%", height: "150px" }}
@@ -100,18 +149,9 @@ export default function CreateNewClassroom() {
           <div className="col-md-4">Max Number of Students:</div>
           <div className="col-md-8">
             <input
-              type="text"
-              className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-              placeholder="50"
-              style={{ width: "100%" }}
-            />
-          </div>
-        </div>
-        <div className="row mb-2">
-          <div className="col-md-4">Class Duration (Hours):</div>
-          <div className="col-md-8">
-            <input
-              type="text"
+              type="number"
+              value={maxStudent}
+              onChange={(e) => setMaxStudent(e.target.value)}
               className={isDarkMode ? "input-field-dark-mode" : "input-field"}
               placeholder="50"
               style={{ width: "100%" }}
@@ -120,7 +160,11 @@ export default function CreateNewClassroom() {
         </div>
         <button
           className="button mt-2"
-          onClick={handleOpenModal}
+          onClick={
+            !name || !description || !subject || !maxStudent
+              ? null
+              : handleOpenModal
+          }
           style={{ padding: "5px 30px", borderRadius: "30px" }}
         >
           Create
