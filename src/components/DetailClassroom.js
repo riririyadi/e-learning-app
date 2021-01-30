@@ -271,7 +271,7 @@ console.log(detailLesson)
                     style={{ cursor: "pointer" }}
                   >
                     <span className="mr-2">📑</span>
-                    Tugas {lesson.task_id}
+                    Tugas {i + 1}
                   </div>
                   <div
                     onClick={() => {handleOpenModal(); setDetailLesson(lesson);setCurrentLesson(i)}}
@@ -279,7 +279,7 @@ console.log(detailLesson)
                     style={{ cursor: "pointer" }}
                   >
                     <span className="mr-2">🧩</span>
-                    Quiz {lesson.quiz_id}
+                    Quiz {i+1}
                   </div>
                 </div>
               </div>
