@@ -2,9 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
 import CustomModal from "./Modal";
 import { LayoutContext } from "./NewLayout";
-import { BsPlusCircle } from "react-icons/bs";
-import { FiCheckCircle, FiPlus } from "react-icons/fi";
-import { IoIosCreate } from "react-icons/io";
 import axios from "axios";
 import {Loader} from "./Loader";
 
@@ -50,6 +47,7 @@ export default function EditClassroom() {
 	};
 
 	useEffect(() => {
+		document.title = "E-learning | Classroom";
 	getDetailClassroom();
 	}, [])
 

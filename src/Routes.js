@@ -29,16 +29,6 @@ import SearchResult from "./components/SearchResult";
 import EditClassroom from "./components/EditClassroom"
 
 
-function DoQuizRoute() {
-  const match = useRouteMatch();
-
-  return (
-    <Switch>
-      <Route exact path={`${match.path}`} component={DoQuiz} />
-      <Route path={`${match.path}/result`} component={Result} />
-    </Switch>
-  );
-};
 
 function DoTaskRoute() {
   const match = useRouteMatch();
@@ -52,16 +42,27 @@ function DoTaskRoute() {
 };
 
 
+
+function DoQuizRoute() {
+  const match = useRouteMatch();
+
+  return (
+    <Switch>
+      <Route exact path={`${match.path}`} component={DoQuiz} />
+      <Route path={`${match.path}/result`} component={Result} />
+    </Switch>
+  );
+};
+
+
 function ClassInnerRoute() {
   const match = useRouteMatch();
 
   return (
     <Switch>
       <Route exact path={`${match.path}`} component={DetailClassroom} />
-      <Route path={`${match.path}/do-quiz/:id`}>
-        <DoQuizRoute />
-      </Route>
-      <Route path={`${match.path}/do-task`}><DoTaskRoute/></Route>
+      <Route path={`${match.path}/do-quiz/:id`} ><DoQuizRoute /></Route>
+      <Route path={`${match.path}/do-task/:id`}><DoTaskRoute/></Route>
     </Switch>
   );
 };
@@ -106,7 +107,7 @@ function ManageClassroomRoute() {
         component={CreateNewLesson}
       />
       <Route
-        path={`${match.path}/edit-lesson`}
+        path={`${match.path}/edit-lesson/:id`}
         component={EditLesson}
       />
     </Switch>
@@ -142,7 +143,7 @@ function TeacherTaskRoute() {
       <Route exact  path={`${match.path}`} component={Task} />
       <Route path={`${match.path}/create-new-task`} component={CreateNewTask} />
         <Route
-       path={`${match.path}/edit`}
+       path={`${match.path}/edit/:id`}
         component={EditTask}
       />
     </Switch>

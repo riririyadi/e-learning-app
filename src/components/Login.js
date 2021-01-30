@@ -31,24 +31,24 @@ function Login() {
     setPasswordVisibility(!passwordVisibility);
   }
 
-  const header = {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  };
+ const header = {
+  "Accept":"application/json",
+  "Content-Type": "application/json"
+  }
 
   const onSubmit = (data) => {
+    console.log(data);
     setError("");
     setIsSubmitting(true)
-    axios
-      .post("http://elearning.havicrm.tk/api/auth/login", data)
+    axios.post("http://elearning.havicrm.tk/api/auth/login", data, {headers:header})
       .then((response) => {
+        console.log(response.data);
         localStorage.setItem("token", response.data.token);
         history.push("/u");
       })
       .catch((err) => {
         setError(err.message);
     setIsSubmitting(false);
-
       });
   };
 

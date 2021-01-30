@@ -5,6 +5,22 @@
   transition: background-color 0.3s;
 }
 
+.main-area-center-loader, .main-area-center-error{
+  display: flex;
+  align-items:center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: calc(100vh - 220px);
+}
+
+.main-area-center-error{
+  color:red;
+}
+
+.ck-editor__editable_inline {
+    min-height: 400px;
+}
+
 .light-mode {
   background-color: #f8f8f8;
 }

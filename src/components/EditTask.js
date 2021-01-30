@@ -1,60 +1,108 @@
-import React, { useState, useContext, createContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, createContext, useEffect } from "react";
+import { Link, useHistory, useParams } from "react-router-dom";
 import Datetime from "react-datetime";
 import { FaCalendarAlt } from "react-icons/fa";
 import moment from "moment";
+import CustomModal from "./Modal";
 import { LayoutContext } from "./NewLayout";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/CreateNewTask.css";
-import CustomModal from "./Modal";
-import { EditTaskQuestion } from "./AddQuestion";
+import axios from "axios";
+import { Loader } from "./Loader";
+
 
 export const EditTaskContext = createContext();
 
+
 export default function EditTask() {
- const [startDate, setStartDate] = useState(new Date());
-  const [questions, setQuestion] = useState([]);
+  let history = useHistory();
+  let {id} = useParams();
+  const [error, setError] = useState("");
+  const [error2, setError2] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [task, setTask] = useState({}) 
   const { isDarkMode } = useContext(LayoutContext);
-  const [questionType, setQuestionType] = useState("");
-  const [randomQuestionDisplay, setRandomQuestionDisplay] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+
+ function handleChange(e) {
+    const { name, value } = e.target;
+    setTask({ ...task, [name]: value });
+  }
+
+
+  const token = localStorage.getItem("token");
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+
   const [isOpen, setIsOpen] = useState(false);
-	function handleOpenModal() {
-		setIsOpen(!isOpen);
-	}
+  function handleOpenModal() {
+    setIsOpen(!isOpen);
+  }
 
 
+  const handleSubmit = async () => {
+       try{
+      setIsSubmitting(true);
+          const res = await axios.post(`http://elearning.havicrm.tk/api/task/${id}`, task, {
+        headers: header,
+      })
+        history.push("/u/task")
+    }catch(err){
+      console.log(err.message);
+      setError2(err.message);
+      setIsSubmitting(false);
+    }
+  }
 
-const Confirmation = () => {
-		return (
-			<div className="p-4">
-				<div style={{ fontSize: "14px" }}>
-				
-					<h6 style={{ textAlign: "center" }}>
-						Do you want to proceed?
-					</h6>
-					<div className="centering pt-4">
-						<div>
-							<Link to="/u/task">
-								<button className="button mr-2">Yes</button>
-							</Link>
-							<button
-								className="button"
-								onClick={handleOpenModal}
-							>
-								No
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		);
-	};
+  const getTask = async () => {
+    try {
+      const res = await axios.get(
+        `http://elearning.havicrm.tk/api/task/${id}`,
+        {
+          headers: header,
+        }
+      );
+      console.log(res.data);
+      setTask(res.data)
+    } catch (err) {
+      console.log(err);
+      setError(err.message);
+    }
+    setIsLoading(false);
+  };
+
+useEffect(() => {
+ getTask()
+}, [])
+
+
+  const Confirmation = () => {
+    return (
+      <div className="p-4">
+       {isSubmitting ? <div className="centering"><Loader /></div>: <>{error2 ?<div>{error}</div>:  <div style={{ fontSize: "14px" }}>
+                        <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
+                 <div className="centering">
+                   <div>
+                       <button className="button mr-2" onClick={handleSubmit}>Yes</button>
+                     <button className="button" onClick={handleOpenModal}>
+                       No
+                     </button>
+                   </div>
+                 </div>
+               </div>}</>}
+      </div>
+    );
+  };
 
   return (
     <>
       <h5 className="mb-4">
-        <b>Edit Task</b>
+        <b>Edit New Task</b>
       </h5>
       <div
         className={`${isDarkMode ? "bg-darks" : "bg-white"} p-4 mt-4 mb-4`}
@@ -64,6 +112,9 @@ const Confirmation = () => {
           <div className="col-md-4">Task Name:</div>
           <div className="col-md-8">
             <input
+               value={task.name||""}
+              onChange={handleChange}
+              name="name"
               className={isDarkMode ? "input-field-dark-mode" : "input-field"}
               placeholder="Enter a task name"
               style={{ width: "100%" }}
@@ -74,125 +125,23 @@ const Confirmation = () => {
           <div className="col-md-4">Task Description:</div>
           <div className="col-md-8">
             <textarea
+              value={task.description||""}
+              onChange={handleChange}
+              name="description"
               className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-              placeholder="Enter task description"
+              placeholder="e.g. Create an essay on what you know about world war II"
               style={{ width: "100%", height: "150px" }}
             />
           </div>
         </div>
 
-        <div className="row mb-2">
-          <div className="col-md-4">Due Date: </div>
-          <div className="col-md-8">
-            <div
-              className={isDarkMode ? "datepickerWrap-dark" : `datepickerWrap`}
-            >
-              <DatePicker
-                placeholderText="Click to select a date"
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                locale="pt-BR"
-                showTimeSelect
-                timeFormat="p"
-                timeIntervals={15}
-                dateFormat="Pp"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="row mb-2">
-          <div className="col-md-4">Duration (minutes):</div>
-          <div className="col-md-8">
-            <input
-              className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-              placeholder="5"
-              style={{ width: "100%" }}
-            />
-          </div>
-        </div>
-        <div className="row mb-2">
-          <div className="col-md-4">Random Question Display: </div>
-          <div className="col-md-8">
-            <input
-              type="radio"
-              value="true"
-              onChange={(e) => setRandomQuestionDisplay(e.target.value)}
-              checked={randomQuestionDisplay === "true"}
-            />
-            <label className="ml-2">Yes</label>
-            <input
-              type="radio"
-              className="ml-4"
-              value="false"
-              onChange={(e) => setRandomQuestionDisplay(e.target.value)}
-              checked={randomQuestionDisplay === "false"}
-            />
-            <label className="ml-2">No</label>
-          </div>
-        </div>
-        <div className="row mb-2">
-          <div className="col-md-4">
-            Question Type:
-            <br />
-            {questions.length > 0 && (
-              <i>
-                To enable functionality, please delete all the created
-                questions
-              </i>
-            )}{" "}
-          </div>
-          <div className="col-md-8">
-            <input
-              type="radio"
-              value="Multiple Choice"
-              onChange={(e) => setQuestionType(e.target.value)}
-              checked={questionType === "Multiple Choice"}
-              {...(questions.length > 0 &&
-                questionType !== "Multiple Choice" && { disabled: true })}
-            />
-            <label className="ml-2">Multiple Choice</label>
-            <br />
-            <input
-              type="radio"
-              value="Essay"
-              onChange={(e) => setQuestionType(e.target.value)}
-              checked={questionType === "Essay"}
-              {...(questions.length > 0 &&
-                questionType !== "Essay" && { disabled: true })}
-            />
-            <label className="ml-2">Essay</label>
-            <br />
-            <input
-              type="radio"
-              value="Match Pairs"
-              onChange={(e) => setQuestionType(e.target.value)}
-              checked={questionType === "Match Pairs"}
-              {...(questions.length > 0 &&
-                questionType !== "Match Pairs" && { disabled: true })}
-            />
-            <label className="ml-2">Match Pairs</label>
-            <br />
-            <input
-              type="radio"
-              value="True or False"
-              onChange={(e) => setQuestionType(e.target.value)}
-              checked={questionType === "True or False"}
-              {...(questions.length > 0 &&
-                questionType !== "True or False" && { disabled: true })}
-            />
-            <label className="ml-2">True or False</label>
-          </div>
-        </div>
-        <EditTaskContext.Provider value={{ questions, setQuestion }}>
-          <EditTaskQuestion questionType={questionType} />
-        </EditTaskContext.Provider>
-        <button className="button" onClick={handleOpenModal}>Save</button>
+        <button className="button" onClick={handleOpenModal}>Create</button>
       </div>
-      	<CustomModal
-				isOpen={isOpen}
-				onRequestClose={handleOpenModal}
-				componentToPass={<Confirmation />}
-			/>
+      <CustomModal
+        isOpen={isOpen}
+        onRequestClose={handleOpenModal}
+        componentToPass={<Confirmation />}
+      />
     </>
   );
 }

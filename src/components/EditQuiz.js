@@ -47,6 +47,8 @@ const [startDate, setStartDate] = useState(new Date());
   };
 
   useEffect(() => {
+      document.title = "E-learning | Quiz"
+
   getDetailQuiz();
   }, [])
 

@@ -10,27 +10,26 @@ import { Loader } from "./Loader";
 
  
 export default function StudentClassroom() {
-   const token = localStorage.getItem("token");
-   let match = useRouteMatch();
+  const token = localStorage.getItem("token");
+  let match = useRouteMatch();
+  const { isDarkMode } = useContext(LayoutContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState("");
+  const [classroomData, setClassroomData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+      document.title = "E-learning | Classroom"
+  },[])
+
+  function handleOpenModal() {
+    setIsOpen(!isOpen);
+  }
 
   const header = {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
   };
-  const { isDarkMode } = useContext(LayoutContext);
-  const [isOpen, setIsOpen] = useState(false);
-  function handleOpenModal() {
-    setIsOpen(!isOpen);
-  }
-
-    const [error, setError] = useState("");
-  const [classroomData, setClassroomData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-document.title = "E-learning | Classroom"
-  },[])
-
 
    const getAllClassroom = async () => {
     try {
@@ -38,7 +37,6 @@ document.title = "E-learning | Classroom"
         headers: header,
       });
       setClassroomData(res.data);
-      console.log(res.data);
     } catch (err) {
       console.log(err);
       setError(err.message)
@@ -55,7 +53,7 @@ const NewClassSearch = () => {
   const [code, setCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isJoined, setIsJoined] = useState(false);
-    const [error, setError] = useState("");
+  const [error, setError] = useState("");
 
 const data = {
   classcode: code
@@ -167,7 +165,7 @@ const data = {
           />
         </div>
       </div>
-{isLoading? <div className="centering" style={{minHeight:"calc(100vh - 220px)"}}><Loader/></div>:
+{isLoading? <div className="main-area-center-loader"><Loader/></div>: <>{error ? <div className="main-area-center-error">{error}</div>:
       <div className="row">
         {classroomData.map((data, i) => (
           <div className="col-lg-3 mb-4" key={data.id}>
@@ -247,7 +245,7 @@ const data = {
             </div>
           </div>
         ))}
-      </div>}
+      </div>}</>}
     </div>
   );
 }

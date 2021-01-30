@@ -1,6 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BsFunnel } from "react-icons/bs";
 import { LayoutContext } from "./NewLayout";
+import axios from "axios";
+import moment from "moment";
+import {Loader} from "./Loader";
 
 export default function StudentQuiz() {
 
@@ -10,43 +13,43 @@ document.title = "E-learning | Quiz"
   },[])
 
   const { isDarkMode } = useContext(LayoutContext);
-  const quizData = [
-    {
-      quiz_name: "quiz 1",
-      class: "PPSI",
-      status: "open",
-      due_date: "23 Desember 2020 - 12:00 AM",
-      job_done: "yet",
-    },
-    {
-      quiz_name: "quiz 2",
-      class: "Algoritma Pemrograman",
-      status: "closed",
-      due_date: "24 Desember 2020 - 11:00 AM",
-      job_done: "done",
-    },
-    {
-      quiz_name: "quiz 3",
-      class: "Sistem Basis Data",
-      status: "closed",
-      due_date: "25 Desember 2020 - 10:00 PM",
-      job_done: "done",
-    },
-    {
-      quiz_name: "quiz 4",
-      class: "Analisis Kerja Sistem",
-      status: "open",
-      due_date: "05 January 2021 - 03:00 PM",
-      job_done: "yet",
-    },
-  ];
+  const [selectedRow, setSelectedRow] = useState(true);
+  const [quizData, setQuizData] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+const token = localStorage.getItem("token");
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const getAllQuiz = async () => {
+    try {
+      const res = await axios.get("http://elearning.havicrm.tk/api/quiz", {
+        headers: header,
+      });
+      console.log(res.data);
+      setQuizData(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getAllQuiz();
+  },[]);
+
+
+
   return (
     <div>
       <h5 className="mb-4">
         <b>Quiz</b>
       </h5>
+       {isLoading ? <div className="main-area-center-loader"><Loader /></div>:<>
        <div className="p-4" style={ isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
-
       <div className="d-flex">
         <div className="centering">
           <h6>List of Quizes</h6>
@@ -62,47 +65,32 @@ document.title = "E-learning | Quiz"
           />
         </div>
       </div>
-      <table className="table table-borderless table-responsive-md">
+      <table className="table table-borderless table-responsive-sm">
         <thead>
           <tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
             <th scope="col"><input type="checkbox"/></th>
             <th scope="col">Quiz Name</th>
-            <th scope="col">Class</th>
-            <th scope="col">Status</th>
-            <th scope="col">Due Date</th>
-            <th scope="col">Job Done</th>
+            <th scope="col">Question Type</th>
+            <th scope="col">Created At</th>
+      
           </tr>
         </thead>
         <tbody className={isDarkMode ? "bg-darks" : "bg-white"}>
           {quizData.map((quiz, i) => (
             <tr key={i} className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
               <td><input type="checkbox"/></td>
-              <td>{quiz.quiz_name}</td>
-              <td>{quiz.class}</td>
-              <td>
-                <span
-                  className={`status ${
-                    quiz.status === "open" ? "open" : "closed"
-                  } ${isDarkMode ? "text-white dark-open" : null} `}
-                >
-                  {quiz.status}
-                </span>
+              <td>{quiz.name}</td>
+             <td>{quiz.question_type === "MULTIPLE_CHOICE" && "Multiple Choice"}
+                  {quiz.question_type === "ESSAY" && "Essay"}
+                  {quiz.question_type === "MATCH_PAIR" && "Match Pair"}
+                  {quiz.question_type === "TRUE_OR_FALSE" && "True or False"}
               </td>
-              <td>{quiz.due_date}</td>
-              <td>
-                <span
-                  className={`status ${
-                    quiz.job_done === "done" ? "open" : "closed"
-                  } ${isDarkMode ? "text-white dark-open" : null} `}
-                >
-                  {quiz.job_done}
-                </span>
-              </td>
+              <td>{moment(quiz.created_at).format("YYYY-MM-DD HH:mm:ss")}</td>     
             </tr>
           ))}
         </tbody>
       </table>
-    </div>
+    </div></>}
     </div>
   );
 }

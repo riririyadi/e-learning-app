@@ -1,9 +1,33 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { LayoutContext } from "./NewLayout";
-import { BsFunnel } from "react-icons/bs"
+import { BsFunnel } from "react-icons/bs";
+import axios from "axios";
 
 export default function ViewGrade() {
 	const { isDarkMode } = useContext(LayoutContext);
+	let { id } = useParams();
+  const token = localStorage.getItem("token");
+const [classGrade, setClassGrade] = useState({});
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+
+const getClassroomGrade = async() => {
+	try{
+		const res = await axios.get(`http://elearning.havicrm.tk/api/grade/${id}`, {headers: header})
+		console.log(res.data);
+		setClassGrade(res.data)
+	}catch(err){
+		console.log(err)
+	}
+}
+
+useEffect(() => {
+	document.title = "E-learning | Grade"
+	getClassroomGrade();
+}, [])
 
 	return (
 		<div>
@@ -26,7 +50,7 @@ export default function ViewGrade() {
           />
         </div>
       </div>
-			<table className="table table-borderless table-responsive-md">
+			<table className="table table-borderless table-responsive-sm">
 				<thead>
 					<tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
 					<th scope="col"><input type="checkbox"/></th>
@@ -70,57 +94,3 @@ export default function ViewGrade() {
 	);
 }
 
-const classGrade = [
-	{
-		participant: "Lionel Andres Messi",
-		t1: 67,
-		q1: 47,
-		t2: 90,
-		q2: 88,
-		t3: 91,
-		q3: 77,
-		t4: 88,
-		q4: 24,
-		t5: 83,
-		q5: 89,
-	},
-	{
-		participant: "Bukayo Saka",
-		t1: 67,
-		q1: 47,
-		t2: 90,
-		q2: 88,
-		t3: 91,
-		q3: 77,
-		t4: 88,
-		q4: 24,
-		t5: 83,
-		q5: 89,
-	},
-	{
-		participant: "Kai Havertz",
-		t1: 67,
-		q1: 17,
-		t2: 90,
-		q2: 88,
-		t3: 91,
-		q3: 77,
-		t4: 88,
-		q4: 24,
-		t5: 83,
-		q5: 89,
-	},
-	{
-		participant: "Sadio Mane",
-		t1: 67,
-		q1: 47,
-		t2: 90,
-		q2: 88,
-		t3: 91,
-		q3: 77,
-		t4: 88,
-		q4: 24,
-		t5: 83,
-		q5: 89,
-	},
-];

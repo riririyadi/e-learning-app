@@ -7,16 +7,57 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import ReactTooltip from "react-tooltip";
 import CustomModal from "./Modal";
 import "../styles/Task.css";
+import { Loader } from "./Loader";
+import axios from "axios";
+import moment from "moment";
 
 export default function Task() {
 
+  const [taskData, setTaskData] = useState([]);
+  const [error, setError] = useState(false);
+  const [isLoading,setIsLoading] = useState(true);
+  const [isSubmitting,setIsSubmitting] = useState(false);
+  const token = localStorage.getItem("token");
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const getAllTask = async () => {
+    try {
+      const res = await axios.get("http://elearning.havicrm.tk/api/task", {
+        headers: header,
+      });
+      console.log(res.data);
+      setTaskData(res.data);
+    } catch (err) {
+      console.log(err);
+      setError(err.message);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getAllTask();
+  },[]);
+
+
+
+
+
+const dateFormat = "YYYY-MM-DD HH:mm:ss"
 
   useEffect(() => {
  document.title = "E-learning | Task"
   }, [])
+
+
+
+
   const { isDarkMode } = useContext(LayoutContext);
   const [selectedRow, setSelectedRow] = useState(true);
    const [isOpen, setIsOpen] = useState(false);
+   const [deleteTask, setDeleteTask] = useState({});
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
@@ -28,8 +69,7 @@ export default function Task() {
           <br />
           <div className="centering">
             <div>
-              
-                <button className="button mr-4" onClick={handleOpenModal}>
+                <button className="button mr-4">
                  Yes
                 </button>
               <button className="button" onClick={handleOpenModal}>
@@ -41,43 +81,6 @@ export default function Task() {
       </div>
     );
   };
-  const taskData = [
-    {
-      task_name: "Tugas Analisa Sistem 1",
-      class: "4KA21",
-      subject: "Analisis Kinerja Sistem",
-      status: "open",
-      due_date: "23 Desember 2020 - 12:00 AM",
-    },
-    {
-      task_name: "Tugas 1 Requirement Documents",
-      class: "4KA21",
-      subject: "PPSI",
-      status: "open",
-      due_date: "23 Januari 2021 - 12:00 AM",
-    },
-    {
-      task_name: "Task 1",
-      class: "4KA21",
-      subject: "Algoritma dan pemrograman",
-      status: "closed",
-      due_date: "23 Januari 2021 - 12:00 AM",
-    },
-    {
-      task_name: "Task 1",
-      class: "4KA21",
-      subject: "Manajemen Layanan Sistem Informasi",
-      status: "open",
-      due_date: "23 Desember 2020 - 12:00 AM",
-    },
-    {
-      task_name: "Tugas 2 Proposal Analisis",
-      class: "4KA21",
-      subject: "PPSI",
-      status: "Closed",
-      due_date: "23 Desember 2020 - 12:00 AM",
-    },
-  ];
 
   return (
     <>
@@ -105,7 +108,12 @@ export default function Task() {
           </Link>
         </div>
       </div>
-       <div className="p-4" style={ isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
+      {isLoading ? <div className="main-area-center-loader"><Loader/></div>:<>
+      {error ? <div className="main-area-center-error">{error}</div>:<>
+       <div className="p-4" 
+       style={ isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
+      
+      
       <div className="d-flex">
         <div className="centering">
           <h6>List of Tasks</h6>
@@ -121,7 +129,7 @@ export default function Task() {
           />
         </div>
       </div>
-      <table className="table table-borderless table-responsive-md">
+      <table className="table table-borderless table-responsive-sm">
         <thead>
           <tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
             <th scope="col">
@@ -132,10 +140,8 @@ export default function Task() {
               />
             </th>
             <th scope="col">Task Name</th>
-            <th scope="col">Class</th>
-            <th scope="col">Subject</th>
-            <th scope="col">Status</th>
-            <th scope="col">Due Date</th>
+            
+            <th scope="col">Created At</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -150,20 +156,9 @@ export default function Task() {
                 />
               </td>
               <td data-toggle="tooltip" title="Review">
-                {task.task_name}
+                {task.name}
               </td>
-              <td>{task.class}</td>
-              <td>{task.subject}</td>
-              <td>
-                <span
-                  className={`status ${
-                    task.status === "open" ? "open" : "closed"
-                  } ${isDarkMode ? "text-white dark-open" : null} `}
-                >
-                  {task.status}
-                </span>
-              </td>
-              <td>{task.due_date}</td>
+               <td>{moment(task.created_at).format(dateFormat)}</td>
               <td>
                 <div className="dropdown">
                   <button
@@ -191,7 +186,7 @@ export default function Task() {
                     } p-2 mt-2 mb-2`}
                   >
                       <Link
-                        to="/u/task/edit"
+                        to={`/u/task/edit/${task.id}`}
                         style={
                           isDarkMode
                             ? { color: "#F5F5F7" }
@@ -214,22 +209,7 @@ export default function Task() {
                         <span className="ml-2">Edit</span>
                     </div>
                       </Link>
-                    <div
-                      className={`dropdown-item rounded  ${
-                        isDarkMode ? "dd-dark-mode" : "light"
-                      } pl-2`}
-                      style={
-                        isDarkMode
-                          ? {
-                              cursor: "pointer", color: "#F5F5F7" 
-                            }
-                          : { cursor: "pointer" }
-                      }
-                      onClick={handleOpenModal}
-                    >
-                        <BsTrash />
-                        <span className="ml-2">Delete</span>
-                    </div>
+                   
                   </div>
                 </div>
               </td>
@@ -237,7 +217,7 @@ export default function Task() {
           ))}
         </tbody>
       </table>
-      </div>
+      </div></>}</>}
        <CustomModal
         isOpen={isOpen}
         onRequestClose={handleOpenModal}

@@ -1,16 +1,12 @@
 import React, { useState, useContext, createContext } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { FaCalendarAlt } from "react-icons/fa";
-import moment from "moment";
+import { useHistory } from "react-router-dom";
 import { LayoutContext } from "./NewLayout";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import "../styles/CreateNewTask.css";
 import { AddQuizQuestion } from "./AddQuestion";
 import axios from "axios";
 import CustomModal from "./Modal";
 import { BsPlusCircle } from "react-icons/bs";
-import { FiCheckCircle, FiPlus } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 import { Loader } from "./Loader";
 
 
@@ -20,11 +16,9 @@ export default function CreateNewQuiz() {
   let history = useHistory();
 
   const { isDarkMode } = useContext(LayoutContext);
-  const [startDate, setStartDate] = useState(new Date());
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestion] = useState([]);
-  const [duration, setDuration] = useState("");
   const [questionType, setQuestionType] = useState("");
   const [randomQuestionDisplay, setRandomQuestionDisplay] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -34,19 +28,15 @@ export default function CreateNewQuiz() {
     setIsOpen(!isOpen);
   }
 
-const format1 = "YYYY-MM-DD HH:mm:ss"
 
   const data = {
     name: name,
     description: description,
-    due_date: moment(startDate).format(format1),
-    duration: parseInt(duration),
     is_random: randomQuestionDisplay,
     question_type: questionType,
     questions: questions,
   };
 
-  console.log(data);
 
   const token = localStorage.getItem("token");
 
@@ -55,8 +45,8 @@ const format1 = "YYYY-MM-DD HH:mm:ss"
     "Content-Type":"application/json"
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+
     try{
       setIsSubmitting(true);
           const res = await axios.post("http://elearning.havicrm.tk/api/quiz", data, {
@@ -145,36 +135,7 @@ const format1 = "YYYY-MM-DD HH:mm:ss"
           </div>
         </div>
 
-        <div className="row mb-2">
-          <div className="col-md-4">Due Date: </div>
-          <div className="col-md-8">
-            <div
-              className={isDarkMode ? "datepickerWrap-dark" : `datepickerWrap`}
-            >
-              <DatePicker
-                placeholderText="YYYY-MM-DD hh:mm:ss"
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                showTimeSelect
-                timeIntervals={15}
-                dateFormat="yyyy-MM-dd HH:mm:ss"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="row mb-2">
-          <div className="col-md-4">Duration (minutes):</div>
-          <div className="col-md-8">
-            <input
-              className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-              placeholder="5"
-              type="number"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              style={{ width: "100%" }}
-            />
-          </div>
-        </div>
+
         <div className="row mb-2">
           <div className="col-md-4">Random Question Display: </div>
           <div className="col-md-8">
@@ -249,7 +210,7 @@ const format1 = "YYYY-MM-DD HH:mm:ss"
         <button
           className="button"
           onClick={
-            !name || !description || !questions || !startDate
+            !name || !description || !questions
               ? null
               : handleOpenModal
           }

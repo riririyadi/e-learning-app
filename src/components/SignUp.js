@@ -36,11 +36,11 @@ export default function SignUp() {
     "Content-Type": "application/json",
   };
   const onSubmit = async (data,e) => {
+   try{ 
     setError("");
-          setIsSucceed(false);
-
+    setIsSucceed(false);
     setIsSubmitting(true);
-   try{ const res = await axios.post("http://elearning.havicrm.tk/api/user", data, { headers: header })
+    const res = await axios.post("http://elearning.havicrm.tk/api/user", data, { headers: header })
           setIsSucceed(true);
       }catch(err){
         setError(err.message);
@@ -83,6 +83,7 @@ export default function SignUp() {
             <div>
               <b>Full Name</b>
             </div>
+       
           </label>
           <input
             className="input-field mb-2"

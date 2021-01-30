@@ -32,7 +32,7 @@ function LandingPage() {
   });
 
   useEffect(() => {
- document.title = "E-learning | Home"
+ document.title = "E-learning"
   }, [])
 
   useEffect(() => {

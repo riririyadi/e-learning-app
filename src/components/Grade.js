@@ -1,16 +1,42 @@
-import React, { useContext, useEffect} from "react";
-import { BsFunnel, BsThreeDots } from "react-icons/bs";
+import React, { useContext, useEffect, useState} from "react";
+import { BsFunnel, BsThreeDots, } from "react-icons/bs";
 import { Link } from "react-router-dom";
-
-import { RiFileChartLine } from "react-icons/ri";
 import { LayoutContext } from "./NewLayout";
 import { CgViewList } from "react-icons/cg";
+import axios from 'axios';
+
 
 export default function Grade() {
   const { isDarkMode } = useContext(LayoutContext);
 
+const [error, setError] = useState("");
+  const [classroom, setClassroom] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [participants, setParticipants] = useState([]);
+
+  const token = localStorage.getItem("token");
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const getAllClassroom = async () => {
+    try {
+      const res = await axios.get("http://elearning.havicrm.tk/api/classroom", {
+        headers: header,
+      });
+      setClassroom(res.data);
+      setParticipants(res.data.students)
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+      setError(err.message)
+    }
+    setIsLoading(false);
+  };
 
   useEffect(() => {
+    getAllClassroom();
  document.title = "E-learning | Grade"
   }, [])
   return (
@@ -34,7 +60,7 @@ export default function Grade() {
           />
         </div>
       </div>
-      <table className="table table-borderless table-responsive-md">
+      <table className="table table-borderless table-responsive-sm">
         <thead>
           <tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
           <th scope="col"><input type="checkbox"/></th>
@@ -46,13 +72,13 @@ export default function Grade() {
           </tr>
         </thead>
         <tbody className={isDarkMode ? "bg-darks" : "bg-white"}>
-          {classGrade.map((data, i) => (
+          {classroom.map((data, i) => (
             <tr key={i} className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
           <td><input type="checkbox"/></td>
 
-              <td>{data.class}</td>
+              <td>{data.name}</td>
               <td>{data.subject}</td>
-              <td>{data.numOfParticipants}</td>
+              <td>{data.participants.map(a => <>{a.length}</>)}</td>
               <td>
                 <span
                   className={`status ${
@@ -89,7 +115,7 @@ export default function Grade() {
                     } p-2 mt-2 mb-2`}
                   >
                       <Link
-                        to="/u/grade/view"
+                        to={`/u/grade/view/${data.id}`}
                         style={
                           isDarkMode
                             ? { color: "#F5F5F7" }

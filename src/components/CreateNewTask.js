@@ -1,5 +1,5 @@
 import React, { useState, useContext, createContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Datetime from "react-datetime";
 import { FaCalendarAlt } from "react-icons/fa";
 import moment from "moment";
@@ -8,38 +8,66 @@ import { LayoutContext } from "./NewLayout";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/CreateNewTask.css";
-import { AddTaskQuestion } from "./AddQuestion";
+import axios from "axios";
+import { Loader } from "./Loader";
+
 
 export const CreateTaskContext = createContext();
 
 
 export default function CreateNewTask() {
-  const [startDate, setStartDate] = useState(new Date());
-  const [questions, setQuestion] = useState([]);
+  let history = useHistory();
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
+  const [description, setDescription] = useState("") 
   const { isDarkMode } = useContext(LayoutContext);
-  const [questionType, setQuestionType] = useState("");
-  const [randomQuestionDisplay, setRandomQuestionDisplay] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+
+  const token = localStorage.getItem("token");
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
 
   const [isOpen, setIsOpen] = useState(false);
   function handleOpenModal() {
     setIsOpen(!isOpen);
   }
+const data = {
+    name, description
+}
+
+  const handleSubmit = async () => {
+       try{
+      setIsSubmitting(true);
+          const res = await axios.post("http://elearning.havicrm.tk/api/task", data, {
+        headers: header,
+      })
+        history.push("/u/task")
+    }catch(err){
+      console.log(err.message);
+      setError(err.message);
+      setIsSubmitting(false);
+    }
+  }
+
+
   const Confirmation = () => {
     return (
       <div className="p-4">
-        <div style={{ fontSize: "14px" }}>
-                 <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
-          <div className="centering">
-            <div>
-              <Link to="/u/task">
-                <button className="button mr-2">Yes</button>
-              </Link>
-              <button className="button" onClick={handleOpenModal}>
-                No
-              </button>
-            </div>
-          </div>
-        </div>
+       {isSubmitting ? <div className="centering"><Loader /></div>: <>{error ?<div>{error}</div>:  <div style={{ fontSize: "14px" }}>
+                        <h6 style={{ textAlign: "center" }}>Do you want to proceed?</h6>
+                 <div className="centering">
+                   <div>
+                       <button className="button mr-2" onClick={handleSubmit}>Yes</button>
+                     <button className="button" onClick={handleOpenModal}>
+                       No
+                     </button>
+                   </div>
+                 </div>
+               </div>}</>}
       </div>
     );
   };
@@ -57,9 +85,11 @@ export default function CreateNewTask() {
           <div className="col-md-4">Task Name:</div>
           <div className="col-md-8">
             <input
+            value={name}
               className={isDarkMode ? "input-field-dark-mode" : "input-field"}
               placeholder="Enter a task name"
               style={{ width: "100%" }}
+              onChange={e => setName(e.target.value)}
             />
           </div>
         </div>
@@ -67,117 +97,15 @@ export default function CreateNewTask() {
           <div className="col-md-4">Task Description:</div>
           <div className="col-md-8">
             <textarea
+            value={description}
               className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-              placeholder="Enter task description"
+              placeholder="e.g. Create an essay on what you know about world war II"
               style={{ width: "100%", height: "150px" }}
+              onChange={e => setDescription(e.target.value)}
             />
           </div>
         </div>
 
-        <div className="row mb-2">
-          <div className="col-md-4">Due Date: </div>
-          <div className="col-md-8">
-            <div
-              className={isDarkMode ? "datepickerWrap-dark" : `datepickerWrap`}
-            >
-              <DatePicker
-                placeholderText="Click to select a date"
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                locale="pt-BR"
-                showTimeSelect
-                timeFormat="p"
-                timeIntervals={15}
-                dateFormat="Pp"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="row mb-2">
-          <div className="col-md-4">Duration (minutes):</div>
-          <div className="col-md-8">
-            <input
-              className={isDarkMode ? "input-field-dark-mode" : "input-field"}
-              placeholder="5"
-              style={{ width: "100%" }}
-            />
-          </div>
-        </div>
-        <div className="row mb-2">
-          <div className="col-md-4">Random Question Display: </div>
-          <div className="col-md-8">
-            <input
-              type="radio"
-              value="true"
-              onChange={(e) => setRandomQuestionDisplay(e.target.value)}
-              checked={randomQuestionDisplay === "true"}
-            />
-            <label className="ml-2">Yes</label>
-            <input
-              type="radio"
-              className="ml-4"
-              value="false"
-              onChange={(e) => setRandomQuestionDisplay(e.target.value)}
-              checked={randomQuestionDisplay === "false"}
-            />
-            <label className="ml-2">No</label>
-          </div>
-        </div>
-        <div className="row mb-2">
-          <div className="col-md-4">
-            Question Type:
-            <br />
-            {questions.length > 0 && (
-              <i>
-                To enable functionality, please delete all the created questions
-              </i>
-            )}{" "}
-          </div>
-          <div className="col-md-8">
-            <input
-              type="radio"
-              value="Multiple Choice"
-              onChange={(e) => setQuestionType(e.target.value)}
-              checked={questionType === "Multiple Choice"}
-              {...(questions.length > 0 &&
-                questionType !== "Multiple Choice" && { disabled: true })}
-            />
-            <label className="ml-2">Multiple Choice</label>
-            <br />
-            <input
-              type="radio"
-              value="Essay"
-              onChange={(e) => setQuestionType(e.target.value)}
-              checked={questionType === "Essay"}
-              {...(questions.length > 0 &&
-                questionType !== "Essay" && { disabled: true })}
-            />
-            <label className="ml-2">Essay</label>
-            <br />
-            <input
-              type="radio"
-              value="Match Pairs"
-              onChange={(e) => setQuestionType(e.target.value)}
-              checked={questionType === "Match Pairs"}
-              {...(questions.length > 0 &&
-                questionType !== "Match Pairs" && { disabled: true })}
-            />
-            <label className="ml-2">Match Pairs</label>
-            <br />
-            <input
-              type="radio"
-              value="True or False"
-              onChange={(e) => setQuestionType(e.target.value)}
-              checked={questionType === "True or False"}
-              {...(questions.length > 0 &&
-                questionType !== "True or False" && { disabled: true })}
-            />
-            <label className="ml-2">True or False</label>
-          </div>
-        </div>
-        <CreateTaskContext.Provider value={{ questions, setQuestion }}>
-          <AddTaskQuestion questionType={questionType} />
-        </CreateTaskContext.Provider>
         <button className="button" onClick={handleOpenModal}>Create</button>
       </div>
       <CustomModal

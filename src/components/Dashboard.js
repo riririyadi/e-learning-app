@@ -1,11 +1,33 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LayoutContext } from "./NewLayout";
+import { Loader } from "./Loader"
+import axios from "axios";
 
 function Dashboard() {
 
+  const token = localStorage.getItem("token");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [counterData, setCounterData] = useState({})
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
 
-  useEffect(() => {
+const getDashboardData = async () => {
+  try{
+     const res = await axios.get("http://elearning.havicrm.tk/api/dashboard", {
+        headers: {Authorization: `Bearer ${token}`}});
+     console.log(res.data);
+     setCounterData(res.data.counts);
+     setUpcomingEvents(res.data.upcoming_events);
+  }catch(err){
+console.log(err);
+setError(err.message)
+  }
+  setIsLoading(false);
+}
+
+useEffect(() => {
  document.title = "E-learning | Dashboard"
+ getDashboardData();
   }, [])
 
   return (
@@ -13,6 +35,7 @@ function Dashboard() {
       <h5 className="mb-4">
         <b>News</b>
       </h5>
+      {isLoading ? <div className="main-area-center-loader"><Loader /></div>:<>{error ? <div className="main-area-center-error">{error}</div>: <>
       <div className="row">
         <div className="col-md-6 mb-4">
           <div
@@ -71,7 +94,7 @@ function Dashboard() {
                   <b>Classroom</b>
                 </h5>
                 <h3>
-                  <b>5</b>
+                  <b>{counterData.classroom}</b>
                 </h3>
               </div>
             </div>
@@ -92,7 +115,7 @@ function Dashboard() {
                   <b>Lessons</b>
                 </h5>
                 <h3>
-                  <b>5</b>
+                  <b>{counterData.lesson}</b>
                 </h3>
               </div>
             </div>
@@ -113,7 +136,7 @@ function Dashboard() {
                   <b>Tasks</b>
                 </h5>
                 <h3>
-                  <b>5</b>
+                  <b>{counterData.task}</b>
                 </h3>
               </div>
             </div>
@@ -134,7 +157,7 @@ function Dashboard() {
                   <b>Quizes</b>
                 </h5>
                 <h3>
-                  <b>5</b>
+                  <b>{counterData.quiz}</b>
                 </h3>
               </div>
             </div>
@@ -142,79 +165,14 @@ function Dashboard() {
         </div>
       </div>
       <div className="row">
-        <div className="col-lg-6">
-          <h5 className="mb-4">
-            <b>Recent Activities</b>
-          </h5>
-          <div className="">
-            <div className="mb-4 d-flex bd-highlight">
-              <div
-                style={{
-                  width: "10px",
-                  backgroundColor: "#772CE8",
-                }}
-              ></div>
-              <div
-                style={{
-                  width: "95%",
-                  padding: "10px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div> Quiz desain dan animasi</div>
-                <small style={{ color: "#b2b2b2" }}>
-                  <i>Last: 12 Dec 2020, 13.31 AM</i>
-                </small>
-              </div>
-            </div>
-            <div className="mb-4 d-flex bd-highlight">
-              <div
-                style={{
-                  width: "10px",
-                  backgroundColor: "#772CE8",
-                }}
-              ></div>
-              <div
-                style={{
-                  width: "95%",
-                  padding: "10px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div>Quiz desain dan animasi</div>
-                <small style={{ color: "#b2b2b2" }}>
-                  <i>Last: 11 Dec 2020, 10.00 AM</i>
-                </small>
-              </div>
-            </div>
-            <div className="mb-4 d-flex bd-highlight">
-              <div
-                style={{
-                  width: "10px",
-                  backgroundColor: "#772CE8",
-                }}
-              ></div>
-              <div
-                style={{
-                  width: "95%",
-                  padding: "10px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div>Quiz desain dan animasi</div>
-                <small style={{ color: "#b2b2b2" }}>
-                  <i>Last: 11 Dec 2020, 10.00 AM</i>
-                </small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6">
+        <div className="col">
           <h5 className="mb-4">
             <b>Upcoming Events</b>
           </h5>
           <div className="">
-            <div className="mb-4 d-flex bd-highlight">
+          {upcomingEvents.map((events,i) => (
+
+            <div className="mb-4 d-flex bd-highlight"key={i}>
               <div
                 style={{
                   width: "10px",
@@ -228,55 +186,17 @@ function Dashboard() {
                   borderRadius: "10px",
                 }}
               >
-                <div>Quiz desain dan animasi</div>
+                <div>{events.title}</div>
                 <small style={{ color: "#b2b2b2" }}>
-                  <i>Due date: 24 Dec 2020, 10.00 AM</i>
+                  <i>Due date: {events.due_date}</i>
                 </small>
               </div>
             </div>
-            <div className="mb-4 d-flex bd-highlight">
-              <div
-                style={{
-                  width: "10px",
-                  backgroundColor: "#772CE8",
-                }}
-              ></div>
-              <div
-                style={{
-                  width: "95%",
-                  padding: "10px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div>Quiz Pengantar teknologi informasi</div>
-                <small style={{ color: "#b2b2b2" }}>
-                  <i>Due Date: 24 Dec 2020, 10.00 AM</i>
-                </small>
-              </div>
-            </div>
-            <div className="mb-4 d-flex bd-highlight">
-              <div
-                style={{
-                  width: "10px",
-                  backgroundColor: "#772CE8",
-                }}
-              ></div>
-              <div
-                style={{
-                  width: "95%",
-                  padding: "10px",
-                  borderRadius: "10px",
-                }}
-              >
-                <div>Quiz Pengantar teknologi informasi</div>
-                <small style={{ color: "#b2b2b2" }}>
-                  <i>Due Date: 24 Dec 2020, 10.00 AM</i>
-                </small>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      </div>
+      </div></>}
+      </>}
     </>
   );
 }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, createContext } from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
+import React, { useState, useEffect,  createContext } from "react";
+import { useHistory } from "react-router-dom";
 import "../styles/NewLayout.css";
 import "../styles/Layout.css";
 import { BiLogOutCircle } from "react-icons/bi";
@@ -8,11 +8,43 @@ import { VscSymbolColor } from "react-icons/vsc";
 import { RiProfileLine, RiSearchLine } from "react-icons/ri";
 import * as FaIcons from "react-icons/fa";
 import { StudentRoutes, TeacherRoutes } from "../Routes";
-import { SidebarData } from "./SidebarData";
+import { SidebarData} from "./SidebarData";
 import { NavLink, Link } from "react-router-dom";
-import useOnclickOutside from "react-cool-onclickoutside";
 import { Loader } from "./Loader";
 import axios from "axios";
+
+const SidebarDataM = [
+  {
+    title: 'Dashboard',
+    path: '/u',
+    icon: <FaIcons.FaHome />,
+    cName: 'nav-text'
+  },
+  {
+    title: 'Classroom',
+    path: '/u/classroom',
+    icon: <FaIcons.FaClinicMedical />,
+    cName: 'nav-text'
+  },
+  {
+    title: 'Task',
+    path: '/u/task',
+    icon: <FaIcons.FaTasks />,
+    cName: 'nav-text'
+  },
+  {
+    title: 'Quiz',
+    path: '/u/quiz',
+    icon: <FaIcons.FaDiceD6 />,
+    cName: 'nav-text'
+  },
+  {
+    title: 'Calendar',
+    path: '/u/calendar',
+    icon: <FaIcons.FaCalendarAlt />,
+    cName: 'nav-text'
+  }
+];
 
 export const LayoutContext = createContext();
 
@@ -26,33 +58,10 @@ export default function NewLayout() {
   const [drawerSidebar, setDrawerSidebar] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [openMiniSearchBar, setOpenMiniSearchBar] = useState(false);
-  const [open, setOpen] = useState(false);
   const uid = localStorage.getItem("user_id");
   const [error, setError] = useState("");
-  const ddRef = useRef();
-  const [openMenu, setOpenMenu] = useState(false);
-  const [openMenu2, setOpenMenu2] = useState(false);
+ 
 
-  const handleBtnClick = () => {
-    setOpenMenu(!openMenu);
-  };
-  const handleBtnClick2 = () => {
-    setOpenMenu2(!openMenu2);
-  };
-  const closeMenu = () => {
-    setOpenMenu(false);
-  };
-  const closeMenu2 = () => {
-    setOpenMenu2(false);
-  };
-
-  const ref = useOnclickOutside(() => {
-    closeMenu();
-  });
-
-  const ref2 = useOnclickOutside(() => {
-    closeMenu2();
-  });
   useEffect(() => {
     localStorage.setItem("dark", JSON.stringify(isDarkMode));
   }, [isDarkMode]);
@@ -76,27 +85,25 @@ export default function NewLayout() {
   }
 
   const token = localStorage.getItem("token");
-
-  const header = {
-    Authorization: `Bearer ${token}`,
-  };
-
-  const authMe = async () => {
+ const authMe = async () => {
     try {
       const res = await axios.get("http://elearning.havicrm.tk/api/auth/me", {
-        headers: header,
+        headers: {
+    Authorization: `Bearer ${token}`,
+  }
       });
       localStorage.setItem("role", res.data.role);
       localStorage.setItem("user_id", res.data.id);
-      setRole(localStorage.getItem("role"));
     } catch (err) {
       console.log(err);
       setError(err.message);
     }
+    setRole(localStorage.getItem("role"));
     setIsLoading(false);
   };
 
   useEffect(() => {
+  
     authMe();
   }, []);
 
@@ -111,6 +118,7 @@ export default function NewLayout() {
   const showSidenavCollapsed = () =>
     setIsSidenavCollapsed((prevState) => !prevState);
   const showDrawerSidebar = () => setDrawerSidebar(!drawerSidebar);
+
 
   useEffect(() => {
     closeMiniSearchbar(width);
@@ -229,7 +237,24 @@ export default function NewLayout() {
                           <FaIcons.FaBars />
                         </Link>
                       </li>
-                      {SidebarData.map((item, index) => {
+                      {role === "TEACHER" && SidebarData.map((item, index) => {
+                        return (
+                          <li key={index} className={item.cName}>
+                            <NavLink
+                              to={item.path}
+                              activeStyle={{
+                                fontWeight: "bold",
+                                color: "#772CE8",
+                              }}
+                              exact={item.path === "/u" ? true : false}
+                            >
+                              {item.icon}
+                              <span className="item-title">{item.title}</span>
+                            </NavLink>
+                          </li>
+                        );
+                      })}
+                      {role === "STUDENT" && SidebarDataM.map((item, index) => {
                         return (
                           <li key={index} className={item.cName}>
                             <NavLink
@@ -469,7 +494,31 @@ export default function NewLayout() {
                       : "sidenav-expanded"
                   } ${isDarkMode ? "dark" : "light"}-sidenav`}
                 >
-                  {SidebarData.map((item, index) => (
+                  {role ==="TEACHER" && SidebarData.map((item, index) => (
+                    <NavLink
+                      key={index}
+                      to={item.path}
+                      activeClassName="active-sidenav-link"
+                      className={`${
+                        isDarkMode ? "dark" : "light"
+                      }-sidenav-link`}
+                      exact={item.path === "/u" ? true : false}
+                    >
+                      <div
+                        style={{ display: "flex", alignItems: "center" }}
+                        {...(isSidenavCollapsed && {
+                          className: "tooltip--btn",
+                        })}
+                      >
+                        {item.icon}
+                        {isSidenavCollapsed && (
+                          <abbr className="classic">{item.title}</abbr>
+                        )}
+                        <span>{item.title}</span>
+                      </div>
+                    </NavLink>
+                  ))}
+                   {role ==="STUDENT" && SidebarDataM.map((item, index) => (
                     <NavLink
                       key={index}
                       to={item.path}
@@ -500,8 +549,8 @@ export default function NewLayout() {
                   }`}
                 >
                   <LayoutContext.Provider value={{ isDarkMode, width, uid }}>
-                    {role === "guru" && <TeacherRoutes />}
-                    {role === "murid" && <StudentRoutes />}
+                    {role === "TEACHER" && <TeacherRoutes />}
+                    {role === "STUDENT" && <StudentRoutes />}
                   </LayoutContext.Provider>
                 </div>
               </div>

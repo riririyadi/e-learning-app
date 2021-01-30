@@ -121,13 +121,13 @@ const MPCFormQuestion = (props) => {
               >
                 <div
                   className={`dropdown-item rounded  ${
-                    isDarkMode ? "dark-mode" : "light"
-                  } pl-2`}
-                  style={
-                    isDarkMode
-                      ? { cursor: "pointer", color: "#F5F5F7" }
-                      : { cursor: "pointer", color: "#000000" }
-                  }
+                                isDarkMode ? "dd-dark-mode" : "light"
+                              } pl-2`}
+                              style={
+                                isDarkMode
+                                  ? { cursor: "pointer", color: "#F5F5F7" }
+                                  : { cursor: "pointer", color: "#000000" }
+                              }
                   onClick={props.handleDelete}
                 >
                   <BsTrash />
@@ -251,14 +251,14 @@ const EssayFormQuestion = (props) => {
                 } p-2 mt-2 mb-2`}
               >
                 <div
-                  className={`dropdown-item rounded  ${
-                    isDarkMode ? "dark-mode" : "light"
-                  } pl-2`}
-                  style={
-                    isDarkMode
-                      ? { cursor: "pointer", color: "#F5F5F7" }
-                      : { cursor: "pointer", color: "#000000" }
-                  }
+                   className={`dropdown-item rounded  ${
+                                isDarkMode ? "dd-dark-mode" : "light"
+                              } pl-2`}
+                              style={
+                                isDarkMode
+                                  ? { cursor: "pointer", color: "#F5F5F7" }
+                                  : { cursor: "pointer", color: "#000000" }
+                              }
                   onClick={props.handleDelete}
                 >
                   <BsTrash />
@@ -338,13 +338,13 @@ const TOFFormQuestion = (props) => {
               >
                 <div
                   className={`dropdown-item rounded  ${
-                    isDarkMode ? "dark-mode" : "light"
-                  } pl-2`}
-                  style={
-                    isDarkMode
-                      ? { cursor: "pointer", color: "#F5F5F7" }
-                      : { cursor: "pointer", color: "#000000" }
-                  }
+                                isDarkMode ? "dd-dark-mode" : "light"
+                              } pl-2`}
+                              style={
+                                isDarkMode
+                                  ? { cursor: "pointer", color: "#F5F5F7" }
+                                  : { cursor: "pointer", color: "#000000" }
+                              }
                   onClick={props.handleDelete}
                 >
                   <BsTrash />
@@ -433,14 +433,14 @@ const MPFormQuestion = (props) => {
                 } p-2 mt-2 mb-2`}
               >
                 <div
-                  className={`dropdown-item rounded  ${
-                    isDarkMode ? "dark-mode" : "light"
-                  } pl-2`}
-                  style={
-                    isDarkMode
-                      ? { cursor: "pointer", color: "#F5F5F7" }
-                      : { cursor: "pointer", color: "#000000" }
-                  }
+                   className={`dropdown-item rounded  ${
+                                isDarkMode ? "dd-dark-mode" : "light"
+                              } pl-2`}
+                              style={
+                                isDarkMode
+                                  ? { cursor: "pointer", color: "#F5F5F7" }
+                                  : { cursor: "pointer", color: "#000000" }
+                              }
                   onClick={props.handleDelete}
                 >
                   <BsTrash />

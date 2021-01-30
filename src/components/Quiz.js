@@ -16,15 +16,15 @@ export default function Quiz() {
   useEffect(() => {
  document.title = "E-learning | Quiz"
   }, [])
+  function handleOpenModal() {
+    setIsOpen(!isOpen);
+  }
 
   const { isDarkMode } = useContext(LayoutContext);
   const [selectedRow, setSelectedRow] = useState(true);
   const [quizData, setQuizData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  function handleOpenModal() {
-    setIsOpen(!isOpen);
-  }
 
 const token = localStorage.getItem("token");
 
@@ -50,8 +50,7 @@ const token = localStorage.getItem("token");
   },[]);
 
 
-const format1 = "YYYY-MM-DD HH:mm:ss"
-
+const dateFormat = "YYYY-MM-DD HH:mm:ss"
 
   const Confirmation = () => {
     return (
@@ -118,7 +117,7 @@ const format1 = "YYYY-MM-DD HH:mm:ss"
           />
         </div>
       </div>
-      <table className="table table-borderless table-responsive-md">
+      <table className="table table-borderless table-responsive-sm">
         <thead>
           <tr className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
             <th scope="col">
@@ -129,10 +128,8 @@ const format1 = "YYYY-MM-DD HH:mm:ss"
               />
             </th>
             <th scope="col">Quiz Name</th>
-            <th scope="col">Class</th>
-            <th scope="col">Subject</th>
-            <th scope="col">Status</th>
-            <th scope="col">Due Date</th>
+            <th scope="col">Question Type</th>
+            <th scope="col">Created At</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -148,18 +145,12 @@ const format1 = "YYYY-MM-DD HH:mm:ss"
               </td>
 
               <td>{quiz.name}</td>
-              <td>{quiz.class}</td>
-              <td>{quiz.subject}</td>
-              <td>
-                <span
-                  className={`status ${
-                   moment().isAfter(quiz.due_date) ? "closed" : "open"
-                  } ${isDarkMode ? "text-white dark-open" : null} `}
-                >
-                  {moment().isAfter(quiz.due_date) ? "closed":"open" }
-                </span>
+              <td>{quiz.question_type === "MULTIPLE_CHOICE" && "Multiple Choice"}
+                  {quiz.question_type === "ESSAY" && "Essay"}
+                  {quiz.question_type === "MATCH_PAIR" && "Match Pair"}
+                  {quiz.question_type === "TRUE_OR_FALSE" && "True or False"}
               </td>
-              <td>{quiz.due_date}</td>
+              <td>{moment(quiz.created_at).format(dateFormat)}</td>
               <td>
                 <div className="dropdown">
                   <button

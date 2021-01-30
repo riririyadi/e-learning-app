@@ -70,8 +70,7 @@ export default function Classroom() {
 
   const [classData, setClassData] = useState({});
 
-  async function handleDelete(e, id) {
-    e.preventDefault();
+  async function handleDelete(id) {
     try {
       setIsSubmitting(true);
       const res = await axios.delete(
@@ -120,7 +119,7 @@ export default function Classroom() {
             <div>
               <button
                 className="button mr-4"
-                onClick={(e) => handleDelete(e, classData.id)}
+                onClick={(e) => handleDelete(classData.id)}
               >
                 Yes
               </button>
@@ -162,17 +161,12 @@ export default function Classroom() {
       </div>
       {isLoading ? (
         <div
-          style={{
-            minHeight: "calc(100vh - 220px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          className="main-area-center-loader"
         >
           <Loader />
         </div>
       ) : (
-      <>{error? <div className="centering" style={{minHeight:"calc(100vh - 220px)", color:"red"}}>{error}</div>:
+      <>{error? <div className="main-area-center-error">{error}</div>:
         <div className="row">
           {classroomData.map((data, i) => (
             <div className="col-lg-3 mb-4" key={data.id}>

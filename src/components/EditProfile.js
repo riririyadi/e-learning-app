@@ -1,8 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { LayoutContext } from "./NewLayout"
 
 export default function EditProfile() {
   const { isDarkMode } = useContext(LayoutContext);
+
+  useEffect(() => {
+  document.title = "E-learning | Profile";
+  }, [])
 	return (
 		  <>
       <h5 className="mb-4">

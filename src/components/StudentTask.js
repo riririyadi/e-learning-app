@@ -1,6 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BsFunnel } from "react-icons/bs";
 import { LayoutContext } from "./NewLayout";
+import  axios from "axios";
+import moment from "moment";
+import { Loader } from "./Loader";
+
 
 export default function StudentTask() {
 
@@ -8,45 +12,47 @@ export default function StudentTask() {
 document.title = "E-learning | Task"
   },[])
 
+
+const [taskData, setTaskData] = useState([]);
+  const [error, setError] = useState(false);
+  const [isLoading,setIsLoading] = useState(true);
+  const [isSubmitting,setIsSubmitting] = useState(false);
+  const token = localStorage.getItem("token");
+
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const getAllTask = async () => {
+    try {
+      const res = await axios.get("http://elearning.havicrm.tk/api/task", {
+        headers: header,
+      });
+      console.log(res.data);
+      setTaskData(res.data);
+    } catch (err) {
+      console.log(err);
+      setError(err.message);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getAllTask();
+  },[]);
+
+
+
   const { isDarkMode } = useContext(LayoutContext);
-  const taskData = [
-    {
-      task_name: "Task 1",
-      class: "PPSI",
-      status: "open",
-      due_date: "23 Desember 2020 - 12:00 AM",
-      job_done: "yet",
-    },
-    {
-      task_name: "Task 2",
-      class: "Algoritma Pemrograman",
-      status: "closed",
-      due_date: "24 Desember 2020 - 11:00 AM",
-      job_done: "done",
-    },
-    {
-      task_name: "Task 3",
-      class: "Sistem Basis Data",
-      status: "closed",
-      due_date: "25 Desember 2020 - 10:00 PM",
-      job_done: "done",
-    },
-    {
-      task_name: "Task 4",
-      class: "Analisis Kerja Sistem",
-      status: "open",
-      due_date: "05 January 2021 - 03:00 PM",
-      job_done: "yet",
-    },
-  ];
+
 
   return (
-    <>
+    <div>
       <h5 className="mb-4">
         <b>Task</b>
       </h5>
+      {isLoading ?<div className="main-area-center-loader"> <Loader/> </div>:
        <div className="p-4" style={ isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
-
        <div className="d-flex">
         <div className="centering">
           <h6>List of Tasks</h6>
@@ -68,10 +74,9 @@ document.title = "E-learning | Task"
             <th scope="col"><input type="checkbox"/></th>
 
             <th scope="col">Task Name</th>
-            <th scope="col">Class</th>
-            <th scope="col">Status</th>
-            <th scope="col">Due Date</th>
-            <th scope="col">Job Done</th>
+            <th scope="col">Description</th>
+            <th scope="col">created_at</th>
+         
           </tr>
         </thead>
 
@@ -80,32 +85,16 @@ document.title = "E-learning | Task"
             <tr key={i} className={`${isDarkMode ? "tr-dark" : "tr-light"}`}>
               <td><input type="checkbox"/></td>
             
-              <td>{task.task_name}</td>
-              <td>{task.class}</td>
-              <td>
-                <span
-                  className={`status ${
-                    task.status === "open" ? "open" : "closed"
-                  } ${isDarkMode ? "text-white dark-open" : null} `}
-                >
-                  {task.status}
-                </span>
-              </td>
-              <td>{task.due_date}</td>
-              <td>
-                <span
-                  className={`status ${
-                    task.job_done === "done" ? "open" : "closed"
-                  } ${isDarkMode ? "text-white dark-open" : null} `}
-                >
-                  {task.job_done}
-                </span>
-              </td>
+              <td>{task.name}</td>
+              <td>{task.description}</td>
+             
+              <td>{moment(task.created_at).format("YYYY-MM-DD HH:mm:ss")}</td>
+            
             </tr>
           ))}
         </tbody>
       </table>
-      </div>
-    </>
+      </div>}
+    </div>
   );
 }
