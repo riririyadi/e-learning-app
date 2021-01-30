@@ -2,13 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { LayoutContext } from "./NewLayout";
 import { BsFunnel } from "react-icons/bs";
+import { Loader } from "./Loader";
 import axios from "axios";
 
 export default function ViewGrade() {
 	const { isDarkMode } = useContext(LayoutContext);
 	let { id } = useParams();
   const token = localStorage.getItem("token");
-const [classGrade, setClassGrade] = useState({});
+const [classGrade, setClassGrade] = useState([]);
+const [error, setError] = useState("");
+const [isLoading, setIsLoading] = useState(false);
   const header = {
     Authorization: `Bearer ${token}`,
   };
@@ -16,12 +19,15 @@ const [classGrade, setClassGrade] = useState({});
 
 const getClassroomGrade = async() => {
 	try{
+		setIsLoading(true);
 		const res = await axios.get(`http://elearning.havicrm.tk/api/grade/${id}`, {headers: header})
 		console.log(res.data);
 		setClassGrade(res.data)
 	}catch(err){
 		console.log(err)
+		setError(err.message);
 	}
+	setIsLoading(false);
 }
 
 useEffect(() => {
@@ -34,6 +40,9 @@ useEffect(() => {
 			<h5 className="mb-4">
 				<b>Grade</b>
 			</h5>
+
+			{isLoading ? (<div className="main-area-center-loader"><Loader/></div>): (
+				<>{error ? <div className="main-area-center-error">{error}</div>: 
       <div className="p-4" style={isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
 			   <div className="d-flex pt-2">
         <div className="centering">
@@ -74,22 +83,21 @@ useEffect(() => {
 							className={`${isDarkMode ? "tr-dark" : "tr-light"}`}
 						>
 						<td><input type="checkbox"/></td>
-							<td>{data.participant}</td>
-							<td>{data.t1}</td>
-							<td>{data.q1}</td>
-							<td>{data.t2}</td>
-							<td>{data.q2}</td>
-							<td>{data.t3}</td>
-							<td>{data.q3}</td>
-							<td>{data.t4}</td>
-							<td>{data.q4}</td>
-							<td>{data.t5}</td>
-							<td>{data.q5}</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
 						</tr>
 					))}
 				</tbody>
 			</table>
-			</div>
+			</div>}</>)}
 		</div>
 	);
 }

@@ -17,7 +17,18 @@ const checkToken = () => {
   if (!token) {
     return false;
   }
-  
+  try {
+    const { exp } = jwt.decode(token);
+    console.log(exp);
+    if (exp < new Date().getTime()/1000) {
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
   return true;
 };
 

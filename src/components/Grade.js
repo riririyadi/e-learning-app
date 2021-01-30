@@ -13,6 +13,7 @@ const [error, setError] = useState("");
   const [classroom, setClassroom] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [participants, setParticipants] = useState([]);
+  const [status] = useState("active")
 
   const token = localStorage.getItem("token");
 
@@ -66,9 +67,7 @@ const [error, setError] = useState("");
           <th scope="col"><input type="checkbox"/></th>
             <th scope="col">Class</th>
             <th scope="col">Subject</th>
-            <th scope="col">Num of Participants</th>
             <th scope="col">Status</th>
-            <th scope="col"></th>
           </tr>
         </thead>
         <tbody className={isDarkMode ? "bg-darks" : "bg-white"}>
@@ -78,14 +77,13 @@ const [error, setError] = useState("");
 
               <td>{data.name}</td>
               <td>{data.subject}</td>
-              <td>{data.participants.map(a => <>{a.length}</>)}</td>
               <td>
                 <span
                   className={`status ${
-                    data.status === "active" ? "open" : "closed"
+                    status === "active" ? "open" : "closed"
                   } ${isDarkMode ? "text-white dark-open" : null} `}
                 >
-                  {data.status}
+                  Active
                 </span>
               </td>
               <td>
