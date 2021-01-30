@@ -61,6 +61,7 @@ export default function EditTask() {
 
   const getTask = async () => {
     try {
+      setIsLoading(true);
       const res = await axios.get(
         `http://elearning.havicrm.tk/api/task/${id}`,
         {
@@ -102,8 +103,11 @@ useEffect(() => {
   return (
     <>
       <h5 className="mb-4">
-        <b>Edit New Task</b>
+        <b>Edit Task</b>
       </h5>
+
+      {isLoading ? (<div className="main-area-center-loader"><Loader/></div>): (
+        <>{error ? <div className="main-area-center-error">{error}</div>: 
       <div
         className={`${isDarkMode ? "bg-darks" : "bg-white"} p-4 mt-4 mb-4`}
         style={{ borderRadius: "10px" }}
@@ -135,8 +139,8 @@ useEffect(() => {
           </div>
         </div>
 
-        <button className="button" onClick={handleOpenModal}>Create</button>
-      </div>
+        <button className="button" onClick={handleOpenModal}>Update</button>
+      </div>}</>)}
       <CustomModal
         isOpen={isOpen}
         onRequestClose={handleOpenModal}
