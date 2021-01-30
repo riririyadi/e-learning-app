@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { LayoutContext } from "./NewLayout";
 import { CgViewList } from "react-icons/cg";
 import axios from 'axios';
+import { Loader } from "./Loader";
 
 
 export default function Grade() {
@@ -86,7 +87,7 @@ const [error, setError] = useState("");
                     status === "active" ? "open" : "closed"
                   } ${isDarkMode ? "text-white dark-open" : null} `}
                 >
-                  A\ctive
+                  Active
                 </span>
               </td>
               <td>
