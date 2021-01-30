@@ -11,9 +11,9 @@ export default function Grade() {
 
 const [error, setError] = useState("");
   const [classroom, setClassroom] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [participants, setParticipants] = useState([]);
-  const [status] = useState("active")
+  const [status] = useState("active");
 
   const token = localStorage.getItem("token");
 
@@ -23,6 +23,7 @@ const [error, setError] = useState("");
 
   const getAllClassroom = async () => {
     try {
+      setIsLoading(true);
       const res = await axios.get("http://elearning.havicrm.tk/api/classroom", {
         headers: header,
       });
@@ -45,6 +46,8 @@ const [error, setError] = useState("");
       <h5 className="mb-4">
         <b>Grade</b>
       </h5>
+        {isLoading ? (<div className="main-area-center-loader"><Loader/></div>): (
+        <>{error ? <div className="main-area-center-error">{error}</div>: 
       <div className="p-4" style={isDarkMode ?{backgroundColor:"#1F1F23", borderRadius:"10px"} : {backgroundColor:"white", borderRadius:"10px"}}>
       <div className="d-flex">
         <div className="centering">
@@ -83,7 +86,7 @@ const [error, setError] = useState("");
                     status === "active" ? "open" : "closed"
                   } ${isDarkMode ? "text-white dark-open" : null} `}
                 >
-                  Active
+                  A\ctive
                 </span>
               </td>
               <td>
@@ -143,34 +146,8 @@ const [error, setError] = useState("");
           ))}
         </tbody>
       </table>
-      </div>
+      </div>}</>)}
     </>
   );
 }
 
-const classGrade = [
-  {
-    class: "4KA21",
-    subject: "Networking",
-    numOfParticipants: 47,
-    status: "active",
-  },
-  {
-    class: "Umum",
-    subject: "Networking",
-    numOfParticipants: 47,
-    status: "active",
-  },
-  {
-    class: "3KA22",
-    subject: "Pemrograman Berbasis Objek",
-    numOfParticipants: 17,
-    status: "closed",
-  },
-  {
-    class: "Umum",
-    subject: "Networking",
-    numOfParticipants: 47,
-    status: "active",
-  },
-];
