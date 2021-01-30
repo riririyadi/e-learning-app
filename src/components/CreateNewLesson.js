@@ -123,7 +123,7 @@ function MyDropzone() {
   const {getRootProps, getInputProps} = useDropzone({onDrop})
 
   return (
-    <div className="input-field" style={{height:"60px"}}>
+    <div className={`${isDarkMode ? "input-field-dark-mode": "input-field"}`} style={{height:"60px"}}>
     <div {...getRootProps()}>
       <input {...getInputProps()} />
       <input {...getInputProps()} />
