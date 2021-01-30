@@ -312,7 +312,7 @@ getTask();
                 borderRadius: "5px",
               }}
             >
-              <h6 className="mb-2">Task 1 - Dasar Enkripsi</h6>
+              <h6 className="mb-2">{task.name}</h6>
               <p>
                 <span className="mr-2 mb-4">
                   <FcAbout />
