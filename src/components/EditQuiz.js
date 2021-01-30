@@ -8,11 +8,34 @@ import "../styles/CreateNewTask.css";
 import CustomModal from "./Modal";
 import { EditQuizQuestion } from "./AddQuestion";
 import axios from "axios";
+import { Loader } from "./Loader";
 
 export const EditQuizContext = createContext();
 
 export default function EditQuiz() {
   let { id } = useParams();
+
+  const [isLoading, setIsLoading] = useState(false);
+const [quiz,setQuiz] = useState({});
+ const token = localStorage.getItem("token");
+  const header = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const [error, setError] = useState("")
+
+const getDetailQuiz = async() => {
+    try{
+      setIsLoading(true);
+      const res = await axios.get(`http://elearning.havicrm.tk/api/quiz/${id}`,{headers: header})
+      console.log(res.data);
+      setQuiz(res.data);
+    }catch(err){
+      setError(err.message);
+    }
+    setIsLoading(false);
+}
+
 
 const [startDate, setStartDate] = useState(new Date());
   const [questions, setQuestion] = useState([]);
@@ -25,26 +48,8 @@ const [startDate, setStartDate] = useState(new Date());
 	}
 
 
-  const token = localStorage.getItem("token");
 
-  const header = {
-    "Authorization": `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
 
-  const getDetailQuiz = async () => {
-    try {
-      const res = await axios.get(
-        `http://elearning.havicrm.tk/api/quiz/${id}`,
-        {
-          headers: header,
-        }
-      );
-      console.log(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   useEffect(() => {
       document.title = "E-learning | Quiz"
@@ -85,6 +90,9 @@ const Confirmation = () => {
       <h5 className="mb-4">
         <b>Edit Quiz</b>
       </h5>
+
+      {isLoading ? (<div className="main-area-center-loader"><Loader/></div>): (
+        <>{error ? <div className="main-area-center-error">{error}</div>: 
       <div
         className={`${isDarkMode ? "bg-darks" : "bg-white"} p-4 mt-4 mb-4`}
         style={{ borderRadius: "10px" }}
@@ -123,7 +131,7 @@ const Confirmation = () => {
                 showTimeSelect
                 timeFormat="p"
                 timeIntervals={15}
-                dateFormat="yyyy-MM-DD HH:mm:ss"
+                dateFormat="yyyy-MM-dd HH:mm:ss"
               />
             </div>
           </div>
@@ -215,7 +223,7 @@ const Confirmation = () => {
           <EditQuizQuestion questionType={questionType} />
         </EditQuizContext.Provider>
         <button className="button" onClick={handleOpenModal}>Save</button>
-      </div>
+      </div> }</>)}
       	<CustomModal
 				isOpen={isOpen}
 				onRequestClose={handleOpenModal}

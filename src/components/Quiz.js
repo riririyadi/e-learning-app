@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import { BsFunnel, BsTrash, BsThreeDots } from "react-icons/bs";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import ReactTooltip from "react-tooltip";
@@ -12,19 +12,20 @@ import { Loader } from './Loader'
 
 export default function Quiz() {
 
+  const match = useRouteMatch()
 
   useEffect(() => {
  document.title = "E-learning | Quiz"
   }, [])
-  function handleOpenModal() {
-    setIsOpen(!isOpen);
-  }
 
   const { isDarkMode } = useContext(LayoutContext);
   const [selectedRow, setSelectedRow] = useState(true);
   const [quizData, setQuizData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  function handleOpenModal() {
+    setIsOpen(!isOpen);
+  }
 
 const token = localStorage.getItem("token");
 
@@ -50,7 +51,7 @@ const token = localStorage.getItem("token");
   },[]);
 
 
-const dateFormat = "YYYY-MM-DD HH:mm:ss"
+const dateFormat = "yyyy-MM-dd HH:mm:ss"
 
   const Confirmation = () => {
     return (
@@ -178,7 +179,7 @@ const dateFormat = "YYYY-MM-DD HH:mm:ss"
                     } p-2 mt-2 mb-2`}
                   >
                       <Link
-                        to={`/u/quiz/edit/${quizData.id}`}
+                        to={`${match.url}/edit/${quiz.id}`}
                         style={
                           isDarkMode
                             ? { color: "#F5F5F7" }
